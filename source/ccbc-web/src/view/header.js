@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import AppBar from 'material-ui/AppBar'
 
 export default class HeaderForm extends Component {
   render() {
@@ -12,6 +12,6 @@ export default class HeaderForm extends Component {
           <a href="/">ログオフ</a>
         </AppBar>
       </MuiThemeProvider>
-    );
+    )
   }
 }

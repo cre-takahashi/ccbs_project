@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import request from "superagent";
-import { Redirect } from "react-router-dom";
+import React, { Component } from 'react'
+import request from 'superagent'
+import { Redirect } from 'react-router-dom'
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 export default class MenuForm extends Component {
   render() {
@@ -26,6 +26,6 @@ export default class MenuForm extends Component {
           </ul>
         </div>
       </MuiThemeProvider>
-    );
+    )
   }
 }
