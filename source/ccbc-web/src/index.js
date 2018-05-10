@@ -1,14 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter, Route, Link } from 'react-router-dom'
 
-import HeaderForm from "./view/header";
-import FooterForm from "./view/footer";
-import LoginForm from "./view/login";
-import MenuForm from "./view/menu";
-import RadarChartForm from "./view/radar";
-import GraphForm from "./view/graph";
-import DbForm from "./view/db";
+import HeaderForm from './view/header'
+import FooterForm from './view/footer'
+import LoginForm from './view/login'
+import MenuForm from './view/menu'
+import RadarChartForm from './view/radar'
+import GraphForm from './view/graph'
+import DbForm from './view/db'
 
 ReactDOM.render(
   <BrowserRouter>
@@ -22,5 +22,5 @@ ReactDOM.render(
       <FooterForm />
     </div>
   </BrowserRouter>,
-  document.getElementById("root")
-);
+  document.getElementById('root')
+)
