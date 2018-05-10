@@ -21,7 +21,7 @@ export default class MenuForm extends Component {
               <a href="/db">【03】データベース</a>
             </li>
             <li>
-              <a href="/reference/all&1">【04】照会</a>
+              <a href="/reference/all&1">【04】テスト</a>
             </li>
           </ul>
         </div>
