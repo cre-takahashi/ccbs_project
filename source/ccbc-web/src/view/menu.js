@@ -21,7 +21,19 @@ export default class MenuForm extends Component {
               <a href="/db">【03】データベース</a>
             </li>
             <li>
-              <a href="/reference/all&1">【04】テスト</a>
+              <a href="/ui_table">【04】テーブルサンプル</a>
+            </li>
+            <li>
+              <a href="/ui_menu">【05】メニューサンプル</a>
+            </li>
+            <li>
+              <a href="/ui_avatar">【06】アバターサンプル</a>
+            </li>
+            <li>
+              <a href="/ui_button">【07】ボタンサンプル</a>
+            </li>
+            <li>
+              <a href="/ui_card">【08】カードサンプル</a>
             </li>
           </ul>
         </div>
