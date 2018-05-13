@@ -35,6 +35,15 @@ export default class MenuForm extends Component {
             <li>
               <a href="/ui_card">【08】カードサンプル</a>
             </li>
+            <li>
+              <a href="/ui_slider">【09】スライダーサンプル</a>
+            </li>
+            <li>
+              <a href="/ui_grid">【10】グリッドサンプル</a>
+            </li>
+            <li>
+              <a href="/menu_sample">【11】メインメニュー</a>
+            </li>
           </ul>
         </div>
       </MuiThemeProvider>
