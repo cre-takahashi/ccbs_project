@@ -17,6 +17,7 @@ import CardExampleControlled from './ui/ui_card'
 import SliderExampleControlled from './ui/ui_slider'
 import GridListExampleSimple from './ui/ui_grid'
 import MenuSample from './view/menu_sample'
+import DrawerSimpleExample from './ui/ui_drawer'
 
 ReactDOM.render(
   <BrowserRouter>
@@ -35,6 +36,7 @@ ReactDOM.render(
       <Route path="/ui_slider" component={SliderExampleControlled} />
       <Route path="/ui_grid" component={GridListExampleSimple} />
       <Route path="/menu_sample" component={MenuSample} />
+      <Route path="/ui_drawer" component={DrawerSimpleExample} />
       <FooterForm />
     </div>
   </BrowserRouter>,
