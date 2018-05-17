@@ -14,9 +14,10 @@ import {
   mailFolderListItems,
   otherMailFolderListItems,
   kanriListItems,
-  ippanListItems
+  ippanListItems,
+  kojiListItems
 } from './tileData'
-
+import { Link } from 'react-router-dom'
 import ButtonBase from 'material-ui/ButtonBase'
 
 const drawerWidth = 240
@@ -89,7 +90,8 @@ const styles = theme => ({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundSize: 'cover',
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center 40%'
   },
   imageBackdrop: {
@@ -120,19 +122,43 @@ const styles = theme => ({
 
 const images = [
   {
-    url: '/static/images/grid-list/breakfast.jpg',
-    title: 'Breakfast',
-    width: '40%'
+    url: '/images/shain_kanri.png',
+    title: '社員管理',
+    width: '33%',
+    path: '/'
   },
   {
-    url: '/static/images/grid-list/burgers.jpg',
-    title: 'Burgers',
-    width: '30%'
+    url: '/images/senkyo_kanri.png',
+    title: '選挙管理',
+    width: '34%',
+    path: '/'
   },
   {
-    url: '/static/images/grid-list/camera.jpg',
-    title: 'Camera',
-    width: '30%'
+    url: '/images/coin_shokai.png',
+    title: 'コイン照会',
+    width: '33%',
+    path: '/'
+  }
+]
+
+const images2 = [
+  {
+    url: '/images/senkyo.png',
+    title: '投票',
+    width: '33%',
+    path: '/'
+  },
+  {
+    url: '/images/tohyo_kekka.png',
+    title: '投票結果',
+    width: '34%',
+    path: '/'
+  },
+  {
+    url: '/images/zoyo.png',
+    title: 'コイン贈与',
+    width: '33%',
+    path: '/'
   }
 ]
 
@@ -149,6 +175,8 @@ function ButtonAppBar(props) {
         <List>{kanriListItems}</List>
         <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kojiListItems}</List>
       </Drawer>
       <main className={classes.content}>
         <Typography noWrap>
@@ -162,6 +190,44 @@ function ButtonAppBar(props) {
                 style={{
                   width: image.width
                 }}
+                component={Link}
+                to={image.path}
+              >
+                <span
+                  className={classes.imageSrc}
+                  style={{
+                    backgroundImage: `url(${image.url})`
+                  }}
+                />
+                <span className={classes.imageBackdrop} />
+                <span className={classes.imageButton}>
+                  <Typography
+                    component="span"
+                    variant="subheading"
+                    color="inherit"
+                    className={classes.imageTitle}
+                  >
+                    {image.title}
+                    <span className={classes.imageMarked} />
+                  </Typography>
+                </span>
+              </ButtonBase>
+            ))}
+          </div>
+        </Typography>
+        <Typography noWrap>
+          <div className={classes.root}>
+            {images2.map(image => (
+              <ButtonBase
+                focusRipple
+                key={image.title}
+                className={classes.image}
+                focusVisibleClassName={classes.focusVisible}
+                style={{
+                  width: image.width
+                }}
+                component={Link}
+                to={image.path}
               >
                 <span
                   className={classes.imageSrc}
