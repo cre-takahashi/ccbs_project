@@ -4,6 +4,9 @@ import { Redirect } from 'react-router-dom'
 
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip } from 'recharts'
 
+/**
+ * テスト
+ */
 export default class RadarChartForm extends Component {
   render() {
     // 表示させたいデータ群

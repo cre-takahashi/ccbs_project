@@ -26,7 +26,8 @@ const styles = theme => ({
     width: 200
   },
   button: {
-    margin: theme.spacing.unit
+    margin: theme.spacing.unit,
+    marginLeft: 50
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -38,7 +39,7 @@ const styles = theme => ({
     fontSize: 20
   },
   table: {
-    minWidth: 700
+    minWidth: 0
   }
 })
 
@@ -80,15 +81,15 @@ class TextFields extends React.Component {
 
     return (
       <form className={classes.container} noValidate autoComplete="off">
-        <div>
+        <div style={{ margin: '0 auto' }}>
           <Table className={classes.table}>
             <TableBody>
               <TableRow>
                 <TextField
-                  id="name"
-                  label="Name"
+                  id="id"
+                  label="ID"
                   className={classes.textField}
-                  onChange={this.handleChange('name')}
+                  onChange={this.handleChange('id')}
                   fullWidth
                   margin="normal"
                 />

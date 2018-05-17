@@ -10,18 +10,19 @@ import MailIcon from 'material-ui-icons/Mail'
 import DeleteIcon from 'material-ui-icons/Delete'
 import ReportIcon from 'material-ui-icons/Report'
 import Avatar from 'material-ui/Avatar'
+import { Link } from 'react-router-dom'
 
 export const kanriListItems = (
   <div>
-    <ListItem button>
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/shain_kanri.png" />
       <ListItemText primary="社員管理" />
     </ListItem>
-    <ListItem button>
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/senkyo_kanri.png" />
       <ListItemText primary="選挙管理" />
     </ListItem>
-    <ListItem button>
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/coin_shokai.png" />
       <ListItemText primary="コイン照会" />
     </ListItem>
@@ -30,17 +31,26 @@ export const kanriListItems = (
 
 export const ippanListItems = (
   <div>
-    <ListItem button>
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/senkyo.png" />
       <ListItemText primary="投票" />
     </ListItem>
-    <ListItem button>
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/tohyo_kekka.png" />
       <ListItemText primary="投票結果" />
     </ListItem>
-    <ListItem button>
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/zoyo.png" />
       <ListItemText primary="コイン贈与" />
+    </ListItem>
+  </div>
+)
+
+export const kojiListItems = (
+  <div>
+    <ListItem button component={Link} to="/menu">
+      <Avatar alt="shain_kanri" src="/images/koji.png" />
+      <ListItemText primary="画面モック" />
     </ListItem>
   </div>
 )
