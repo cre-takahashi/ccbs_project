@@ -1,9 +1,4 @@
-import React, { Component } from 'react'
-import request from 'superagent'
-import { Redirect } from 'react-router-dom'
-
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
+import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import Drawer from 'material-ui/Drawer'
@@ -12,7 +7,11 @@ import Toolbar from 'material-ui/Toolbar'
 import List from 'material-ui/List'
 import Typography from 'material-ui/Typography'
 import Divider from 'material-ui/Divider'
+import Button from 'material-ui/Button'
+import IconButton from 'material-ui/IconButton'
 import { mailFolderListItems, otherMailFolderListItems } from './tileData'
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 const drawerWidth = 240
 
@@ -38,7 +37,14 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
     minWidth: 0 // So the Typography noWrap works
   },
-  toolbar: theme.mixins.toolbar
+  toolbar: theme.mixins.toolbar,
+  gridList: {
+    width: 500,
+    height: 450
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)'
+  }
 })
 
 function ClippedDrawer(props) {
@@ -51,6 +57,14 @@ function ClippedDrawer(props) {
           <Typography variant="title" color="inherit" noWrap>
             Clipped drawer
           </Typography>
+          <Button
+            variant="raised"
+            color="inherit"
+            color="secondary"
+            href="/menu"
+          >
+            ログイン
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -78,35 +92,4 @@ ClippedDrawer.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default class MenuForm extends Component {
-  render() {
-    return (
-      <MuiThemeProvider>
-        <div>
-          <h1>メインメニュー</h1>
-          <ul>
-            <li>
-              <a href="/radar">【01】レーダーチャート</a>
-            </li>
-            <li>
-              <a href="/graph">【02】グラフ</a>
-            </li>
-            <li>
-              <a href="/db">【03】データベース</a>
-            </li>
-            <li>
-              <a href="/ui_table">【04】テーブルサンプル</a>
-            </li>
-            <li>
-              <a href="/drawers">【05】テストサンプル</a>
-            </li>
-            <li>
-              <a href="/appbar">【05】appbar</a>
-            </li>
-          </ul>
-        </div>
-        {ClippedDrawer}
-      </MuiThemeProvider>
-    )
-  }
-}
+export default withStyles(styles)(ClippedDrawer)
