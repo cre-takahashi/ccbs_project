@@ -101,7 +101,7 @@ export default class SampleForm extends Component {
               <a href="/menu">【01】メインメニュー</a>
             </li>
             <li>
-              <a href="/">【02】選挙管理</a>
+              <a href="/senkyo_kanri">【02】選挙管理</a>
             </li>
             <li>
               <a href="/">【03】選挙登録</a>

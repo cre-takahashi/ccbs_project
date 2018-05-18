@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import AppBar from 'material-ui/AppBar'
@@ -162,27 +162,10 @@ const images2 = [
   }
 ]
 
-function ButtonAppBar(props) {
+function SenkyoKanriForm(props) {
   const { classes } = props
   return (
     <div className={classes.root}>
-      <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="Menu"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="title" color="inherit" className={classes.flex}>
-            Most Valuable Player Vote System
-          </Typography>
-          <Button variant="raised" color="inherit" color="secondary" href="../">
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
       <Drawer
         variant="permanent"
         classes={{
@@ -195,15 +178,15 @@ function ButtonAppBar(props) {
         <Divider />
         <List>{kojiListItems}</List>
       </Drawer>
-      <main>
-        <div className={classes.toolbar} />
+      <main className={classes.content}>
+        <div>ここに部品を組み込むこと</div>
       </main>
     </div>
   )
 }
 
-ButtonAppBar.propTypes = {
+SenkyoKanriForm.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(ButtonAppBar)
+export default withStyles(styles)(SenkyoKanriForm)
