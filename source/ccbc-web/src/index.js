@@ -5,24 +5,26 @@ import { BrowserRouter, Route, Link } from 'react-router-dom'
 import HeaderForm from './view/header'
 import FooterForm from './view/footer'
 import LoginForm from './view/login'
-import MenuForm from './view/menu'
+import SampleForm from './view/sample'
 import RadarChartForm from './view/radar'
 import GraphForm from './view/graph'
 import DbForm from './view/db'
-import withStyles from './view/drawers'
-import aaaa from './view/appbar'
+import MenuForm from './view/menu'
 
 ReactDOM.render(
   <BrowserRouter>
     <div>
-      <HeaderForm />
       <Route exact path="/" component={LoginForm} />
-      <Route path="/menu" component={MenuForm} />
+      <Route path="/sample" component={HeaderForm} />
+      <Route path="/sample" component={SampleForm} />
+      <Route path="/radar" component={HeaderForm} />
       <Route path="/radar" component={RadarChartForm} />
+      <Route path="/graph" component={HeaderForm} />
       <Route path="/graph" component={GraphForm} />
+      <Route path="/db" component={HeaderForm} />
       <Route path="/db" component={DbForm} />
-      <Route path="/drawers" component={withStyles} />
-      <Route path="/appbar" component={aaaa} />
+      <Route path="/menu" component={HeaderForm} />
+      <Route path="/menu" component={MenuForm} />
       <FooterForm />
     </div>
   </BrowserRouter>,
