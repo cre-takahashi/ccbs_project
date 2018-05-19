@@ -12,6 +12,48 @@ import ReportIcon from '@material-ui/icons/Report'
 import Avatar from '@material-ui/core/Avatar'
 import { Link } from 'react-router-dom'
 
+export const images = [
+  {
+    url: '/images/shain_kanri.png',
+    title: '社員管理',
+    width: '33%',
+    path: '/'
+  },
+  {
+    url: '/images/senkyo_kanri.png',
+    title: '選挙管理',
+    width: '34%',
+    path: '/'
+  },
+  {
+    url: '/images/coin_shokai.png',
+    title: 'コイン照会',
+    width: '33%',
+    path: '/'
+  }
+]
+
+export const images2 = [
+  {
+    url: '/images/senkyo.png',
+    title: '投票',
+    width: '33%',
+    path: '/'
+  },
+  {
+    url: '/images/tohyo_kekka.png',
+    title: '投票結果',
+    width: '34%',
+    path: '/'
+  },
+  {
+    url: '/images/zoyo.png',
+    title: 'コイン贈与',
+    width: '33%',
+    path: '/'
+  }
+]
+
 export const kanriListItems = (
   <div>
     <ListItem button component={Link} to="/">
