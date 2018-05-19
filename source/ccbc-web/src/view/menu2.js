@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
+import MenuIcon from '@material-ui/core/Menu'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import Divider from '@material-ui/core/Divider'
@@ -162,36 +162,102 @@ const images2 = [
   }
 ]
 
-function ButtonAppBar(props) {
+function MenuForm(props) {
   const { classes } = props
   return (
     <div className={classes.root}>
-      <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="Menu"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="title" color="inherit" className={classes.flex}>
-            Most Valuable Player Vote System
-          </Typography>
-          <Button variant="raised" color="inherit" color="secondary" href="../">
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <main>
-        <div className={classes.toolbar} />
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper
+        }}
+      >
+        <List>{kanriListItems}</List>
+        <Divider />
+        <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kojiListItems}</List>
+      </Drawer>
+      <main className={classes.content}>
+        <Typography noWrap>
+          <div className={classes.root}>
+            {images.map(image => (
+              <ButtonBase
+                focusRipple
+                key={image.title}
+                className={classes.image}
+                focusVisibleClassName={classes.focusVisible}
+                style={{
+                  width: image.width
+                }}
+                component={Link}
+                to={image.path}
+              >
+                <span
+                  className={classes.imageSrc}
+                  style={{
+                    backgroundImage: `url(${image.url})`
+                  }}
+                />
+                <span className={classes.imageBackdrop} />
+                <span className={classes.imageButton}>
+                  <Typography
+                    component="span"
+                    variant="subheading"
+                    color="inherit"
+                    className={classes.imageTitle}
+                  >
+                    {image.title}
+                    <span className={classes.imageMarked} />
+                  </Typography>
+                </span>
+              </ButtonBase>
+            ))}
+          </div>
+        </Typography>
+        <Typography noWrap>
+          <div className={classes.root}>
+            {images2.map(image => (
+              <ButtonBase
+                focusRipple
+                key={image.title}
+                className={classes.image}
+                focusVisibleClassName={classes.focusVisible}
+                style={{
+                  width: image.width
+                }}
+                component={Link}
+                to={image.path}
+              >
+                <span
+                  className={classes.imageSrc}
+                  style={{
+                    backgroundImage: `url(${image.url})`
+                  }}
+                />
+                <span className={classes.imageBackdrop} />
+                <span className={classes.imageButton}>
+                  <Typography
+                    component="span"
+                    variant="subheading"
+                    color="inherit"
+                    className={classes.imageTitle}
+                  >
+                    {image.title}
+                    <span className={classes.imageMarked} />
+                  </Typography>
+                </span>
+              </ButtonBase>
+            ))}
+          </div>
+        </Typography>
       </main>
     </div>
   )
 }
 
-ButtonAppBar.propTypes = {
+MenuForm.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(ButtonAppBar)
+export default withStyles(styles)(MenuForm)

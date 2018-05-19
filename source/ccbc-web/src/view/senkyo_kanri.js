@@ -324,78 +324,7 @@ class PersistentDrawer extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <Typography noWrap>
-              <div className={classes.root}>
-                {images.map(image => (
-                  <ButtonBase
-                    focusRipple
-                    key={image.title}
-                    className={classes.image}
-                    focusVisibleClassName={classes.focusVisible}
-                    style={{
-                      width: image.width
-                    }}
-                    component={Link}
-                    to={image.path}
-                  >
-                    <span
-                      className={classes.imageSrc}
-                      style={{
-                        backgroundImage: `url(${image.url})`
-                      }}
-                    />
-                    <span className={classes.imageBackdrop} />
-                    <span className={classes.imageButton}>
-                      <Typography
-                        component="span"
-                        variant="subheading"
-                        color="inherit"
-                        className={classes.imageTitle}
-                      >
-                        {image.title}
-                        <span className={classes.imageMarked} />
-                      </Typography>
-                    </span>
-                  </ButtonBase>
-                ))}
-              </div>
-            </Typography>
-            <Typography noWrap>
-              <div className={classes.root}>
-                {images2.map(image => (
-                  <ButtonBase
-                    focusRipple
-                    key={image.title}
-                    className={classes.image}
-                    focusVisibleClassName={classes.focusVisible}
-                    style={{
-                      width: image.width
-                    }}
-                    component={Link}
-                    to={image.path}
-                  >
-                    <span
-                      className={classes.imageSrc}
-                      style={{
-                        backgroundImage: `url(${image.url})`
-                      }}
-                    />
-                    <span className={classes.imageBackdrop} />
-                    <span className={classes.imageButton}>
-                      <Typography
-                        component="span"
-                        variant="subheading"
-                        color="inherit"
-                        className={classes.imageTitle}
-                      >
-                        {image.title}
-                        <span className={classes.imageMarked} />
-                      </Typography>
-                    </span>
-                  </ButtonBase>
-                ))}
-              </div>
-            </Typography>
+            ここに実装すること！
           </main>
           {after}
         </div>

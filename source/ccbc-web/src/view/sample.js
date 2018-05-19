@@ -36,6 +36,16 @@ const styles = theme => ({
     display: 'flex',
     width: '100%'
   },
+  buttonFrame: {
+    position: 'static',
+    marginLeft: 12,
+    marginRight: 20
+  },
+  buttonFrame2: {
+    position: 'static',
+    marginLeft: 4,
+    marginRight: -4
+  },
   appBar: {
     position: 'absolute',
     transition: theme.transitions.create(['margin', 'width'], {
@@ -117,12 +127,6 @@ class PersistentDrawer extends React.Component {
     this.setState({ open: false })
   }
 
-  handleChangeAnchor = event => {
-    this.setState({
-      anchor: event.target.value
-    })
-  }
-
   render() {
     const { classes, theme } = this.props
     const { anchor, open } = this.state
@@ -179,16 +183,22 @@ class PersistentDrawer extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="title" color="inherit" noWrap>
-                Persistent drawer
-              </Typography>
+              <div className={classes.appFrame}>
+                <Typography variant="title" color="inherit" noWrap>
+                  Most Valuable Player Vote System
+                </Typography>
+              </div>
               <Button
                 variant="raised"
                 color="inherit"
                 color="secondary"
                 href="../"
+                className={classNames(
+                  !open && classes.buttonFrame,
+                  open && classes.buttonFrame2
+                )}
               >
-                Logout
+                LOGOUT
               </Button>
             </Toolbar>
           </AppBar>
@@ -227,10 +237,10 @@ class PersistentDrawer extends React.Component {
                     <a href="/senkyo_kanri">【02】選挙管理</a>
                   </li>
                   <li>
-                    <a href="/">【03】選挙登録</a>
+                    <a href="/senkyo_toroku">【03】選挙登録</a>
                   </li>
                   <li>
-                    <a href="/">【04】投票登録</a>
+                    <a href="/tohyo_toroku">【04】投票登録</a>
                   </li>
                 </ul>
                 <h3>画面モックアップサンプル（イテレーション２）</h3>
