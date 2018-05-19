@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import request from 'superagent'
 import { Redirect } from 'react-router-dom'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
 export default class DbForm extends Component {
   constructor(props) {
     super(props)
@@ -40,10 +38,6 @@ export default class DbForm extends Component {
       </div>
     ))
 
-    return (
-      <MuiThemeProvider>
-        <div>{resultList}</div>
-      </MuiThemeProvider>
-    )
+    return <div>{resultList}</div>
   }
 }

@@ -10,14 +10,12 @@ import RadarChartForm from './view/radar'
 import GraphForm from './view/graph'
 import DbForm from './view/db'
 import MenuForm from './view/menu'
-import SenkyoKanri from './view/senkyo_kanri'
 
 ReactDOM.render(
   <BrowserRouter>
     <div>
       <Route exact path="/" component={LoginForm} />
 
-      <Route path="/sample" component={HeaderForm} />
       <Route path="/sample" component={SampleForm} />
 
       <Route path="/radar" component={HeaderForm} />
@@ -31,9 +29,6 @@ ReactDOM.render(
 
       <Route path="/menu" component={HeaderForm} />
       <Route path="/menu" component={MenuForm} />
-
-      <Route path="/senkyo_kanri" component={HeaderForm} />
-      <Route path="/senkyo_kanri" component={SenkyoKanri} />
 
       <FooterForm />
     </div>

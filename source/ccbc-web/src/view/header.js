@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui/styles'
-import AppBar from 'material-ui/AppBar'
-import Toolbar from 'material-ui/Toolbar'
-import Typography from 'material-ui/Typography'
-import Button from 'material-ui/Button'
-import IconButton from 'material-ui/IconButton'
-import MenuIcon from 'material-ui-icons/Menu'
-import Drawer from 'material-ui/Drawer'
-import List from 'material-ui/List'
-import Divider from 'material-ui/Divider'
+import { withStyles } from '@material-ui/core/styles'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import MenuIcon from '@material-ui/icons/Menu'
+import Drawer from '@material-ui/core/Drawer'
+import List from '@material-ui/core/List'
+import Divider from '@material-ui/core/Divider'
 import {
   mailFolderListItems,
   otherMailFolderListItems,
@@ -18,7 +18,7 @@ import {
   kojiListItems
 } from './tileData'
 import { Link } from 'react-router-dom'
-import ButtonBase from 'material-ui/ButtonBase'
+import ButtonBase from '@material-ui/core/ButtonBase'
 
 const drawerWidth = 240
 
@@ -183,6 +183,7 @@ function ButtonAppBar(props) {
           </Button>
         </Toolbar>
       </AppBar>
+
       <Drawer
         variant="permanent"
         classes={{

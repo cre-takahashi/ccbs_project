@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui/styles'
-import MenuItem from 'material-ui/Menu/MenuItem'
-import TextField from 'material-ui/TextField'
-import Button from 'material-ui/Button'
-import FileUpload from 'material-ui-icons/FileUpload'
+import { withStyles } from '@material-ui/core/styles'
+import MenuItem from '@material-ui/core/MenuItem'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import FileUpload from '@material-ui/icons/FileUpload'
 
-import Table from 'material-ui/Table'
-import TableBody from 'material-ui/Table/TableBody'
-import TableCell from 'material-ui/Table/TableCell'
-import TableHead from 'material-ui/Table/TableHead'
-import TableRow from 'material-ui/Table/TableRow'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 
 const styles = theme => ({
   container: {
