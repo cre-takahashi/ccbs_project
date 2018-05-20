@@ -78,46 +78,74 @@ class TextFields extends React.Component {
 
   render() {
     const { classes } = this.props
-
     return (
       <form className={classes.container} noValidate autoComplete="off">
-        <div style={{ margin: '0 auto' }}>
-          <Table className={classes.table}>
-            <TableBody>
-              <TableRow>
-                <TextField
-                  id="id"
-                  label="ID"
-                  className={classes.textField}
-                  onChange={this.handleChange('id')}
-                  fullWidth
-                  margin="normal"
-                />
-              </TableRow>
-              <TableRow>
-                <TextField
-                  id="password-input"
-                  label="Password"
-                  className={classes.textField}
-                  type="password"
-                  autoComplete="current-password"
-                  fullWidth
-                  margin="normal"
-                />
-              </TableRow>
-              <TableRow>
-                <Button
-                  className={classes.button}
-                  variant="raised"
-                  color="default"
-                  href="/sample"
-                >
-                  login
-                  <FileUpload className={classes.rightIcon} />
-                </Button>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <div
+          style={{
+            width: '100vw',
+            height: 'auto',
+            minHeight: '100vh',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundImage: 'url(/images/title.jpg)',
+
+            display: '-webkit-box',
+            display: '-ms-flexbox',
+            display: 'flex',
+
+            /* 左右中央寄せ */
+            webkitBoxPack: 'center',
+            msFlexPack: 'center',
+            justifyContent: 'center',
+
+            /* 上下中央寄せ */
+            webkitBoxAlign: 'center',
+            msFlexAlign: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <p
+            style={{
+              background: 'white'
+            }}
+          >
+            <Table className={classes.table}>
+              <TableBody>
+                <TableRow>
+                  <TextField
+                    id="id"
+                    label="ID"
+                    className={classes.textField}
+                    onChange={this.handleChange('id')}
+                    fullWidth
+                    margin="normal"
+                  />
+                </TableRow>
+                <TableRow>
+                  <TextField
+                    id="password-input"
+                    label="Password"
+                    className={classes.textField}
+                    type="password"
+                    autoComplete="current-password"
+                    fullWidth
+                    margin="normal"
+                  />
+                </TableRow>
+                <TableRow>
+                  <Button
+                    className={classes.button}
+                    variant="raised"
+                    color="default"
+                    href="/sample"
+                  >
+                    login
+                    <FileUpload className={classes.rightIcon} />
+                  </Button>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </p>
         </div>
       </form>
     )
