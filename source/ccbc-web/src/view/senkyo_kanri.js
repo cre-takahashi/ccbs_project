@@ -24,6 +24,11 @@ import {
   ippanListItems,
   kojiListItems
 } from './tileData'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import Avatar from '@material-ui/core/Avatar'
+import WorkIcon from '@material-ui/icons/Work'
 
 const drawerWidth = 240
 
@@ -324,7 +329,26 @@ class PersistentDrawer extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            ここに実装すること！
+            <div className={classes.root}>
+              <List>
+                <ListItem>
+                  <Avatar>
+                    <WorkIcon />
+                  </Avatar>
+                  <ListItemText
+                    primary="【現在投票中の選挙】"
+                    secondary="平成３０年度９月部会"
+                  />
+                </ListItem>
+              </List>
+              <Button
+                variant="raised"
+                color="primary"
+                className={classes.button}
+              >
+                新規登録
+              </Button>
+            </div>
           </main>
           {after}
         </div>
