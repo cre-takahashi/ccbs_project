@@ -24,6 +24,16 @@ import {
   ippanListItems,
   kojiListItems
 } from './tileData'
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+
+import Stepper from '@material-ui/core/Stepper'
+import Step from '@material-ui/core/Step'
+import StepButton from '@material-ui/core/StepButton'
+import Avatar from '@material-ui/core/Avatar'
+import Save from '@material-ui/icons/Save'
 
 const drawerWidth = 240
 
@@ -178,55 +188,174 @@ const styles = theme => ({
     bottom: -2,
     left: 'calc(50% - 9px)',
     transition: theme.transitions.create('opacity')
+  },
+  card2: {
+    display: 'flex'
+  },
+  details2: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  details3: {
+    display: 'table-cell',
+    verticalAlign: 'middle'
+  },
+  content2: {
+    flex: '1 0 auto'
+  },
+  cover2: {
+    width: 151,
+    height: 151
+  },
+  controls2: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingLeft: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit
+  },
+  completed: {
+    display: 'inline-block'
+  },
+  instructions: {
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit
+  },
+  stepSize: {
+    width: 20,
+    height: 10,
+    textAlign: 'left',
+    verticalAlign: 'top'
+  },
+  stepSize2: {
+    width: 15,
+    height: 5,
+    textAlign: 'left',
+    verticalAlign: 'top'
+  },
+  tdSize: {
+    textAlign: 'left',
+    verticalAlign: 'bottom',
+    paddingBottom: '7px'
+  },
+  input: {
+    margin: theme.spacing.unit
+  },
+  avatarRow: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  avatar: {
+    margin: 10
+  },
+  bigAvatar: {
+    width: 200,
+    height: 200
+  },
+  headLine: {
+    width: 350
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 320
   }
 })
 
-const images = [
+const testData = [
   {
-    url: '/images/shain_kanri.png',
-    title: '社員管理',
-    width: '33%',
-    path: '/'
+    url: '/images/yamashita.png',
+    title: '第５回EQトレーニング',
+    name: '剛田　武'
   },
   {
-    url: '/images/senkyo_kanri.png',
-    title: '選挙管理',
-    width: '34%',
-    path: '/'
+    url: '/images/mikami.png',
+    title: '△△△案件プロジェクト報告',
+    name: '札幌　太郎'
   },
   {
-    url: '/images/coin_shokai.png',
-    title: 'コイン照会',
-    width: '33%',
-    path: '/'
+    url: '/images/ishigaki.jpg',
+    title: '◯◯◯案件プロジェクト報告',
+    name: '江別　野郎'
   }
 ]
 
-const images2 = [
-  {
-    url: '/images/senkyo.png',
-    title: '投票',
-    width: '33%',
-    path: '/'
-  },
-  {
-    url: '/images/tohyo_kekka.png',
-    title: '投票結果',
-    width: '34%',
-    path: '/'
-  },
-  {
-    url: '/images/zoyo.png',
-    title: 'コイン贈与',
-    width: '33%',
-    path: '/'
+function getSteps1() {
+  return ['', '', '', '', '', '', '', '', '', '']
+}
+
+function getSteps2() {
+  return ['', '', '', '', '', '', '', '', '', '']
+}
+
+function getSteps3() {
+  return ['', '', '', '', '', '', '', '', '', '']
+}
+
+function getSteps4() {
+  return ['', '', '', '', '', '', '', '', '', '']
+}
+
+function getSteps5() {
+  return ['', '', '', '', '', '', '', '', '', '']
+}
+
+function getStepContent(step) {
+  switch (step) {
+    case 0:
+      return 'Step 1: Select campaign settings...'
+    case 1:
+      return 'Step 2: What is an ad group anyways?'
+    case 2:
+      return 'Step 3: This is the bit I really care about!'
+    default:
+      return 'Unknown step'
   }
-]
+}
 
 class PersistentDrawer extends React.Component {
   state = {
     open: false,
-    anchor: 'left'
+    anchor: 'left',
+    activeStep1: {},
+    activeStep2: {},
+    activeStep3: {},
+    activeStep4: {},
+    activeStep5: {},
+    completed: {},
+    comment: {},
+    haifuCoin: 150,
+    tohyoCoin: 0
+  }
+
+  constructor(props) {
+    super(props)
+    for (var i in testData) {
+      this.state.activeStep1[i] = 0
+      this.state.activeStep2[i] = 0
+      this.state.activeStep3[i] = 0
+      this.state.activeStep4[i] = 0
+      this.state.activeStep5[i] = 0
+    }
+    this.calculateCoin()
+  }
+
+  calculateCoin = () => {
+    var sum = 0
+    for (var i in testData) {
+      sum += this.state.activeStep1[i] + 1
+      sum += this.state.activeStep2[i] + 1
+      sum += this.state.activeStep3[i] + 1
+      sum += this.state.activeStep4[i] + 1
+      sum += this.state.activeStep5[i] + 1
+    }
+    this.setState({ tohyoCoin: sum })
+    this.state.tohyoCoin = sum
+  }
+
+  handleChange = (name, cnt) => event => {
+    this.setState({
+      [name[cnt]]: event.target.value
+    })
   }
 
   handleDrawerOpen = () => {
@@ -235,6 +364,46 @@ class PersistentDrawer extends React.Component {
 
   handleDrawerClose = () => {
     this.setState({ open: false })
+  }
+
+  handleStep1 = (step1, cnt) => () => {
+    // const newArray = Object.assign([], this.state.activeStep1)
+    // newArray[cnt] = step1
+    // this.setState({ activeStep1: newArray })
+    this.state.activeStep1[cnt] = step1
+    this.calculateCoin()
+  }
+
+  handleStep2 = (step2, cnt) => () => {
+    // const newArray = Object.assign([], this.state.activeStep2)
+    // newArray[cnt] = step2
+    // this.setState({ activeStep2: newArray })
+    this.state.activeStep2[cnt] = step2
+    this.calculateCoin()
+  }
+
+  handleStep3 = (step3, cnt) => () => {
+    // const newArray = Object.assign([], this.state.activeStep3)
+    // newArray[cnt] = step3
+    // this.setState({ activeStep3: newArray })
+    this.state.activeStep3[cnt] = step3
+    this.calculateCoin()
+  }
+
+  handleStep4 = (step4, cnt) => () => {
+    // const newArray = Object.assign([], this.state.activeStep4)
+    // newArray[cnt] = step4
+    // this.setState({ activeStep4: newArray })
+    this.state.activeStep4[cnt] = step4
+    this.calculateCoin()
+  }
+
+  handleStep5 = (step5, cnt) => () => {
+    // const newArray = Object.assign([], this.state.activeStep5)
+    // newArray[cnt] = step5
+    // this.setState({ activeStep5: newArray })
+    this.state.activeStep5[cnt] = step5
+    this.calculateCoin()
   }
 
   render() {
@@ -274,6 +443,21 @@ class PersistentDrawer extends React.Component {
     } else {
       after = drawer
     }
+
+    const steps1 = getSteps1()
+    const steps2 = getSteps2()
+    const steps3 = getSteps3()
+    const steps4 = getSteps4()
+    const steps5 = getSteps5()
+    const {
+      activeStep1,
+      activeStep2,
+      activeStep3,
+      activeStep4,
+      activeStep5
+    } = this.state
+
+    const MyLink = props => <Link to="/sample" {...props} />
 
     return (
       <div className={classes.root}>
@@ -324,7 +508,206 @@ class PersistentDrawer extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            ここに実装すること！
+            <div>
+              <Card className={classes.card}>
+                <CardMedia
+                  className={classes.media}
+                  image="/images/coin_shokai.png"
+                  title="Contemplative Reptile"
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="headline" component="h2">
+                    平成３０年度９月部会
+                  </Typography>
+                  <Typography component="p">
+                    発表者に対して評価とコメントをつけて下さい。（配布しきれなかったコインは自動で回収されます）
+                  </Typography>
+                  <Typography component="p">
+                    配布コイン数：{this.state.haifuCoin}
+                  </Typography>
+                  <Typography component="p">
+                    投票コイン数：{this.state.tohyoCoin}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </div>
+            {testData.map((data, i) => (
+              <div>
+                <Card className={classes.card2}>
+                  <div className={classes.details2}>
+                    <div className={classes.avatarRow}>
+                      <Avatar
+                        alt="Adelle Charles"
+                        src={data.url}
+                        className={classNames(
+                          classes.avatar,
+                          classes.bigAvatar
+                        )}
+                      />
+                    </div>
+                    <CardContent className={classes.content2}>
+                      <Typography
+                        variant="headline"
+                        className={classes.headLine}
+                      >
+                        {data.title}
+                      </Typography>
+                      <Typography variant="subheading" color="textSecondary">
+                        {data.name}
+                      </Typography>
+                    </CardContent>
+                  </div>
+                  <table>
+                    <tr>
+                      <td className={classes.tdSize}>資料作成力</td>
+                      <td>
+                        <Stepper
+                          nonLinear
+                          activeStep={activeStep1[i]}
+                          className={classes.stepSize2}
+                        >
+                          {steps1.map((label, index) => {
+                            return (
+                              <Step key={label} className={classes.stepSize2}>
+                                <StepButton
+                                  onClick={this.handleStep1(index, i)}
+                                  completed={this.state.completed[index]}
+                                  className={classes.stepSize2}
+                                >
+                                  {label}
+                                </StepButton>
+                              </Step>
+                            )
+                          })}
+                        </Stepper>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className={classes.tdSize}>発表力（説明力）</td>
+                      <td>
+                        <Stepper
+                          nonLinear
+                          activeStep={activeStep2[i]}
+                          className={classes.stepSize2}
+                        >
+                          {steps2.map((label, index) => {
+                            return (
+                              <Step key={label} className={classes.stepSize2}>
+                                <StepButton
+                                  onClick={this.handleStep2(index, i)}
+                                  completed={this.state.completed[index]}
+                                  className={classes.stepSize2}
+                                >
+                                  {label}
+                                </StepButton>
+                              </Step>
+                            )
+                          })}
+                        </Stepper>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className={classes.tdSize}>表現力</td>
+                      <td>
+                        <Stepper
+                          nonLinear
+                          activeStep={activeStep3[i]}
+                          className={classes.stepSize2}
+                        >
+                          {steps3.map((label, index) => {
+                            return (
+                              <Step key={label} className={classes.stepSize2}>
+                                <StepButton
+                                  onClick={this.handleStep3(index, i)}
+                                  completed={this.state.completed[index]}
+                                  className={classes.stepSize2}
+                                >
+                                  {label}
+                                </StepButton>
+                              </Step>
+                            )
+                          })}
+                        </Stepper>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className={classes.tdSize}>説得力</td>
+                      <td>
+                        <Stepper
+                          nonLinear
+                          activeStep={activeStep4[i]}
+                          className={classes.stepSize2}
+                        >
+                          {steps4.map((label, index) => {
+                            return (
+                              <Step key={label} className={classes.stepSize2}>
+                                <StepButton
+                                  onClick={this.handleStep4(index, i)}
+                                  completed={this.state.completed[index]}
+                                  className={classes.stepSize2}
+                                >
+                                  {label}
+                                </StepButton>
+                              </Step>
+                            )
+                          })}
+                        </Stepper>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className={classes.tdSize}>限界突破</td>
+                      <td>
+                        <Stepper
+                          nonLinear
+                          activeStep={activeStep5[i]}
+                          className={classes.stepSize2}
+                        >
+                          {steps5.map((label, index) => {
+                            return (
+                              <Step key={label} className={classes.stepSize2}>
+                                <StepButton
+                                  onClick={this.handleStep5(index, i)}
+                                  completed={this.state.completed[index]}
+                                  className={classes.stepSize2}
+                                >
+                                  {label}
+                                </StepButton>
+                              </Step>
+                            )
+                          })}
+                        </Stepper>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className={classes.tdSize} />
+                      <td>
+                        <TextField
+                          id="comment"
+                          label="コメント"
+                          multiline
+                          rowsMax="3"
+                          value={this.state.comment[i]}
+                          onChange={this.handleChange('comment', i)}
+                          className={classes.textField}
+                          margin="normal"
+                        />
+                      </td>
+                    </tr>
+                  </table>
+                </Card>
+              </div>
+            ))}
+            <Button
+              className={classes.button}
+              variant="raised"
+              size="large"
+              component={MyLink}
+            >
+              <Save
+                className={classNames(classes.leftIcon, classes.iconSmall)}
+              />
+              SAVE
+            </Button>
           </main>
           {after}
         </div>
