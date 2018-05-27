@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -11,6 +12,12 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import Typography from '@material-ui/core/Typography'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import AccountCircle from '@material-ui/icons/AccountCircle'
+import VpnKey from '@material-ui/icons/VpnKey'
+
+import SampleForm from './sample'
 
 const styles = theme => ({
   container: {
@@ -20,14 +27,14 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
+    width: 300
   },
   menu: {
     width: 200
   },
   button: {
     margin: theme.spacing.unit,
-    marginLeft: 50
+    marginLeft: 100
   },
   leftIcon: {
     marginRight: theme.spacing.unit
@@ -63,11 +70,16 @@ const currencies = [
 ]
 
 class TextFields extends React.Component {
-  state = {
-    name: 'Cat in the Hat',
-    age: '',
-    multiline: 'Controlled',
-    currency: 'EUR'
+  constructor(props) {
+    super(props)
+    this.state = {
+      name: 'Cat in the Hat',
+      age: '',
+      multiline: 'Controlled',
+      currency: 'JPN',
+      id: '',
+      passwordInput: ''
+    }
   }
 
   handleChange = name => event => {
@@ -78,6 +90,8 @@ class TextFields extends React.Component {
 
   render() {
     const { classes } = this.props
+    const MyLink = props => <Link to="/sample" {...props} />
+
     return (
       <form className={classes.container} noValidate autoComplete="off">
         <div
@@ -104,48 +118,127 @@ class TextFields extends React.Component {
             alignItems: 'center'
           }}
         >
-          <p
-            style={{
-              background: 'white'
-            }}
-          >
-            <Table className={classes.table}>
-              <TableBody>
-                <TableRow>
+          <table>
+            <tr>
+              <td colspan="3">
+                <Typography
+                  variant="headline"
+                  style={{
+                    color: 'white',
+                    fontSize: 'xx-large',
+                    fontWeight: 'bold'
+                  }}
+                  align="center"
+                >
+                  MVP Vote System
+                </Typography>
+              </td>
+            </tr>
+            <p
+              style={{
+                background: 'white'
+              }}
+            >
+              <tr>
+                <td>
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                </td>
+                <td>
+                  <Typography variant="headline" align="center">
+                    Log In
+                  </Typography>
+                </td>
+                <td>
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                </td>
+              </tr>
+              <tr>
+                <td />
+                <td>
                   <TextField
                     id="id"
                     label="ID"
                     className={classes.textField}
                     onChange={this.handleChange('id')}
                     fullWidth
+                    value={this.state.id}
                     margin="normal"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      )
+                    }}
                   />
-                </TableRow>
-                <TableRow>
+                </td>
+                <td />
+              </tr>
+              <tr>
+                <td />
+                <td>
                   <TextField
-                    id="password-input"
+                    id="passwordInput"
                     label="Password"
                     className={classes.textField}
+                    onChange={this.handleChange('passwordInput')}
                     type="password"
                     autoComplete="current-password"
                     fullWidth
+                    value={this.state.passwordInput}
                     margin="normal"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <VpnKey />
+                        </InputAdornment>
+                      )
+                    }}
                   />
-                </TableRow>
-                <TableRow>
+                </td>
+                <td />
+              </tr>
+              <tr>
+                <td />
+                <td>
                   <Button
-                    className={classes.button}
                     variant="raised"
                     color="default"
-                    href="/sample"
+                    component={MyLink}
+                    fullWidth="true"
                   >
                     login
                     <FileUpload className={classes.rightIcon} />
                   </Button>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </p>
+                </td>
+                <td />
+              </tr>
+              <tr>
+                <td />
+                <td colspan="2">
+                  <br />
+                  <br />
+                  <br />
+                  <Typography component="p" align="right">
+                    ※ID、パスワード紛失時は管理者に連絡すること
+                  </Typography>
+                </td>
+              </tr>
+            </p>
+            <tr>
+              <td colspan="3">
+                <Typography
+                  component="p"
+                  align="right"
+                  style={{
+                    color: 'white'
+                  }}
+                >
+                  Copyright © 2018 Creative Consultant
+                </Typography>
+              </td>
+            </tr>
+          </table>
         </div>
       </form>
     )
