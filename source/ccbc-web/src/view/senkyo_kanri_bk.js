@@ -28,34 +28,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
-import WorkIcon from '@material-ui/icons/AssignmentTurnedIn'
-
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import Menu from '@material-ui/core/Menu'
-
-const CustomTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-    fontSize: 18
-  },
-  body: {
-    fontSize: 18
-  }
-}))(TableCell)
-
-let id = 0
-function createData(name, start, end) {
-  id += 1
-  return { id, name, start, end }
-}
-
-const data = [createData('平成30年度9月部会', '2018/9/15', '2018/9/22')]
+import WorkIcon from '@material-ui/icons/Work'
 
 const drawerWidth = 240
 
@@ -72,11 +45,13 @@ const styles = theme => ({
   },
   buttonFrame: {
     position: 'static',
-    marginRight: 0
+    marginLeft: 12,
+    marginRight: 20
   },
   buttonFrame2: {
     position: 'static',
-    marginRight: -24
+    marginLeft: 4,
+    marginRight: -4
   },
   appBar: {
     position: 'absolute',
@@ -211,11 +186,52 @@ const styles = theme => ({
   }
 })
 
+const images = [
+  {
+    url: '/images/shain_kanri.png',
+    title: '社員管理',
+    width: '33%',
+    path: '/'
+  },
+  {
+    url: '/images/senkyo_kanri.png',
+    title: '選挙管理',
+    width: '34%',
+    path: '/'
+  },
+  {
+    url: '/images/coin_shokai.png',
+    title: 'コイン照会',
+    width: '33%',
+    path: '/'
+  }
+]
+
+const images2 = [
+  {
+    url: '/images/senkyo.png',
+    title: '投票',
+    width: '33%',
+    path: '/'
+  },
+  {
+    url: '/images/tohyo_kekka.png',
+    title: '投票結果',
+    width: '34%',
+    path: '/'
+  },
+  {
+    url: '/images/zoyo.png',
+    title: 'コイン贈与',
+    width: '33%',
+    path: '/'
+  }
+]
+
 class PersistentDrawer extends React.Component {
   state = {
     open: false,
-    anchor: 'left',
-    anchorEl: null
+    anchor: 'left'
   }
 
   handleDrawerOpen = () => {
@@ -226,20 +242,9 @@ class PersistentDrawer extends React.Component {
     this.setState({ open: false })
   }
 
-  handleClick = event => {
-    this.setState({ anchorEl: event.currentTarget })
-  }
-
-  handleClose = () => {
-    this.setState({ anchorEl: null })
-  }
-
   render() {
     const { classes, theme } = this.props
     const { anchor, open } = this.state
-    const { anchorEl } = this.state
-    const menuLink = props => <Link to="/menu" {...props} />
-    const loginLink = props => <Link to="../" {...props} />
 
     const drawer = (
       <Drawer
@@ -298,27 +303,18 @@ class PersistentDrawer extends React.Component {
                   Most Valuable Player Vote System
                 </Typography>
               </div>
-              <IconButton
-                aria-label="More"
-                aria-owns={anchorEl ? 'long-menu' : null}
-                aria-haspopup="true"
-                onClick={this.handleClick}
+              <Button
+                variant="raised"
+                color="inherit"
+                color="secondary"
+                href="../"
                 className={classNames(
                   !open && classes.buttonFrame,
                   open && classes.buttonFrame2
                 )}
               >
-                <Avatar src={'/images/yamashita.png'} />
-              </IconButton>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={this.handleClose}
-              >
-                <MenuItem component={menuLink}>Menu</MenuItem>
-                <MenuItem component={loginLink}>Logout</MenuItem>
-              </Menu>
+                LOGOUT
+              </Button>
             </Toolbar>
           </AppBar>
           {before}
@@ -334,43 +330,24 @@ class PersistentDrawer extends React.Component {
           >
             <div className={classes.drawerHeader} />
             <div className={classes.root}>
-              <span style={{ verticalAlign: 'middle' }}>
-                【現在投票中の選挙】
-              </span>
-              <Paper className={classes.root}>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <CustomTableCell>選挙名</CustomTableCell>
-                      <CustomTableCell>投票開始日</CustomTableCell>
-                      <CustomTableCell>投票終了日</CustomTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.map(n => {
-                      return (
-                        <TableRow className={classes.row} key={n.id}>
-                          <CustomTableCell component="th" scope="row">
-                            {n.name}
-                          </CustomTableCell>
-                          <CustomTableCell>{n.start}</CustomTableCell>
-                          <CustomTableCell>{n.end}</CustomTableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              </Paper>
-              <p>
-                <Button
-                  variant="raised"
-                  color="primary"
-                  size="large"
-                  className={classes.button}
-                >
-                  追加
-                </Button>
-              </p>
+              <List>
+                <ListItem>
+                  <Avatar>
+                    <WorkIcon />
+                  </Avatar>
+                  <ListItemText
+                    primary="【現在投票中の選挙】"
+                    secondary="平成３０年度９月部会"
+                  />
+                </ListItem>
+              </List>
+              <Button
+                variant="raised"
+                color="primary"
+                className={classes.button}
+              >
+                新規登録
+              </Button>
             </div>
           </main>
           {after}

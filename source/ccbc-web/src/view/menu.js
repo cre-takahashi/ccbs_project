@@ -24,6 +24,8 @@ import {
   ippanListItems,
   kojiListItems
 } from './tileData'
+import Menu from '@material-ui/core/Menu'
+import Avatar from '@material-ui/core/Avatar'
 
 const drawerWidth = 240
 
@@ -40,13 +42,11 @@ const styles = theme => ({
   },
   buttonFrame: {
     position: 'static',
-    marginLeft: 12,
-    marginRight: 20
+    marginRight: 0
   },
   buttonFrame2: {
     position: 'static',
-    marginLeft: 4,
-    marginRight: -4
+    marginRight: -24
   },
   appBar: {
     position: 'absolute',
@@ -226,7 +226,8 @@ const images2 = [
 class PersistentDrawer extends React.Component {
   state = {
     open: false,
-    anchor: 'left'
+    anchor: 'left',
+    anchorEl: null
   }
 
   handleDrawerOpen = () => {
@@ -237,9 +238,20 @@ class PersistentDrawer extends React.Component {
     this.setState({ open: false })
   }
 
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+
+  handleClose = () => {
+    this.setState({ anchorEl: null })
+  }
+
   render() {
     const { classes, theme } = this.props
     const { anchor, open } = this.state
+    const { anchorEl } = this.state
+    const menuLink = props => <Link to="/menu" {...props} />
+    const loginLink = props => <Link to="../" {...props} />
 
     const drawer = (
       <Drawer
@@ -298,18 +310,27 @@ class PersistentDrawer extends React.Component {
                   Most Valuable Player Vote System
                 </Typography>
               </div>
-              <Button
-                variant="raised"
-                color="inherit"
-                color="secondary"
-                href="../"
+              <IconButton
+                aria-label="More"
+                aria-owns={anchorEl ? 'long-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleClick}
                 className={classNames(
                   !open && classes.buttonFrame,
                   open && classes.buttonFrame2
                 )}
               >
-                LOGOUT
-              </Button>
+                <Avatar src={'/images/yamashita.png'} />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={this.handleClose}
+              >
+                <MenuItem component={menuLink}>Menu</MenuItem>
+                <MenuItem component={loginLink}>Logout</MenuItem>
+              </Menu>
             </Toolbar>
           </AppBar>
           {before}

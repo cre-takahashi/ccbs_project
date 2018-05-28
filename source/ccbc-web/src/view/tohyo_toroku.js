@@ -34,6 +34,7 @@ import Step from '@material-ui/core/Step'
 import StepButton from '@material-ui/core/StepButton'
 import Avatar from '@material-ui/core/Avatar'
 import Save from '@material-ui/icons/Save'
+import Menu from '@material-ui/core/Menu'
 
 const drawerWidth = 240
 
@@ -50,13 +51,11 @@ const styles = theme => ({
   },
   buttonFrame: {
     position: 'static',
-    marginLeft: 12,
-    marginRight: 20
+    marginRight: 0
   },
   buttonFrame2: {
     position: 'static',
-    marginLeft: 4,
-    marginRight: -4
+    marginRight: -24
   },
   appBar: {
     position: 'absolute',
@@ -324,7 +323,8 @@ class PersistentDrawer extends React.Component {
     completed: {},
     comment: {},
     haifuCoin: 150,
-    tohyoCoin: 0
+    tohyoCoin: 0,
+    anchorEl: null
   }
 
   constructor(props) {
@@ -406,9 +406,20 @@ class PersistentDrawer extends React.Component {
     this.calculateCoin()
   }
 
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+
+  handleClose = () => {
+    this.setState({ anchorEl: null })
+  }
+
   render() {
     const { classes, theme } = this.props
     const { anchor, open } = this.state
+    const { anchorEl } = this.state
+    const menuLink = props => <Link to="/menu" {...props} />
+    const loginLink = props => <Link to="../" {...props} />
 
     const drawer = (
       <Drawer
@@ -482,18 +493,27 @@ class PersistentDrawer extends React.Component {
                   Most Valuable Player Vote System
                 </Typography>
               </div>
-              <Button
-                variant="raised"
-                color="inherit"
-                color="secondary"
-                href="../"
+              <IconButton
+                aria-label="More"
+                aria-owns={anchorEl ? 'long-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleClick}
                 className={classNames(
                   !open && classes.buttonFrame,
                   open && classes.buttonFrame2
                 )}
               >
-                LOGOUT
-              </Button>
+                <Avatar src={'/images/yamashita.png'} />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={this.handleClose}
+              >
+                <MenuItem component={menuLink}>Menu</MenuItem>
+                <MenuItem component={loginLink}>Logout</MenuItem>
+              </Menu>
             </Toolbar>
           </AppBar>
           {before}

@@ -24,6 +24,305 @@ import {
   ippanListItems,
   kojiListItems
 } from './tileData'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
+import Checkbox from '@material-ui/core/Checkbox'
+import Avatar from '@material-ui/core/Avatar'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
+import Input from '@material-ui/core/Input'
+import Save from '@material-ui/icons/Save'
+
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TablePagination from '@material-ui/core/TablePagination'
+import TableRow from '@material-ui/core/TableRow'
+import TableSortLabel from '@material-ui/core/TableSortLabel'
+import Paper from '@material-ui/core/Paper'
+import Tooltip from '@material-ui/core/Tooltip'
+import DeleteIcon from '@material-ui/icons/Delete'
+import FilterListIcon from '@material-ui/icons/FilterList'
+import { lighten } from '@material-ui/core/styles/colorManipulator'
+import Menu from '@material-ui/core/Menu'
+
+let counter = 0
+function createData(name, image) {
+  counter += 1
+  return { id: counter, name, image }
+}
+
+const columnData = [
+  { id: 'name', numeric: false, disablePadding: true, label: '名前' }
+]
+
+class EnhancedTableHead extends React.Component {
+  createSortHandler = property => event => {
+    this.props.onRequestSort(event, property)
+  }
+
+  render() {
+    const {
+      onSelectAllClick,
+      order,
+      orderBy,
+      numSelected,
+      rowCount
+    } = this.props
+
+    return (
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={numSelected === rowCount}
+              onChange={onSelectAllClick}
+            />
+          </TableCell>
+          {columnData.map(column => {
+            return (
+              <TableCell
+                key={column.id}
+                numeric={column.numeric}
+                padding={column.disablePadding ? 'none' : 'default'}
+                sortDirection={orderBy === column.id ? order : false}
+                colSpan={2}
+              >
+                <Tooltip
+                  title="Sort"
+                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+                  enterDelay={300}
+                >
+                  <TableSortLabel
+                    active={orderBy === column.id}
+                    direction={order}
+                    onClick={this.createSortHandler(column.id)}
+                  >
+                    {column.label}
+                  </TableSortLabel>
+                </Tooltip>
+              </TableCell>
+            )
+          }, this)}
+        </TableRow>
+      </TableHead>
+    )
+  }
+}
+
+EnhancedTableHead.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.string.isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired
+}
+
+const toolbarStyles = theme => ({
+  root: {
+    paddingRight: theme.spacing.unit
+  },
+  highlight:
+    theme.palette.type === 'light'
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark
+        },
+  spacer: {
+    flex: '1 1 100%'
+  },
+  actions: {
+    color: theme.palette.text.secondary
+  },
+  title: {
+    flex: '0 0 auto'
+  }
+})
+
+let EnhancedTableToolbar = props => {
+  const { numSelected, classes } = props
+
+  return (
+    <Toolbar
+      className={classNames(classes.root, {
+        [classes.highlight]: numSelected > 0
+      })}
+    >
+      <div className={classes.title}>
+        {numSelected > 0 ? (
+          <Typography color="inherit" variant="subheading">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <Typography variant="title" id="tableTitle">
+            参加者
+          </Typography>
+        )}
+      </div>
+      <div className={classes.spacer} />
+    </Toolbar>
+  )
+}
+
+EnhancedTableToolbar.propTypes = {
+  classes: PropTypes.object.isRequired,
+  numSelected: PropTypes.number.isRequired
+}
+
+EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar)
+
+// 2つ目リスト分
+let counter2 = 0
+function createData2(name, title, image) {
+  counter += 1
+  return { id: counter, name, title, image }
+}
+
+const columnData2 = [
+  {
+    id: 'name',
+    numeric: false,
+    disablePadding: true,
+    label: '名前'
+  },
+  {
+    id: 'title',
+    numeric: false,
+    disablePadding: true,
+    label: '発表タイトル'
+  }
+]
+
+class EnhancedTableHead2 extends React.Component {
+  createSortHandler = property => event => {
+    this.props.onRequestSort(event, property)
+  }
+
+  render() {
+    const {
+      onSelectAllClick,
+      order,
+      orderBy,
+      numSelected,
+      rowCount
+    } = this.props
+
+    return (
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={numSelected === rowCount}
+              onChange={onSelectAllClick}
+            />
+          </TableCell>
+          {columnData2.map(column => {
+            return (
+              <TableCell
+                key={column.id}
+                numeric={column.numeric}
+                padding={column.disablePadding ? 'none' : 'default'}
+                sortDirection={orderBy === column.id ? order : false}
+                colSpan={2}
+              >
+                <Tooltip
+                  title="Sort"
+                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+                  enterDelay={300}
+                >
+                  <TableSortLabel
+                    active={orderBy === column.id}
+                    direction={order}
+                    onClick={this.createSortHandler(column.id)}
+                  >
+                    {column.label}
+                  </TableSortLabel>
+                </Tooltip>
+              </TableCell>
+            )
+          }, this)}
+        </TableRow>
+      </TableHead>
+    )
+  }
+}
+
+EnhancedTableHead2.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.string.isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired
+}
+
+const toolbarStyles2 = theme => ({
+  root: {
+    paddingRight: theme.spacing.unit
+  },
+  highlight:
+    theme.palette.type === 'light'
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark
+        },
+  spacer: {
+    flex: '1 1 100%'
+  },
+  actions: {
+    color: theme.palette.text.secondary
+  },
+  title: {
+    flex: '0 0 auto'
+  }
+})
+
+let EnhancedTableToolbar2 = props => {
+  const { numSelected, classes } = props
+
+  return (
+    <Toolbar
+      className={classNames(classes.root, {
+        [classes.highlight]: numSelected > 0
+      })}
+    >
+      <div className={classes.title}>
+        {numSelected > 0 ? (
+          <Typography color="inherit" variant="subheading">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <Typography variant="title" id="tableTitle">
+            発表者
+          </Typography>
+        )}
+      </div>
+      <div className={classes.spacer} />
+    </Toolbar>
+  )
+}
+
+EnhancedTableToolbar2.propTypes = {
+  classes: PropTypes.object.isRequired,
+  numSelected: PropTypes.number.isRequired
+}
+
+EnhancedTableToolbar2 = withStyles(toolbarStyles2)(EnhancedTableToolbar2)
+// ↑ここまで
 
 const drawerWidth = 240
 
@@ -40,13 +339,11 @@ const styles = theme => ({
   },
   buttonFrame: {
     position: 'static',
-    marginLeft: 12,
-    marginRight: 20
+    marginRight: 0
   },
   buttonFrame2: {
     position: 'static',
-    marginLeft: 4,
-    marginRight: -4
+    marginRight: -24
   },
   appBar: {
     position: 'absolute',
@@ -178,6 +475,45 @@ const styles = theme => ({
     bottom: -2,
     left: 'calc(50% - 9px)',
     transition: theme.transitions.create('opacity')
+  },
+  root2: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 800
+  },
+  textField2: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 400
+  },
+  button: {
+    margin: theme.spacing.unit
+  },
+  input: {
+    display: 'none'
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 300,
+    maxWidth: 500
+  },
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  chip: {
+    margin: theme.spacing.unit / 4
+  },
+  table: {
+    minWidth: 1020
+  },
+  tableWrapper: {
+    overflowX: 'auto'
   }
 })
 
@@ -223,10 +559,215 @@ const images2 = [
   }
 ]
 
+const member = [
+  {
+    value: 1,
+    name: '山田　太郎'
+  },
+  {
+    value: 2,
+    name: '田中　達也'
+  },
+  {
+    value: 3,
+    name: '中田　花子'
+  },
+  {
+    value: 4,
+    name: '中村　一郎'
+  }
+]
+
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+}
+
+const names = ['山田　太郎', '田中　達也', '中田　花子', '中村　一郎']
+
 class PersistentDrawer extends React.Component {
-  state = {
-    open: false,
-    anchor: 'left'
+  constructor(props, context) {
+    super(props, context)
+
+    this.state = {
+      order: 'asc',
+      orderBy: 'name',
+      selected: [],
+      data: [
+        createData('札幌　太郎', '/images/ishigaki.jpg'),
+        createData('札幌　次郎', '/images/mikami.png'),
+        createData('札幌　三郎', '/images/yamashita.png'),
+        createData('中央　花子', '/images/ishigaki.jpg'),
+        createData('中央　太郎', '/images/yamashita.png'),
+        createData('山田　太郎', '/images/sample.jpg'),
+        createData('山田　次郎', '/images/yamashita.png'),
+        createData('山田　花子', '/images/sample.jpg'),
+        createData('管理者　太郎', '/images/ishigaki.jpg'),
+        createData('管理者　花子', '/images/sample.jpg'),
+        createData('苫小牧　太郎', '/images/mikami.png')
+      ].sort((a, b) => (a.name < b.name ? -1 : 1)),
+      page: 0,
+      rowsPerPage: 5,
+      open: false,
+      anchor: 'left',
+      checked: [1],
+
+      order2: 'asc',
+      orderBy2: 'name',
+      selected2: [],
+      data2: [
+        createData2('札幌　太郎', '', '/images/ishigaki.jpg'),
+        createData2('札幌　次郎', '', '/images/mikami.png'),
+        createData2('札幌　三郎', '', '/images/yamashita.png'),
+        createData2('中央　花子', '', '/images/ishigaki.jpg'),
+        createData2('中央　太郎', '', '/images/yamashita.png'),
+        createData2('山田　太郎', '', '/images/sample.jpg'),
+        createData2('山田　次郎', '', '/images/yamashita.png'),
+        createData2('山田　花子', '', '/images/sample.jpg'),
+        createData2('管理者　太郎', '', '/images/ishigaki.jpg'),
+        createData2('管理者　花子', '', '/images/sample.jpg'),
+        createData2('苫小牧　太郎', '', '/images/mikami.png')
+      ].sort((a, b) => (a.name < b.name ? -1 : 1)),
+      page2: 0,
+      rowsPerPage2: 5,
+      open2: false,
+      anchor2: 'left',
+      checked2: [1],
+
+      election: '平成30年10月部会',
+      multiline: 'Controlled',
+      currency: 'EUR',
+      name: [],
+      anchorEl: null
+    }
+  }
+
+  handleRequestSort = (event, property) => {
+    const orderBy = property
+    let order = 'desc'
+
+    if (this.state.orderBy === property && this.state.order === 'desc') {
+      order = 'asc'
+    }
+
+    const data =
+      order === 'desc'
+        ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+        : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1))
+
+    this.setState({ data, order, orderBy })
+  }
+
+  handleSelectAllClick = (event, checked) => {
+    if (checked) {
+      this.setState({ selected: this.state.data.map(n => n.id) })
+      return
+    }
+    this.setState({ selected: [] })
+  }
+
+  handleClick = (event, id) => {
+    const { selected } = this.state
+    const selectedIndex = selected.indexOf(id)
+    let newSelected = []
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id)
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1))
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1))
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      )
+    }
+
+    this.setState({ selected: newSelected })
+  }
+
+  handleChangePage = (event, page) => {
+    this.setState({ page })
+  }
+
+  handleChangeRowsPerPage = event => {
+    this.setState({ rowsPerPage: event.target.value })
+  }
+
+  isSelected = id => this.state.selected.indexOf(id) !== -1
+
+  // 2つめ
+  handleRequestSort2 = (event, property) => {
+    const orderBy2 = property
+    let order2 = 'desc'
+
+    if (this.state.orderBy2 === property && this.state.order2 === 'desc') {
+      order2 = 'asc'
+    }
+
+    const data2 =
+      order2 === 'desc'
+        ? this.state.data2.sort((a, b) => (b[orderBy2] < a[orderBy2] ? -1 : 1))
+        : this.state.data2.sort((a, b) => (a[orderBy2] < b[orderBy2] ? -1 : 1))
+
+    this.setState({ data2, order2, orderBy2 })
+  }
+
+  handleSelectAllClick2 = (event, checked) => {
+    if (checked) {
+      this.setState({ selected2: this.state.data2.map(n => n.id) })
+      return
+    }
+    this.setState({ selected2: [] })
+  }
+
+  handleClick2 = (event, id) => {
+    const { selected2 } = this.state
+    const selectedIndex2 = selected2.indexOf(id)
+    let newSelected2 = []
+
+    if (selectedIndex2 === -1) {
+      newSelected2 = newSelected2.concat(selected2, id)
+    } else if (selectedIndex2 === 0) {
+      newSelected2 = newSelected2.concat(selected2.slice(1))
+    } else if (selectedIndex2 === selected2.length - 1) {
+      newSelected2 = newSelected2.concat(selected2.slice(0, -1))
+    } else if (selectedIndex2 > 0) {
+      newSelected2 = newSelected2.concat(
+        selected2.slice(0, selectedIndex2),
+        selected2.slice(selectedIndex2 + 1)
+      )
+    }
+
+    this.setState({ selected2: newSelected2 })
+  }
+
+  handleChangePage2 = (event, page2) => {
+    this.setState({ page2 })
+  }
+
+  handleChangeRowsPerPage2 = event => {
+    this.setState({ rowsPerPage2: event.target.value })
+  }
+
+  isSelected2 = id => this.state.selected2.indexOf(id) !== -1
+  // ↑ここまで
+
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value })
+  }
+
+  handleChange = election => event => {
+    this.setState({
+      [election]: event.target.value
+    })
   }
 
   handleDrawerOpen = () => {
@@ -237,9 +778,50 @@ class PersistentDrawer extends React.Component {
     this.setState({ open: false })
   }
 
+  handleToggle = value => () => {
+    const { checked } = this.state
+    const currentIndex = checked.indexOf(value)
+    const newChecked = [...checked]
+
+    if (currentIndex === -1) {
+      newChecked.push(value)
+    } else {
+      newChecked.splice(currentIndex, 1)
+    }
+
+    this.setState({
+      checked: newChecked
+    })
+  }
+
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+
+  handleClose = () => {
+    this.setState({ anchorEl: null })
+  }
+
   render() {
     const { classes, theme } = this.props
     const { anchor, open } = this.state
+    const { data, order, orderBy, selected, rowsPerPage, page } = this.state
+    const emptyRows =
+      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
+    const { anchorEl } = this.state
+    const menuLink = props => <Link to="/menu" {...props} />
+    const loginLink = props => <Link to="../" {...props} />
+
+    const {
+      data2,
+      order2,
+      orderBy2,
+      selected2,
+      rowsPerPage2,
+      page2
+    } = this.state
+    const emptyRows2 =
+      rowsPerPage2 - Math.min(rowsPerPage2, data.length2 - page2 * rowsPerPage2)
 
     const drawer = (
       <Drawer
@@ -298,18 +880,27 @@ class PersistentDrawer extends React.Component {
                   Most Valuable Player Vote System
                 </Typography>
               </div>
-              <Button
-                variant="raised"
-                color="inherit"
-                color="secondary"
-                href="../"
+              <IconButton
+                aria-label="More"
+                aria-owns={anchorEl ? 'long-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleClick}
                 className={classNames(
                   !open && classes.buttonFrame,
                   open && classes.buttonFrame2
                 )}
               >
-                LOGOUT
-              </Button>
+                <Avatar src={'/images/yamashita.png'} />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={this.handleClose}
+              >
+                <MenuItem component={menuLink}>Menu</MenuItem>
+                <MenuItem component={loginLink}>Logout</MenuItem>
+              </Menu>
             </Toolbar>
           </AppBar>
           {before}
@@ -324,7 +915,250 @@ class PersistentDrawer extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            ここに実装すること！
+
+            <form className={classes.container} noValidate autoComplete="off">
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>選挙情報</strong>
+              </h2>
+              <Paper className={classes.root}>
+                <TextField
+                  id="
+                    election"
+                  label="選挙名"
+                  placeholder="選挙名を入力"
+                  className={classes.textField}
+                  value={this.state.election}
+                  onChange={this.handleChange('election')}
+                  margin="normal"
+                />
+                <br />
+                <TextField
+                  id="textarea"
+                  label="開始日"
+                  placeholder="投票開始日を入力（yyyy/mm/dd）"
+                  multiline
+                  className={classes.textField2}
+                  margin="normal"
+                />
+                <TextField
+                  id="textarea"
+                  label="終了日"
+                  placeholder="投票終了日を入力（yyyy/mm/dd）"
+                  multiline
+                  className={classes.textField2}
+                  margin="normal"
+                />
+                <br />
+                <TextField
+                  id="textarea"
+                  label="管理局所持コイン数"
+                  value="98500"
+                  placeholder=""
+                  multiline
+                  className={classes.textField2}
+                  margin="normal"
+                  disabled
+                />
+                <TextField
+                  id="textarea"
+                  label="配布コイン数"
+                  placeholder=""
+                  multiline
+                  className={classes.textField2}
+                  margin="normal"
+                />
+              </Paper>
+              <br />
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>参加者選択</strong>
+              </h2>
+              <Paper className={classes.root}>
+                <EnhancedTableToolbar numSelected={selected.length} />
+                <div className={classes.tableWrapper}>
+                  <Table className={classes.table} aria-labelledby="tableTitle">
+                    <EnhancedTableHead
+                      numSelected={selected.length}
+                      order={order}
+                      orderBy={orderBy}
+                      onSelectAllClick={this.handleSelectAllClick}
+                      onRequestSort={this.handleRequestSort}
+                      rowCount={data.length}
+                    />
+                    <TableBody>
+                      {data
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map(n => {
+                          const isSelected = this.isSelected(n.id)
+                          return (
+                            <TableRow
+                              hover
+                              onClick={event => this.handleClick(event, n.id)}
+                              role="checkbox"
+                              aria-checked={isSelected}
+                              tabIndex={-1}
+                              key={n.id}
+                              selected={isSelected}
+                            >
+                              <TableCell
+                                padding="checkbox"
+                                style={{ width: '5%' }}
+                              >
+                                <Checkbox checked={isSelected} />
+                              </TableCell>
+                              <TableCell padding="none" style={{ width: '5%' }}>
+                                <Avatar src={n.image} />
+                              </TableCell>
+                              <TableCell
+                                padding="none"
+                                style={{ width: '90%' }}
+                              >
+                                {n.name}
+                              </TableCell>
+                            </TableRow>
+                          )
+                        })}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 49 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+                <TablePagination
+                  component="div"
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  backIconButtonProps={{
+                    'aria-label': 'Previous Page'
+                  }}
+                  nextIconButtonProps={{
+                    'aria-label': 'Next Page'
+                  }}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
+              </Paper>
+              <br />
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>発表者選択</strong>
+              </h2>
+              <Paper className={classes.root}>
+                <EnhancedTableToolbar2 numSelected={selected2.length} />
+                <div className={classes.tableWrapper}>
+                  <Table className={classes.table} aria-labelledby="tableTitle">
+                    <EnhancedTableHead2
+                      numSelected={selected2.length}
+                      order={order2}
+                      orderBy={orderBy2}
+                      onSelectAllClick={this.handleSelectAllClick2}
+                      onRequestSort={this.handleRequestSort2}
+                      rowCount={data2.length}
+                    />
+                    <TableBody>
+                      {data2
+                        .slice(
+                          page * rowsPerPage2,
+                          page * rowsPerPage2 + rowsPerPage2
+                        )
+                        .map(n => {
+                          const isSelected = this.isSelected2(n.id)
+                          return (
+                            <TableRow
+                              hover
+                              onClick={event => this.handleClick2(event, n.id)}
+                              role="checkbox"
+                              aria-checked={isSelected}
+                              tabIndex={-1}
+                              key={n.id}
+                              selected={isSelected}
+                            >
+                              <TableCell
+                                padding="checkbox"
+                                style={{ width: '5%' }}
+                              >
+                                <Checkbox checked={isSelected} />
+                              </TableCell>
+                              <TableCell padding="none" style={{ width: '5%' }}>
+                                <Avatar src={n.image} />
+                              </TableCell>
+                              <TableCell
+                                padding="none"
+                                style={{ width: '20%' }}
+                              >
+                                {n.name}
+                              </TableCell>
+                              <TableCell
+                                padding="none"
+                                style={{ width: '70%' }}
+                              >
+                                <TextField
+                                  id="title"
+                                  label="Title"
+                                  className={classes.textField}
+                                  value={n.title}
+                                  onChange={this.handleChange('title')}
+                                  margin="normal"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          )
+                        })}
+                      {emptyRows > 0 && (
+                        <TableRow style={{ height: 49 * emptyRows }}>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+                <TablePagination
+                  component="div"
+                  count={data2.length}
+                  rowsPerPage={rowsPerPage2}
+                  page={page2}
+                  backIconButtonProps={{
+                    'aria-label': 'Previous Page'
+                  }}
+                  nextIconButtonProps={{
+                    'aria-label': 'Next Page'
+                  }}
+                  onChangePage={this.handleChangePage2}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage2}
+                />
+              </Paper>
+              <Button className={classes.button} variant="raised" size="large">
+                <Save
+                  className={classNames(classes.leftIcon, classes.iconSmall)}
+                />
+                Save
+              </Button>
+            </form>
           </main>
           {after}
         </div>
