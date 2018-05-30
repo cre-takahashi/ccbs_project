@@ -88,6 +88,21 @@ class TextFields extends React.Component {
     })
   }
 
+  handleClick = event => {
+    // TODO ここでサーバ（BC）へリクエストを送ってログイン情報を取得し、セッションストレージに格納して持ち回る
+    var loginInfo = [
+      {
+        userid: this.state.id,
+        password: this.state.passwordInput,
+        image: '/images/yamashita.png',
+        name: '札幌　花子',
+        kengen: '1'
+      }
+    ]
+    var storage = sessionStorage
+    storage.setItem('loginInfo', JSON.stringify(loginInfo))
+  }
+
   render() {
     const { classes } = this.props
     const MyLink = props => <Link to="/sample" {...props} />
@@ -204,6 +219,7 @@ class TextFields extends React.Component {
                   <Button
                     variant="raised"
                     color="default"
+                    onClick={this.handleClick()}
                     component={MyLink}
                     fullWidth="true"
                   >

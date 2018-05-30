@@ -144,6 +144,17 @@ class PersistentDrawer extends React.Component {
     const menuLink = props => <Link to="/menu" {...props} />
     const loginLink = props => <Link to="../" {...props} />
 
+    var storage = sessionStorage
+    var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
+    for (var i in loginInfos) {
+      var loginInfo = loginInfos[i]
+      var userid = loginInfo['userid']
+      var password = loginInfo['password']
+      var image = loginInfo['image']
+      var name = loginInfo['name']
+      var kengen = loginInfo['kengen']
+    }
+
     const drawer = (
       <Drawer
         variant="persistent"

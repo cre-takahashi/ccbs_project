@@ -26,6 +26,7 @@ import {
 } from './tileData'
 import Menu from '@material-ui/core/Menu'
 import Avatar from '@material-ui/core/Avatar'
+import Chip from '@material-ui/core/Chip'
 
 const drawerWidth = 240
 
@@ -178,6 +179,10 @@ const styles = theme => ({
     bottom: -2,
     left: 'calc(50% - 9px)',
     transition: theme.transitions.create('opacity')
+  },
+  chip: {
+    height: '300%',
+    margin: theme.spacing.unit
   }
 })
 
@@ -246,6 +251,11 @@ class PersistentDrawer extends React.Component {
     this.setState({ anchorEl: null })
   }
 
+  handleLogoutClick = event => {
+    // ログアウト時にセッションストレージをクリアする
+    sessionStorage.clear()
+  }
+
   render() {
     const { classes, theme } = this.props
     const { anchor, open } = this.state
@@ -310,18 +320,15 @@ class PersistentDrawer extends React.Component {
                   Most Valuable Player Vote System
                 </Typography>
               </div>
-              <IconButton
+              <Chip
+                avatar={<Avatar src={'/images/yamashita.png'} />}
+                label="札幌　花子"
+                className={classes.chip}
                 aria-label="More"
                 aria-owns={anchorEl ? 'long-menu' : null}
                 aria-haspopup="true"
                 onClick={this.handleClick}
-                className={classNames(
-                  !open && classes.buttonFrame,
-                  open && classes.buttonFrame2
-                )}
-              >
-                <Avatar src={'/images/yamashita.png'} />
-              </IconButton>
+              />
               <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
@@ -329,7 +336,12 @@ class PersistentDrawer extends React.Component {
                 onClose={this.handleClose}
               >
                 <MenuItem component={menuLink}>Menu</MenuItem>
-                <MenuItem component={loginLink}>Logout</MenuItem>
+                <MenuItem
+                  onClick={this.handleLogoutClick()}
+                  component={loginLink}
+                >
+                  Logout
+                </MenuItem>
               </Menu>
             </Toolbar>
           </AppBar>
