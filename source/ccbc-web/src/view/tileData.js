@@ -12,6 +12,8 @@ import ReportIcon from '@material-ui/icons/Report'
 import Avatar from '@material-ui/core/Avatar'
 import { Link } from 'react-router-dom'
 
+export const systemName = 'Most Valuable Player Vote System'
+
 export const images = [
   {
     url: '/images/shain_kanri.png',

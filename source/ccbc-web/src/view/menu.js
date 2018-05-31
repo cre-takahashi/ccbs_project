@@ -22,11 +22,19 @@ import {
   otherMailFolderListItems,
   kanriListItems,
   ippanListItems,
-  kojiListItems
+  kojiListItems,
+  systemName
 } from './tileData'
 import Menu from '@material-ui/core/Menu'
 import Avatar from '@material-ui/core/Avatar'
 import Chip from '@material-ui/core/Chip'
+import { Manager, Target, Popper } from 'react-popper'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import Grow from '@material-ui/core/Grow'
+import Paper from '@material-ui/core/Paper'
+import MenuList from '@material-ui/core/MenuList'
+import Collapse from '@material-ui/core/Collapse'
+import Portal from '@material-ui/core/Portal'
 
 const drawerWidth = 240
 
@@ -43,11 +51,11 @@ const styles = theme => ({
   },
   buttonFrame: {
     position: 'static',
-    marginRight: 0
+    marginRight: 24
   },
   buttonFrame2: {
     position: 'static',
-    marginRight: -24
+    marginRight: 0
   },
   appBar: {
     position: 'absolute',
@@ -231,8 +239,8 @@ const images2 = [
 class PersistentDrawer extends React.Component {
   state = {
     open: false,
-    anchor: 'left',
-    anchorEl: null
+    open2: false,
+    anchor: 'left'
   }
 
   handleDrawerOpen = () => {
@@ -243,24 +251,26 @@ class PersistentDrawer extends React.Component {
     this.setState({ open: false })
   }
 
-  handleClick = event => {
-    this.setState({ anchorEl: event.currentTarget })
-  }
-
-  handleClose = () => {
-    this.setState({ anchorEl: null })
-  }
-
   handleLogoutClick = event => {
     // ログアウト時にセッションストレージをクリアする
     sessionStorage.clear()
   }
 
+  handleToggle = () => {
+    this.setState({ open2: !this.state.open2 })
+  }
+
+  handleToggleClose = event => {
+    if (this.target1.contains(event.target)) {
+      return
+    }
+
+    this.setState({ open2: false })
+  }
+
   render() {
     const { classes, theme } = this.props
-    const { anchor, open } = this.state
-    const { anchorEl } = this.state
-    const menuLink = props => <Link to="/menu" {...props} />
+    const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
 
     const drawer = (
@@ -317,32 +327,55 @@ class PersistentDrawer extends React.Component {
               </IconButton>
               <div className={classes.appFrame}>
                 <Typography variant="title" color="inherit" noWrap>
-                  Most Valuable Player Vote System
+                  {systemName}
                 </Typography>
               </div>
-              <Chip
-                avatar={<Avatar src={'/images/yamashita.png'} />}
-                label="札幌　花子"
-                className={classes.chip}
-                aria-label="More"
-                aria-owns={anchorEl ? 'long-menu' : null}
-                aria-haspopup="true"
-                onClick={this.handleClick}
-              />
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={this.handleClose}
-              >
-                <MenuItem component={menuLink}>Menu</MenuItem>
-                <MenuItem
-                  onClick={this.handleLogoutClick()}
-                  component={loginLink}
+              <Manager>
+                <Target>
+                  <div
+                    ref={node => {
+                      this.target1 = node
+                    }}
+                  >
+                    <Chip
+                      avatar={<Avatar src={'/images/yamashita.png'} />}
+                      label="札幌　花子"
+                      className={classes.chip}
+                      aria-label="More"
+                      aria-haspopup="true"
+                      onClick={this.handleToggle}
+                      className={classNames(
+                        !open && classes.buttonFrame,
+                        open && classes.buttonFrame2
+                      )}
+                    />
+                  </div>
+                </Target>
+                <Popper
+                  placement="bottom-start"
+                  eventsEnabled={open2}
+                  className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  Logout
-                </MenuItem>
-              </Menu>
+                  <ClickAwayListener onClickAway={this.handleToggleClose}>
+                    <Grow
+                      in={open2}
+                      id="menu-list-grow"
+                      style={{ transformOrigin: '0 0 0' }}
+                    >
+                      <Paper>
+                        <MenuList role="menu">
+                          <MenuItem
+                            onClick={this.handleLogoutClick()}
+                            component={loginLink}
+                          >
+                            Logout
+                          </MenuItem>
+                        </MenuList>
+                      </Paper>
+                    </Grow>
+                  </ClickAwayListener>
+                </Popper>
+              </Manager>
             </Toolbar>
           </AppBar>
           {before}

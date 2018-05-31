@@ -22,7 +22,8 @@ import {
   otherMailFolderListItems,
   kanriListItems,
   ippanListItems,
-  kojiListItems
+  kojiListItems,
+  systemName
 } from './tileData'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
@@ -48,6 +49,13 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import { lighten } from '@material-ui/core/styles/colorManipulator'
 import Menu from '@material-ui/core/Menu'
+import Chip from '@material-ui/core/Chip'
+import { Manager, Target, Popper } from 'react-popper'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import Grow from '@material-ui/core/Grow'
+import MenuList from '@material-ui/core/MenuList'
+import Collapse from '@material-ui/core/Collapse'
+import Portal from '@material-ui/core/Portal'
 
 let counter = 0
 function createData(name, image) {
@@ -195,11 +203,11 @@ const styles = theme => ({
   },
   buttonFrame: {
     position: 'static',
-    marginRight: 0
+    marginRight: 24
   },
   buttonFrame2: {
     position: 'static',
-    marginRight: -24
+    marginRight: 0
   },
   appBar: {
     position: 'absolute',
@@ -471,14 +479,14 @@ class PersistentDrawer extends React.Component {
       page: 0,
       rowsPerPage: 5,
       open: false,
+      open2: false,
       anchor: 'left',
       checked: [1],
 
       election: '平成30年10月部会',
       multiline: 'Controlled',
       currency: 'EUR',
-      name: [],
-      anchorEl: null
+      name: []
     }
   }
 
@@ -571,22 +579,29 @@ class PersistentDrawer extends React.Component {
     })
   }
 
-  handleClick2 = event => {
-    this.setState({ anchorEl: event.currentTarget })
+  handleLogoutClick = event => {
+    // ログアウト時にセッションストレージをクリアする
+    sessionStorage.clear()
   }
 
-  handleClose = () => {
-    this.setState({ anchorEl: null })
+  handleToggle = () => {
+    this.setState({ open2: !this.state.open2 })
+  }
+
+  handleToggleClose = event => {
+    if (this.target1.contains(event.target)) {
+      return
+    }
+
+    this.setState({ open2: false })
   }
 
   render() {
     const { classes, theme } = this.props
-    const { anchor, open } = this.state
+    const { anchor, open, open2 } = this.state
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
-    const { anchorEl } = this.state
-    const menuLink = props => <Link to="/menu" {...props} />
     const loginLink = props => <Link to="../" {...props} />
 
     const drawer = (
@@ -643,30 +658,55 @@ class PersistentDrawer extends React.Component {
               </IconButton>
               <div className={classes.appFrame}>
                 <Typography variant="title" color="inherit" noWrap>
-                  Most Valuable Player Vote System
+                  {systemName}
                 </Typography>
               </div>
-              <IconButton
-                aria-label="More"
-                aria-owns={anchorEl ? 'long-menu' : null}
-                aria-haspopup="true"
-                onClick={this.handleClick2}
-                className={classNames(
-                  !open && classes.buttonFrame,
-                  open && classes.buttonFrame2
-                )}
-              >
-                <Avatar src={'/images/yamashita.png'} />
-              </IconButton>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={this.handleClose}
-              >
-                <MenuItem component={menuLink}>Menu</MenuItem>
-                <MenuItem component={loginLink}>Logout</MenuItem>
-              </Menu>
+              <Manager>
+                <Target>
+                  <div
+                    ref={node => {
+                      this.target1 = node
+                    }}
+                  >
+                    <Chip
+                      avatar={<Avatar src={'/images/yamashita.png'} />}
+                      label="札幌　花子"
+                      className={classes.chip}
+                      aria-label="More"
+                      aria-haspopup="true"
+                      onClick={this.handleToggle}
+                      className={classNames(
+                        !open && classes.buttonFrame,
+                        open && classes.buttonFrame2
+                      )}
+                    />
+                  </div>
+                </Target>
+                <Popper
+                  placement="bottom-start"
+                  eventsEnabled={open2}
+                  className={classNames({ [classes.popperClose]: !open2 })}
+                >
+                  <ClickAwayListener onClickAway={this.handleToggleClose}>
+                    <Grow
+                      in={open2}
+                      id="menu-list-grow"
+                      style={{ transformOrigin: '0 0 0' }}
+                    >
+                      <Paper>
+                        <MenuList role="menu">
+                          <MenuItem
+                            onClick={this.handleLogoutClick()}
+                            component={loginLink}
+                          >
+                            Logout
+                          </MenuItem>
+                        </MenuList>
+                      </Paper>
+                    </Grow>
+                  </ClickAwayListener>
+                </Popper>
+              </Manager>
             </Toolbar>
           </AppBar>
           {before}
