@@ -247,6 +247,7 @@ class PersistentDrawer extends React.Component {
                         !open && classes.buttonFrame,
                         open && classes.buttonFrame2
                       )}
+                      style={{ fontSize: '100%' }}
                     />
                   </div>
                 </Target>
