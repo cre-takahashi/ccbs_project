@@ -44,6 +44,22 @@ import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
 import Portal from '@material-ui/core/Portal'
 import Paper from '@material-ui/core/Paper'
+import Tooltip from '@material-ui/core/Tooltip'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white
+  },
+  body: {
+    fontSize: 14
+  }
+}))(TableCell)
 
 const drawerWidth = 240
 
@@ -256,8 +272,8 @@ const styles = theme => ({
     margin: 10
   },
   bigAvatar: {
-    width: 200,
-    height: 200
+    width: 150,
+    height: 150
   },
   headLine: {
     width: 350
@@ -265,7 +281,20 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 320
+    width: 900
+  },
+  paper: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto'
+  },
+  table: {
+    minWidth: 700
+  },
+  row: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default
+    }
   }
 })
 
@@ -339,13 +368,23 @@ class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props)
     for (var i in testData) {
-      this.state.activeStep1[i] = 0
-      this.state.activeStep2[i] = 0
-      this.state.activeStep3[i] = 0
-      this.state.activeStep4[i] = 0
-      this.state.activeStep5[i] = 0
+      this.state.activeStep1[i] = 4
+      this.state.activeStep2[i] = 4
+      this.state.activeStep3[i] = 4
+      this.state.activeStep4[i] = 4
+      this.state.activeStep5[i] = 4
     }
     this.calculateCoin()
+  }
+
+  calculateCoinLine = index => {
+    var sum = 0
+    sum += this.state.activeStep1[index] + 1
+    sum += this.state.activeStep2[index] + 1
+    sum += this.state.activeStep3[index] + 1
+    sum += this.state.activeStep4[index] + 1
+    sum += this.state.activeStep5[index] + 1
+    return sum
   }
 
   calculateCoin = () => {
@@ -527,6 +566,7 @@ class PersistentDrawer extends React.Component {
                         !open && classes.buttonFrame,
                         open && classes.buttonFrame2
                       )}
+                      style={{ fontSize: '100%' }}
                     />
                   </div>
                 </Target>
@@ -592,172 +632,240 @@ class PersistentDrawer extends React.Component {
                 </CardContent>
               </Card>
             </div>
-            {testData.map((data, i) => (
-              <div>
-                <Card className={classes.card2}>
-                  <div className={classes.details2}>
-                    <div className={classes.avatarRow}>
-                      <Avatar
-                        alt="Adelle Charles"
-                        src={data.url}
-                        className={classNames(
-                          classes.avatar,
-                          classes.bigAvatar
-                        )}
-                      />
-                    </div>
-                    <CardContent className={classes.content2}>
-                      <Typography
-                        variant="headline"
-                        className={classes.headLine}
-                      >
-                        {data.title}
-                      </Typography>
-                      <Typography variant="subheading" color="textSecondary">
-                        {data.name}
-                      </Typography>
-                    </CardContent>
-                  </div>
-                  <table>
-                    <tr>
-                      <td className={classes.tdSize}>資料作成力</td>
-                      <td>
-                        <Stepper
-                          nonLinear
-                          activeStep={activeStep1[i]}
-                          className={classes.stepSize2}
-                        >
-                          {steps1.map((label, index) => {
-                            return (
-                              <Step key={label} className={classes.stepSize2}>
-                                <StepButton
-                                  onClick={this.handleStep1(index, i)}
-                                  completed={this.state.completed[index]}
-                                  className={classes.stepSize2}
-                                >
-                                  {label}
-                                </StepButton>
-                              </Step>
-                            )
-                          })}
-                        </Stepper>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className={classes.tdSize}>発表力（説明力）</td>
-                      <td>
-                        <Stepper
-                          nonLinear
-                          activeStep={activeStep2[i]}
-                          className={classes.stepSize2}
-                        >
-                          {steps2.map((label, index) => {
-                            return (
-                              <Step key={label} className={classes.stepSize2}>
-                                <StepButton
-                                  onClick={this.handleStep2(index, i)}
-                                  completed={this.state.completed[index]}
-                                  className={classes.stepSize2}
-                                >
-                                  {label}
-                                </StepButton>
-                              </Step>
-                            )
-                          })}
-                        </Stepper>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className={classes.tdSize}>表現力</td>
-                      <td>
-                        <Stepper
-                          nonLinear
-                          activeStep={activeStep3[i]}
-                          className={classes.stepSize2}
-                        >
-                          {steps3.map((label, index) => {
-                            return (
-                              <Step key={label} className={classes.stepSize2}>
-                                <StepButton
-                                  onClick={this.handleStep3(index, i)}
-                                  completed={this.state.completed[index]}
-                                  className={classes.stepSize2}
-                                >
-                                  {label}
-                                </StepButton>
-                              </Step>
-                            )
-                          })}
-                        </Stepper>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className={classes.tdSize}>説得力</td>
-                      <td>
-                        <Stepper
-                          nonLinear
-                          activeStep={activeStep4[i]}
-                          className={classes.stepSize2}
-                        >
-                          {steps4.map((label, index) => {
-                            return (
-                              <Step key={label} className={classes.stepSize2}>
-                                <StepButton
-                                  onClick={this.handleStep4(index, i)}
-                                  completed={this.state.completed[index]}
-                                  className={classes.stepSize2}
-                                >
-                                  {label}
-                                </StepButton>
-                              </Step>
-                            )
-                          })}
-                        </Stepper>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className={classes.tdSize}>限界突破</td>
-                      <td>
-                        <Stepper
-                          nonLinear
-                          activeStep={activeStep5[i]}
-                          className={classes.stepSize2}
-                        >
-                          {steps5.map((label, index) => {
-                            return (
-                              <Step key={label} className={classes.stepSize2}>
-                                <StepButton
-                                  onClick={this.handleStep5(index, i)}
-                                  completed={this.state.completed[index]}
-                                  className={classes.stepSize2}
-                                >
-                                  {label}
-                                </StepButton>
-                              </Step>
-                            )
-                          })}
-                        </Stepper>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className={classes.tdSize} />
-                      <td>
-                        <TextField
-                          id="comment"
-                          label="コメント"
-                          multiline
-                          rowsMax="3"
-                          value={this.state.comment[i]}
-                          onChange={this.handleChange('comment', i)}
-                          className={classes.textField}
-                          margin="normal"
-                        />
-                      </td>
-                    </tr>
-                  </table>
-                </Card>
-              </div>
-            ))}
+            <Paper className={classes.paper}>
+              <Table className={classes.table}>
+                <TableBody>
+                  {testData.map((data, i) => (
+                    <TableRow>
+                      <div>
+                        <table>
+                          <tr>
+                            <td rowspan="3" width="50%">
+                              <Avatar
+                                alt="Adelle Charles"
+                                src={data.url}
+                                className={classNames(
+                                  classes.avatar,
+                                  classes.bigAvatar
+                                )}
+                              />
+                            </td>
+
+                            <td width="10%" className={classes.tdSize}>
+                              <Tooltip
+                                id="tooltip-right"
+                                title="構成に関するヘルプです"
+                                placement="right"
+                              >
+                                <label>構成</label>
+                              </Tooltip>
+                            </td>
+                            <td width="40%">
+                              <Stepper
+                                nonLinear
+                                activeStep={activeStep1[i]}
+                                className={classes.stepSize2}
+                              >
+                                {steps1.map((label, index) => {
+                                  return (
+                                    <Step
+                                      key={label}
+                                      className={classes.stepSize2}
+                                    >
+                                      <StepButton
+                                        onClick={this.handleStep1(index, i)}
+                                        completed={this.state.completed[index]}
+                                        className={classes.stepSize2}
+                                      >
+                                        {label}
+                                      </StepButton>
+                                    </Step>
+                                  )
+                                })}
+                              </Stepper>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className={classes.tdSize}>
+                              <Tooltip
+                                id="tooltip-right"
+                                title="発表に関するヘルプです"
+                                placement="right"
+                              >
+                                <label>発表</label>
+                              </Tooltip>
+                            </td>
+                            <td>
+                              <Stepper
+                                nonLinear
+                                activeStep={activeStep2[i]}
+                                className={classes.stepSize2}
+                              >
+                                {steps2.map((label, index) => {
+                                  return (
+                                    <Step
+                                      key={label}
+                                      className={classes.stepSize2}
+                                    >
+                                      <StepButton
+                                        onClick={this.handleStep2(index, i)}
+                                        completed={this.state.completed[index]}
+                                        className={classes.stepSize2}
+                                      >
+                                        {label}
+                                      </StepButton>
+                                    </Step>
+                                  )
+                                })}
+                              </Stepper>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className={classes.tdSize}>
+                              <Tooltip
+                                id="tooltip-right"
+                                title="表現に関するヘルプです"
+                                placement="right"
+                              >
+                                <label>表現</label>
+                              </Tooltip>
+                            </td>
+                            <td>
+                              <Stepper
+                                nonLinear
+                                activeStep={activeStep3[i]}
+                                className={classes.stepSize2}
+                              >
+                                {steps3.map((label, index) => {
+                                  return (
+                                    <Step
+                                      key={label}
+                                      className={classes.stepSize2}
+                                    >
+                                      <StepButton
+                                        onClick={this.handleStep3(index, i)}
+                                        completed={this.state.completed[index]}
+                                        className={classes.stepSize2}
+                                      >
+                                        {label}
+                                      </StepButton>
+                                    </Step>
+                                  )
+                                })}
+                              </Stepper>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Typography
+                                variant="headline"
+                                className={classes.headLine}
+                              >
+                                {data.title}
+                              </Typography>
+                            </td>
+
+                            <td className={classes.tdSize}>
+                              <Tooltip
+                                id="tooltip-right"
+                                title="説得に関するヘルプです"
+                                placement="right"
+                              >
+                                <label>説得</label>
+                              </Tooltip>
+                            </td>
+                            <td>
+                              <Stepper
+                                nonLinear
+                                activeStep={activeStep4[i]}
+                                className={classes.stepSize2}
+                              >
+                                {steps4.map((label, index) => {
+                                  return (
+                                    <Step
+                                      key={label}
+                                      className={classes.stepSize2}
+                                    >
+                                      <StepButton
+                                        onClick={this.handleStep4(index, i)}
+                                        completed={this.state.completed[index]}
+                                        className={classes.stepSize2}
+                                      >
+                                        {label}
+                                      </StepButton>
+                                    </Step>
+                                  )
+                                })}
+                              </Stepper>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <Typography
+                                variant="subheading"
+                                color="textSecondary"
+                              >
+                                {data.name}　{this.calculateCoinLine(i)}coin
+                              </Typography>
+                            </td>
+
+                            <td className={classes.tdSize}>
+                              <Tooltip
+                                id="tooltip-right"
+                                title="限界突破に関するヘルプです"
+                                placement="right"
+                              >
+                                <label>限界突破</label>
+                              </Tooltip>
+                            </td>
+                            <td>
+                              <Stepper
+                                nonLinear
+                                activeStep={activeStep5[i]}
+                                className={classes.stepSize2}
+                              >
+                                {steps5.map((label, index) => {
+                                  return (
+                                    <Step
+                                      key={label}
+                                      className={classes.stepSize2}
+                                    >
+                                      <StepButton
+                                        onClick={this.handleStep5(index, i)}
+                                        completed={this.state.completed[index]}
+                                        className={classes.stepSize2}
+                                      >
+                                        {label}
+                                      </StepButton>
+                                    </Step>
+                                  )
+                                })}
+                              </Stepper>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="3">
+                              <TextField
+                                id="comment"
+                                label="コメント"
+                                multiline
+                                rows="5"
+                                rowsMax="5"
+                                value={this.state.comment[i]}
+                                onChange={this.handleChange('comment', i)}
+                                className={classes.textField}
+                                margin="normal"
+                              />
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Paper>
+
             <Button
               className={classes.button}
               variant="raised"
