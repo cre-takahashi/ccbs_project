@@ -1,4 +1,5 @@
 import React from 'react'
+import request from 'superagent'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
@@ -362,7 +363,8 @@ class PersistentDrawer extends React.Component {
     completed: {},
     comment: {},
     haifuCoin: 150,
-    tohyoCoin: 0
+    tohyoCoin: 0,
+    resultList: []
   }
 
   constructor(props) {
@@ -375,6 +377,16 @@ class PersistentDrawer extends React.Component {
       this.state.activeStep5[i] = 4
     }
     this.calculateCoin()
+  }
+
+  /** コンポーネントのマウント時処理 */
+  componentWillMount() {
+    // プルダウン用のマスタ読み込み
+    request.post('/tohyo_toroku/findA').end((err, res) => {
+      if (err) return
+      // 検索結果表示
+      this.setState({ resultList: res.body.data })
+    })
   }
 
   calculateCoinLine = index => {
@@ -865,7 +877,16 @@ class PersistentDrawer extends React.Component {
                 </TableBody>
               </Table>
             </Paper>
-
+            {this.state.resultList.map(data => (
+              <div>
+                ID ： {data.id}
+                <br />
+                名前 ： {data.name}
+                <br />
+                パスワード ： {data.pass}
+                <hr />
+              </div>
+            ))}
             <Button
               className={classes.button}
               variant="raised"

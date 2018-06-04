@@ -236,7 +236,7 @@ class TextFields extends React.Component {
                   <br />
                   <br />
                   <Typography component="p" align="right">
-                    ※ID、パスワード紛失時は管理者に連絡すること
+                    ※ID、パスワード紛失時は管理者に連絡して下さい
                   </Typography>
                 </td>
               </tr>
