@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const serverRouter = require('./routes/server')
+const imageRouter = require('./routes/image')
 const tohyoTorokuRouter = require('./routes/tohyo_toroku')
 
 const app = express()
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/server', serverRouter)
+app.use('/image', imageRouter)
 app.use('/tohyo_toroku', tohyoTorokuRouter)
 
 // catch 404 and forward to error handler
