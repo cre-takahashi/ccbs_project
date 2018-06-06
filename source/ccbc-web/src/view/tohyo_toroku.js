@@ -381,6 +381,16 @@ class PersistentDrawer extends React.Component {
 
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
+    var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
+    for (var i in loginInfos) {
+      var loginInfo = loginInfos[i]
+      this.setState({ userid: loginInfo['userid'] })
+      this.setState({ password: loginInfo['password'] })
+      this.setState({ tShainPk: loginInfo['tShainPk'] })
+      this.setState({ imageFileName: loginInfo['imageFileName'] })
+      this.setState({ shimei: loginInfo['shimei'] })
+      this.setState({ kengenCd: loginInfo['kengenCd'] })
+    }
     // プルダウン用のマスタ読み込み
     request.post('/tohyo_toroku/findA').end((err, res) => {
       if (err) return
@@ -568,8 +578,14 @@ class PersistentDrawer extends React.Component {
                     }}
                   >
                     <Chip
-                      avatar={<Avatar src={'/images/yamashita.png'} />}
-                      label="札幌　花子"
+                      avatar={
+                        <Avatar
+                          src={`http://localhost:3001/uploads/${
+                            this.state.imageFileName
+                          }`}
+                        />
+                      }
+                      label={this.state.shimei}
                       className={classes.chip}
                       aria-label="More"
                       aria-haspopup="true"

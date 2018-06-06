@@ -18,6 +18,7 @@ export default class ImageForm extends React.Component {
       resultList: [],
       id: 1,
       gazo: [],
+      filename: '',
       image_src: '',
       gazo_res: [],
       image_src_res: ''
@@ -43,7 +44,9 @@ export default class ImageForm extends React.Component {
   handleChangeFile = event => {
     // ①イベントからfileの配列を受け取る
     var files = event.target.files
+
     this.setState({ gazo: files[0] })
+    this.setState({ filename: files[0].name })
 
     // ②createObjectURLで、files[0]を読み込む
     var image_url = createObjectURL(files[0])
@@ -57,9 +60,11 @@ export default class ImageForm extends React.Component {
     if (!window.confirm('登録します。よろしいですか？')) {
       return
     }
+    var form = new FormData()
+    form.append('image', this.state.gazo)
     request
       .post('/image/update')
-      .send(this.state)
+      .send(form)
       .end((err, res) => {
         if (err) return
         // 登録後処理（通知等）
@@ -75,9 +80,7 @@ export default class ImageForm extends React.Component {
       .send(this.state)
       .end((err, res) => {
         if (err) return
-        // 検索結果表示
-        var image_url = createObjectURL(res.body.data)
-        this.setState({ image_src_res: image_url })
+        this.setState({ image_src_res: res.body.data[0].image })
       })
   }
 
@@ -93,6 +96,15 @@ export default class ImageForm extends React.Component {
         <hr />
       </div>
     ))
+
+    var image = ''
+    if (this.state.image_src_res) {
+      image = (
+        <img
+          src={`http://localhost:3001/uploads/${this.state.image_src_res}`}
+        />
+      )
+    }
 
     return (
       <div>
@@ -118,7 +130,7 @@ export default class ImageForm extends React.Component {
             取得
           </button>
           <br />
-          <img src={this.state.image_src_res} />
+          {image}
         </div>
       </div>
     )

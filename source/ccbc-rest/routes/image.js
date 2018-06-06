@@ -17,17 +17,28 @@ const query = (sql, params, res) => {
   })
 }
 
-router.post('/update', function(req, res) {
-  console.log(req.body)
-  var sql = 'update test set' + ' face_image = $2' + ' where id = $1'
-  query(sql, [req.body.id, req.body.gazo], res)
+var path = require('path')
+var multer = require('multer')
+var storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'public/uploads')
+  },
+  filename: function(req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+var upload = multer({ storage: storage })
+
+router.post('/update', upload.single('image'), function(req, res) {
+  var sql = 'update test set' + ' image = $2' + ' where id = $1'
+  query(sql, [1, req.file.filename], res)
 })
 
 router.get('/find', (req, res) => {
   console.log('OK')
   console.log(req.body)
   const params = []
-  const sql = 'select face_image from test where id = 1'
+  const sql = 'select image from test where id = 1'
   query(sql, params, res)
 })
 
