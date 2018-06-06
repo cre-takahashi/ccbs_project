@@ -92,15 +92,17 @@ class TextFields extends React.Component {
     // TODO ここでサーバ（BC）へリクエストを送ってログイン情報を取得し、セッションストレージに格納して持ち回る
     var loginInfo = [
       {
-        userid: this.state.id,
-        password: this.state.passwordInput,
-        image: '/images/yamashita.png',
-        name: '札幌　花子',
-        kengen: '1'
+        userid: this.state.id, // ここはログイン画面で入力された値を設定
+        password: this.state.passwordInput, // ここはログイン画面で入力された値を設定
+        tShainPk: null, // ここはDBから読み込んだ値を設定
+        imageFileName: 'yamashita.png', // ここはDBから読み込んだ値を設定
+        shimei: '札幌　花子', // ここはDBから読み込んだ値を設定
+        kengenCd: '1' // ここはDBから読み込んだ値を設定
       }
     ]
     var storage = sessionStorage
     storage.setItem('loginInfo', JSON.stringify(loginInfo))
+    storage.setItem('aaa', 'bbb')
   }
 
   render() {

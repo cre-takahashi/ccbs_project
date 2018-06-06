@@ -124,10 +124,36 @@ const styles = theme => ({
 })
 
 class PersistentDrawer extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      name: 'Cat in the Hat',
+      age: '',
+      multiline: 'Controlled',
+      currency: 'JPN'
+    }
+  }
+
   state = {
     open: false,
     open2: false,
     anchor: 'left'
+  }
+
+  /** コンポーネントのマウント時処理 */
+  componentWillMount() {
+    var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
+    for (var i in loginInfos) {
+      var loginInfo = loginInfos[i]
+      this.setState({ userid: loginInfo['userid'] })
+      this.setState({ password: loginInfo['password'] })
+      this.setState({ tShainPk: loginInfo['tShainPk'] })
+      this.setState({ imageFileName: loginInfo['imageFileName'] })
+      this.setState({ shimei: loginInfo['shimei'] })
+      this.setState({ kengenCd: loginInfo['kengenCd'] })
+    }
+    alert(sessionStorage.getItem('aaa'))
   }
 
   handleDrawerOpen = () => {
@@ -160,17 +186,6 @@ class PersistentDrawer extends React.Component {
     const { anchor, open, open2 } = this.state
     const { anchorEl } = this.state
     const loginLink = props => <Link to="../" {...props} />
-
-    var storage = sessionStorage
-    var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
-    for (var i in loginInfos) {
-      var loginInfo = loginInfos[i]
-      var userid = loginInfo['userid']
-      var password = loginInfo['password']
-      var image = loginInfo['image']
-      var name = loginInfo['name']
-      var kengen = loginInfo['kengen']
-    }
 
     const drawer = (
       <Drawer
@@ -237,8 +252,14 @@ class PersistentDrawer extends React.Component {
                     }}
                   >
                     <Chip
-                      avatar={<Avatar src={'/images/yamashita.png'} />}
-                      label="札幌　花子"
+                      avatar={
+                        <Avatar
+                          src={`http://localhost:3001/uploads/${
+                            this.state.imageFileName
+                          }`}
+                        />
+                      }
+                      label={this.state.shimei}
                       className={classes.chip}
                       aria-label="More"
                       aria-haspopup="true"
