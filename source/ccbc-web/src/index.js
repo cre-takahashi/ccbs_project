@@ -9,6 +9,7 @@ import SampleForm from './view/sample'
 import RadarChartForm from './view/radar'
 import GraphForm from './view/graph'
 import DbForm from './view/db'
+import ImageForm from './view/image'
 import MenuForm from './view/menu'
 import SenkyoKanriForm from './view/senkyo_kanri'
 import SenkyoTorokuForm from './view/senkyo_toroku'
@@ -25,6 +26,8 @@ ReactDOM.render(
       <Route path="/graph" component={GraphForm} />
       <Route path="/db" component={HeaderForm} />
       <Route path="/db" component={DbForm} />
+      <Route path="/image" component={HeaderForm} />
+      <Route path="/image" component={ImageForm} />
       <Route path="/menu" component={MenuForm} />
       <Route path="/senkyo_kanri" component={SenkyoKanriForm} />
       <Route path="/senkyo_toroku" component={SenkyoTorokuForm} />

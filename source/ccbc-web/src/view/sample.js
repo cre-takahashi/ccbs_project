@@ -303,6 +303,9 @@ class PersistentDrawer extends React.Component {
                   <li>
                     <a href="/db">【03】データベース</a>
                   </li>
+                  <li>
+                    <a href="/image">【04】イメージ</a>
+                  </li>
                 </ul>
                 <h3>画面モックアップサンプル（イテレーション１）</h3>
                 <ul>
