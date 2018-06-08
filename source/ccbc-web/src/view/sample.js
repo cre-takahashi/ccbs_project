@@ -21,7 +21,8 @@ import {
   kanriListItems,
   ippanListItems,
   kojiListItems,
-  systemName
+  systemName,
+  restUrl
 } from './tileData'
 import Menu from '@material-ui/core/Menu'
 import Avatar from '@material-ui/core/Avatar'
@@ -124,17 +125,6 @@ const styles = theme => ({
 })
 
 class PersistentDrawer extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      name: 'Cat in the Hat',
-      age: '',
-      multiline: 'Controlled',
-      currency: 'JPN'
-    }
-  }
-
   state = {
     open: false,
     open2: false,
@@ -153,7 +143,6 @@ class PersistentDrawer extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
-    alert(sessionStorage.getItem('aaa'))
   }
 
   handleDrawerOpen = () => {
@@ -164,8 +153,8 @@ class PersistentDrawer extends React.Component {
     this.setState({ open: false })
   }
 
-  handleLogoutClick = event => {
-    // ログアウト時にセッションストレージをクリアする
+  handleLogoutClick = () => {
+    // ログアウト時にsessionStorageをクリアする
     sessionStorage.clear()
   }
 
@@ -179,6 +168,21 @@ class PersistentDrawer extends React.Component {
     }
 
     this.setState({ open2: false })
+  }
+
+  update = () => {
+    var loginInfo = [
+      {
+        userid: document.js.userid.value,
+        password: document.js.password.value,
+        tShainPk: document.js.tShainPk.value,
+        imageFileName: document.js.imageFileName.value,
+        shimei: document.js.shimei.value,
+        kengenCd: document.js.kengenCd.value
+      }
+    ]
+    sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
+    alert('セッションストレージに反映しました')
   }
 
   render() {
@@ -254,9 +258,7 @@ class PersistentDrawer extends React.Component {
                     <Chip
                       avatar={
                         <Avatar
-                          src={`http://localhost:3001/uploads/${
-                            this.state.imageFileName
-                          }`}
+                          src={restUrl + `uploads/${this.state.imageFileName}`}
                         />
                       }
                       label={this.state.shimei}
@@ -286,7 +288,7 @@ class PersistentDrawer extends React.Component {
                       <Paper>
                         <MenuList role="menu">
                           <MenuItem
-                            onClick={this.handleLogoutClick()}
+                            onClick={this.handleLogoutClick}
                             component={loginLink}
                           >
                             Logout
@@ -328,6 +330,30 @@ class PersistentDrawer extends React.Component {
                     <a href="/image">【04】イメージ</a>
                   </li>
                 </ul>
+                <h3>テスト用セッションストレージ登録</h3>
+                <label>
+                  ここで入力したものがセッションストレージに格納されますのでテスト用に使ってください。<br />
+                  ブラウザを閉じる、またはログアウトしたタイミングでセッションストレージは破棄されます。<br />
+                  イメージファイル名（imageFileName）については、上記「部品サンプル【04】イメージ」で登録したファイル名を指定してください。
+                </label>
+                <br />
+                <form name="js">
+                  <label>userid：</label>
+                  <input type="text" name="userid" />&nbsp;
+                  <label>password：</label>
+                  <input type="text" name="password" />&nbsp;
+                  <label>tShainPk：</label>
+                  <input type="text" name="tShainPk" />&nbsp;
+                  <br />
+                  <label>imageFileName：</label>
+                  <input type="text" name="imageFileName" />&nbsp;
+                  <label>shimei：</label>
+                  <input type="text" name="shimei" />&nbsp;
+                  <label>kengenCd：</label>
+                  <input type="text" name="kengenCd" />&nbsp;
+                  <br />
+                  <input type="button" value="反映" onClick={this.update} />
+                </form>
                 <h3>画面モックアップサンプル（イテレーション１）</h3>
                 <ul>
                   <li>

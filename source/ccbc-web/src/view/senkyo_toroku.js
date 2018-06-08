@@ -23,7 +23,8 @@ import {
   kanriListItems,
   ippanListItems,
   kojiListItems,
-  systemName
+  systemName,
+  restUrl
 } from './tileData'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
@@ -490,6 +491,20 @@ class PersistentDrawer extends React.Component {
     }
   }
 
+  /** コンポーネントのマウント時処理 */
+  componentWillMount() {
+    var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
+    for (var i in loginInfos) {
+      var loginInfo = loginInfos[i]
+      this.setState({ userid: loginInfo['userid'] })
+      this.setState({ password: loginInfo['password'] })
+      this.setState({ tShainPk: loginInfo['tShainPk'] })
+      this.setState({ imageFileName: loginInfo['imageFileName'] })
+      this.setState({ shimei: loginInfo['shimei'] })
+      this.setState({ kengenCd: loginInfo['kengenCd'] })
+    }
+  }
+
   handleRequestSort = (event, property) => {
     const orderBy = property
     let order = 'desc'
@@ -579,8 +594,8 @@ class PersistentDrawer extends React.Component {
     })
   }
 
-  handleLogoutClick = event => {
-    // ログアウト時にセッションストレージをクリアする
+  handleLogoutClick = () => {
+    // ログアウト時にsessionStorageをクリアする
     sessionStorage.clear()
   }
 
@@ -669,8 +684,12 @@ class PersistentDrawer extends React.Component {
                     }}
                   >
                     <Chip
-                      avatar={<Avatar src={'/images/yamashita.png'} />}
-                      label="札幌　花子"
+                      avatar={
+                        <Avatar
+                          src={restUrl + `uploads/${this.state.imageFileName}`}
+                        />
+                      }
+                      label={this.state.shimei}
                       className={classes.chip}
                       aria-label="More"
                       aria-haspopup="true"
@@ -697,7 +716,7 @@ class PersistentDrawer extends React.Component {
                       <Paper>
                         <MenuList role="menu">
                           <MenuItem
-                            onClick={this.handleLogoutClick()}
+                            onClick={this.handleLogoutClick}
                             component={loginLink}
                           >
                             Logout
