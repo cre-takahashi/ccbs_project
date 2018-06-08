@@ -23,7 +23,9 @@ import {
   otherMailFolderListItems,
   kanriListItems,
   ippanListItems,
-  kojiListItems
+  kojiListItems,
+  systemName,
+  restUrl
 } from './tileData'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
@@ -364,7 +366,13 @@ class PersistentDrawer extends React.Component {
     comment: {},
     haifuCoin: 150,
     tohyoCoin: 0,
-    resultList: []
+    resultList: [],
+    userid: null,
+    password: null,
+    tShainPk: 8,
+    imageFileName: null,
+    shimei: null,
+    kengenCd: null
   }
 
   constructor(props) {
@@ -392,11 +400,16 @@ class PersistentDrawer extends React.Component {
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
     // プルダウン用のマスタ読み込み
-    request.post('/tohyo_toroku/findA').end((err, res) => {
-      if (err) return
-      // 検索結果表示
-      this.setState({ resultList: res.body.data })
-    })
+    request
+      .post('/tohyo_toroku/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          return
+        }
+        // 検索結果表示
+        this.setState({ resultList: res.body.data })
+      })
   }
 
   calculateCoinLine = index => {
@@ -476,8 +489,8 @@ class PersistentDrawer extends React.Component {
     this.calculateCoin()
   }
 
-  handleLogoutClick = event => {
-    // ログアウト時にセッションストレージをクリアする
+  handleLogoutClick = () => {
+    // ログアウト時にsessionStorageをクリアする
     sessionStorage.clear()
   }
 
@@ -567,7 +580,7 @@ class PersistentDrawer extends React.Component {
               </IconButton>
               <div className={classes.appFrame}>
                 <Typography variant="title" color="inherit" noWrap>
-                  Most Valuable Player Vote System
+                  {systemName}
                 </Typography>
               </div>
               <Manager>
@@ -580,9 +593,7 @@ class PersistentDrawer extends React.Component {
                     <Chip
                       avatar={
                         <Avatar
-                          src={`http://localhost:3001/uploads/${
-                            this.state.imageFileName
-                          }`}
+                          src={restUrl + `uploads/${this.state.imageFileName}`}
                         />
                       }
                       label={this.state.shimei}
@@ -612,7 +623,8 @@ class PersistentDrawer extends React.Component {
                       <Paper>
                         <MenuList role="menu">
                           <MenuItem
-                            onClick={this.handleLogoutClick()}
+                            id="logout"
+                            onClick={this.handleLogoutClick}
                             component={loginLink}
                           >
                             Logout
@@ -638,32 +650,51 @@ class PersistentDrawer extends React.Component {
           >
             <div className={classes.drawerHeader} />
             <div>
-              <Card className={classes.card}>
-                <CardMedia
-                  className={classes.media}
-                  image="/images/coin_shokai.png"
-                  title="Contemplative Reptile"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="headline" component="h2">
-                    平成３０年度９月部会
-                  </Typography>
-                  <Typography component="p">
-                    発表者に対して評価とコメントをつけて下さい。（配布しきれなかったコインは自動で回収されます）
-                  </Typography>
-                  <Typography component="p">
-                    配布コイン数：{this.state.haifuCoin}
-                  </Typography>
-                  <Typography component="p">
-                    投票コイン数：{this.state.tohyoCoin}
-                  </Typography>
-                </CardContent>
-              </Card>
+              {(() => {
+                if (this.state.resultList.length === 0) {
+                  return (
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          variant="headline"
+                          component="h2"
+                        >
+                          有効な選挙がありません。
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  )
+                } else {
+                  return (
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          variant="headline"
+                          component="h2"
+                        >
+                          {this.state.resultList[0].senkyo_nm}
+                        </Typography>
+                        <Typography component="p">
+                          発表者に対して評価とコメントをつけて下さい。（配布しきれなかったコインは自動で回収されます）
+                        </Typography>
+                        <Typography component="p">
+                          配布コイン数：{this.state.resultList[0].haifu_coin}
+                        </Typography>
+                        <Typography component="p">
+                          投票コイン数：{this.state.tohyoCoin}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  )
+                }
+              })()}
             </div>
-            <Paper className={classes.paper}>
-              <Table className={classes.table}>
-                <TableBody>
-                  {testData.map((data, i) => (
+            {this.state.resultList.map((data, i) => (
+              <Paper className={classes.paper}>
+                <Table className={classes.table}>
+                  <TableBody>
                     <TableRow>
                       <div>
                         <table>
@@ -671,7 +702,7 @@ class PersistentDrawer extends React.Component {
                             <td rowspan="3" width="50%">
                               <Avatar
                                 alt="Adelle Charles"
-                                src={data.url}
+                                src={restUrl + `uploads/${data.image_file_nm}`}
                                 className={classNames(
                                   classes.avatar,
                                   classes.bigAvatar
@@ -833,7 +864,7 @@ class PersistentDrawer extends React.Component {
                                 variant="subheading"
                                 color="textSecondary"
                               >
-                                {data.name}　{this.calculateCoinLine(i)}coin
+                                {data.shimei}　{this.calculateCoinLine(i)}coin
                               </Typography>
                             </td>
 
@@ -889,17 +920,17 @@ class PersistentDrawer extends React.Component {
                         </table>
                       </div>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Paper>
+                  </TableBody>
+                </Table>
+              </Paper>
+            ))}
             {this.state.resultList.map(data => (
               <div>
-                ID ： {data.id}
+                ID ： {data.title}
                 <br />
-                名前 ： {data.name}
+                名前 ： {data.shimei}
                 <br />
-                パスワード ： {data.pass}
+                パスワード ： {data.image_file_nm}
                 <hr />
               </div>
             ))}

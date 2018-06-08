@@ -13,6 +13,7 @@ import Avatar from '@material-ui/core/Avatar'
 import { Link } from 'react-router-dom'
 
 export const systemName = 'Most Valuable Player Vote System'
+export const restUrl = 'http://localhost:3001/'
 
 export const images = [
   {

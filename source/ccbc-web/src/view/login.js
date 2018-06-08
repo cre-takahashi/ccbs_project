@@ -82,6 +82,12 @@ class TextFields extends React.Component {
     }
   }
 
+  /** コンポーネントのマウント時処理 */
+  componentWillMount() {
+    // ログイン画面遷移時にlocalSttorageをクリアする
+    sessionStorage.clear()
+  }
+
   handleChange = name => event => {
     this.setState({
       [name]: event.target.value
@@ -100,9 +106,7 @@ class TextFields extends React.Component {
         kengenCd: '1' // ここはDBから読み込んだ値を設定
       }
     ]
-    var storage = sessionStorage
-    storage.setItem('loginInfo', JSON.stringify(loginInfo))
-    storage.setItem('aaa', 'bbb')
+    sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
   }
 
   render() {
@@ -221,7 +225,7 @@ class TextFields extends React.Component {
                   <Button
                     variant="raised"
                     color="default"
-                    onClick={this.handleClick()}
+                    onClick={this.handleClick}
                     component={MyLink}
                     fullWidth="true"
                   >
@@ -236,7 +240,11 @@ class TextFields extends React.Component {
                 <td colspan="2">
                   <br />
                   <br />
-                  <br />
+                  <Typography component="p" align="right">
+                    <a href="/sample">
+                      ※画面モックサンプルメニューへ遷移（実装用）
+                    </a>
+                  </Typography>
                   <Typography component="p" align="right">
                     ※ID、パスワード紛失時は管理者に連絡して下さい
                   </Typography>
