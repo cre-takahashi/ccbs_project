@@ -369,7 +369,7 @@ class PersistentDrawer extends React.Component {
     resultList: [],
     userid: null,
     password: null,
-    tShainPk: 8,
+    tShainPk: 0,
     imageFileName: null,
     shimei: null,
     kengenCd: null
@@ -395,6 +395,7 @@ class PersistentDrawer extends React.Component {
       this.setState({ userid: loginInfo['userid'] })
       this.setState({ password: loginInfo['password'] })
       this.setState({ tShainPk: loginInfo['tShainPk'] })
+      this.state.tShainPk = Number(loginInfo['tShainPk'])
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
