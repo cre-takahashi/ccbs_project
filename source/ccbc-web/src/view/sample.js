@@ -372,19 +372,21 @@ class PersistentDrawer extends React.Component {
                 <h3>画面モックアップサンプル（イテレーション２）</h3>
                 <ul>
                   <li>
-                    <a href="/">【01】投票一覧</a>
+                    <a href="/tohyo_ichiran">【01】投票一覧</a>
                   </li>
                   <li>
-                    <a href="/">【02】投票照会（個別）</a>
+                    <a href="/tohyo_shokai_kobetsu">【02】投票照会（個別）</a>
                   </li>
                   <li>
-                    <a href="/">【03】投票照会（個別詳細）</a>
+                    <a href="/tohyo_shokai_shosai">
+                      【03】投票照会（個別詳細）
+                    </a>
                   </li>
                   <li>
-                    <a href="/">【04】コイン照会</a>
+                    <a href="/coin_shokai">【04】コイン照会</a>
                   </li>
                   <li>
-                    <a href="/">【05】コメント照会</a>
+                    <a href="/comment_shokai">【05】コメント照会</a>
                   </li>
                 </ul>
                 <h3>画面モックアップサンプル（イテレーション３）</h3>
