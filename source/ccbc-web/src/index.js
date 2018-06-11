@@ -14,6 +14,11 @@ import MenuForm from './view/menu'
 import SenkyoKanriForm from './view/senkyo_kanri'
 import SenkyoTorokuForm from './view/senkyo_toroku'
 import TohyoTorokuForm from './view/tohyo_toroku'
+import TohyoIchiranForm from './view/tohyo_ichiran'
+import TohyoShokaiKobetsuForm from './view/tohyo_shokai_kobetsu'
+import TohyoShokaiShosaiForm from './view/tohyo_shokai_shosai'
+import CommentShokaiForm from './view/comment_shokai'
+import CoinShokaiForm from './view/coin_shokai'
 
 ReactDOM.render(
   <BrowserRouter>
@@ -32,6 +37,11 @@ ReactDOM.render(
       <Route path="/senkyo_kanri" component={SenkyoKanriForm} />
       <Route path="/senkyo_toroku" component={SenkyoTorokuForm} />
       <Route path="/tohyo_toroku" component={TohyoTorokuForm} />
+      <Route path="/tohyo_ichiran" component={TohyoIchiranForm} />
+      <Route path="/tohyo_shokai_kobetsu" component={TohyoShokaiKobetsuForm} />
+      <Route path="/tohyo_shokai_shosai" component={TohyoShokaiShosaiForm} />
+      <Route path="/comment_shokai" component={CommentShokaiForm} />
+      <Route path="/coin_shokai" component={CoinShokaiForm} />
       <FooterForm />
     </div>
   </BrowserRouter>,
