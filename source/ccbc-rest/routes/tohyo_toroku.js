@@ -36,11 +36,11 @@ router.post('/find', (req, res) => {
     ' inner join t_shain tsha on tpre.t_shain_pk = tsha.t_shain_pk' +
     " where tsen.delete_flg = '0'  and tpre.delete_flg = '0' and tsha.delete_flg = '0'" +
     ' and 1 = (select count(1) from t_senkyo tsen2 inner join t_shussekisha tshu2 on tsen2.t_senkyo_pk = tshu2.t_senkyo_pk' +
-    " where tsen2.delete_flg = '0' and tshu2.delete_flg = '0' and tshu2.t_shain_pk = ?)" +
-    ' and tsen.tohyo_kaishi_dt <= current_date and current_date <= tsen.tohyo_shuryo_dt'
+    " where tsen2.delete_flg = '0' and tshu2.delete_flg = '0' and tshu2.t_shain_pk = :mypk)" +
+    ' and tsen.tohyo_kaishi_dt <= current_date and current_date <= tsen.tohyo_shuryo_dt and tpre.t_shain_pk <> :mypk'
   sequelize
     .query(sql, {
-      replacements: [req.body.tShainPk],
+      replacements: { mypk: req.body.tShainPk },
       type: sequelize.QueryTypes.RAW
     })
     .spread((datas, metadata) => {
