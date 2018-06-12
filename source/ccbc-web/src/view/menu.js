@@ -376,7 +376,7 @@ class PersistentDrawer extends React.Component {
                   eventsEnabled={open2}
                   className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  <ClickAwayListener onClickAway={this.handleToggleClose}>
+                  <ClickAwayListener onClick={this.handleToggleClose}>
                     <Grow
                       in={open2}
                       id="menu-list-grow"

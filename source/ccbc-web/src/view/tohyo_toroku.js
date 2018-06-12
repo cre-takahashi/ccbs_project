@@ -892,8 +892,7 @@ class PersistentDrawer extends React.Component {
                   className={classes.button}
                   variant="raised"
                   size="large"
-                  component={Link}
-                  to="/menu"
+                  component={MenuLink}
                 >
                   <Save
                     className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -961,7 +960,7 @@ class PersistentDrawer extends React.Component {
                   eventsEnabled={open2}
                   className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  <ClickAwayListener onClickAway={this.handleToggleClose}>
+                  <ClickAwayListener onClick={this.handleToggleClose}>
                     <Grow
                       in={open2}
                       id="menu-list-grow"
