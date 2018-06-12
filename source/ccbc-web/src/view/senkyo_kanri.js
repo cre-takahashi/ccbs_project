@@ -46,6 +46,9 @@ import Grow from '@material-ui/core/Grow'
 import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
 import Portal from '@material-ui/core/Portal'
+import request from 'superagent'
+import moment from 'moment'
+import 'moment/locale/ja'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -63,8 +66,6 @@ function createData(name, start, end) {
   id += 1
   return { id, name, start, end }
 }
-
-const data = [createData('平成30年度9月部会', '2018/9/15', '2018/9/22')]
 
 const drawerWidth = 240
 
@@ -227,6 +228,21 @@ class PersistentDrawer extends React.Component {
     anchor: 'left'
   }
 
+  constructor(props) {
+    super(props)
+    const params = this.props.match
+    this.state = {
+      status: true,
+      loaded: false,
+      mode: params.params.mode,
+      readonly: false,
+      resultList: [],
+      open: false,
+      anchor: 'left',
+      anchorEl: null
+    }
+  }
+
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
@@ -239,6 +255,12 @@ class PersistentDrawer extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+
+    request.get('/senkyo_kanri/find').end((err, res) => {
+      if (err) return
+      // 検索結果表示
+      this.setState({ resultList: res.body.data })
+    })
   }
 
   handleDrawerOpen = () => {
@@ -270,6 +292,7 @@ class PersistentDrawer extends React.Component {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
+    const SenkyoTorokuLink = props => <Link to="/senkyo_toroku" {...props} />
 
     const drawer = (
       <Drawer
@@ -407,14 +430,22 @@ class PersistentDrawer extends React.Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.map(n => {
+                    {this.state.resultList.map(n => {
                       return (
                         <TableRow className={classes.row} key={n.id}>
                           <CustomTableCell component="th" scope="row">
-                            {n.name}
+                            {n.senkyo_nm}
                           </CustomTableCell>
-                          <CustomTableCell>{n.start}</CustomTableCell>
-                          <CustomTableCell>{n.end}</CustomTableCell>
+                          <CustomTableCell>
+                            {moment(new Date(n.tohyo_kaishi_dt)).format(
+                              'YYYY/MM/DD'
+                            )}
+                          </CustomTableCell>
+                          <CustomTableCell>
+                            {moment(new Date(n.tohyo_shuryo_dt)).format(
+                              'YYYY/MM/DD'
+                            )}
+                          </CustomTableCell>
                         </TableRow>
                       )
                     })}
@@ -425,6 +456,7 @@ class PersistentDrawer extends React.Component {
                 <Button
                   variant="raised"
                   color="primary"
+                  component={SenkyoTorokuLink}
                   size="large"
                   className={classes.button}
                 >

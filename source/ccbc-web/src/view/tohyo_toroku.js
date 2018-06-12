@@ -16,7 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
-import { Link } from 'react-router-dom'
+import { Link, BrowserRouter } from 'react-router-dom'
 import ButtonBase from '@material-ui/core/ButtonBase'
 import {
   mailFolderListItems,
@@ -416,8 +416,8 @@ class PersistentDrawer extends React.Component {
           this.state.activeStep1[i] = 4
           this.state.activeStep2[i] = 4
           this.state.activeStep3[i] = 4
-          this.state.activeStep4[i] = 4
-          this.state.activeStep5[i] = 4
+          this.state.activeStep4[i] = 0
+          this.state.activeStep5[i] = 0
         }
         this.calculateCoin()
       })
@@ -517,10 +517,15 @@ class PersistentDrawer extends React.Component {
     this.setState({ open2: false })
   }
 
+  onClick() {
+    BrowserRouter.push('/sample')
+  }
+
   render() {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
+    const MenuLink = props => <Link to="/menu" {...props} />
 
     const drawer = (
       <Drawer
@@ -569,8 +574,6 @@ class PersistentDrawer extends React.Component {
       activeStep5
     } = this.state
 
-    const MyLink = props => <Link to="/sample" {...props} />
-
     var head = this.state.headList.map((data, i) => {
       if (!data) {
         return (
@@ -606,60 +609,60 @@ class PersistentDrawer extends React.Component {
 
     const documentHelp = (
       <div>
-        <div>①資料全体を通して統一感がある。</div>
+        <div>①資料全体を通して統一感があった。</div>
         <div>
-          ②「見やすい」「分かりやすい」「理解しやすい」資料になっている。
+          ②「見やすい」「分かりやすい」「理解しやすい」資料になっていた。
         </div>
-        <div>③話の流れを表現した構成で資料が作られている。</div>
-        <div>④量・質が適当。</div>
-        <div>⑤定量的・定性的な観点を意識した資料になっている。</div>
+        <div>③話の流れを表現した構成で資料が作られていた。</div>
+        <div>④量・質が適当だった。</div>
+        <div>⑤定量的・定性的な観点を意識した資料になっていた。</div>
+        <div>等</div>
       </div>
     )
 
     const presentationHelp = (
       <div>
-        <div>①伝える内容を整理し、人前に立っても、臆せずに発表できる。</div>
-        <div>②大勢を前にしても冷静に発表できる。</div>
+        <div>①人前に立っても、臆せずに、落ち着いて発表していた。</div>
+        <div>②質問などの突発事態が発生しても、臨機応変な対応が行えていた。</div>
         <div>
-          ③伝える内容を整理し、意図（目的）通りの分かりやすい発表ができる。
+          ③理解しやすい、聞きやすい内容だった（メリハリがあって、間の取り方が適切。発表の構成（導入・本論・終幕　等）が分かりやすい等）。
         </div>
         <div>
-          ④質問などの突発事態が発生して、当初予定のストーリーから逸脱した場合でも、適切なリカバリーが行える。
+          ④適切な時間で効率よく言いたい事が伝わるわかりやすい説明ができていた。
         </div>
-        <div>⑤意図した伝えたい内容を漏れなく伝える事ができる。</div>
+        <div>等</div>
       </div>
     )
 
     const expressionHelp = (
       <div>
-        <div>①相手の立場や状況を踏まえた適切な言葉を選択している。</div>
-        <div>②専門用語を使いすぎず、わかりやすい表現をしている。</div>
-        <div>③表情に配慮している。（ノンバーバルスキル）</div>
+        <div>①専門用語を使いすぎず、わかりやすい表現をしていた。</div>
+        <div>②表情に配慮していた。（ノンバーバルスキル）</div>
         <div>
-          ④声の大きさ、質、イントネーションに配慮している。（ノンバーバルスキル）
+          ③声の大きさ、質、イントネーションに配慮していた。（ノンバーバルスキル）
         </div>
         <div>
-          ⑤ジェスチャー等を交えた動作による状況説明を配慮している。（ノンバーバルスキル）
+          ④ジェスチャー等を交えた動作による状況説明を配慮していた。（ノンバーバルスキル）
         </div>
-        <div>⑥短時間で効率よく言いたい事が伝わるわかりやすい説明ができる。</div>
-        <div>⑦構成力。（導入・本論・終幕　等）</div>
-        <div>⑧指定された時間内でプレゼンができる。（長すぎず短すぎず）</div>
+        <div>等</div>
       </div>
     )
 
     const influenceHelp = (
       <div>
-        <div>①発表を聞いた後、行動したい、真似したいと感じる。</div>
+        <div>①発表を聞いた後、行動したいと感じた。</div>
         <div>②発表を聞いた後、インスピレーションを得た。</div>
-        <div>③資料の構成、表現を手本にしたいと感じる。</div>
+        <div>③資料の構成、表現を手本にしたい、真似したいと感じた。</div>
+        <div>等</div>
       </div>
     )
 
     const breakthroughHelp = (
       <div>
-        <div>①過去の自分自身を一歩でも半歩でも超えている。</div>
-        <div>①過去の自分自身を一歩でも半歩でも超えている。</div>
-        <div>③苦手を克服する、得意なことを更に伸ばす取り組みをしている。</div>
+        <div>①過去の自分自身を一歩でも半歩でも超えていた。</div>
+        <div>②前例のないことにチャレンジしていた。</div>
+        <div>③苦手を克服する、得意なことを更に伸ばす取り組みをしていた。</div>
+        <div>等</div>
       </div>
     )
 
@@ -690,7 +693,7 @@ class PersistentDrawer extends React.Component {
                             title={documentHelp}
                             placement="right"
                           >
-                            <label>資料</label>
+                            <label>資料作成</label>
                           </Tooltip>
                         </td>
                         <td width="40%">
@@ -722,7 +725,7 @@ class PersistentDrawer extends React.Component {
                             title={presentationHelp}
                             placement="right"
                           >
-                            <label>発表</label>
+                            <label>発表力</label>
                           </Tooltip>
                         </td>
                         <td>
@@ -754,7 +757,7 @@ class PersistentDrawer extends React.Component {
                             title={expressionHelp}
                             placement="right"
                           >
-                            <label>表現</label>
+                            <label>表現力</label>
                           </Tooltip>
                         </td>
                         <td>
@@ -795,7 +798,7 @@ class PersistentDrawer extends React.Component {
                             title={influenceHelp}
                             placement="right"
                           >
-                            <label>影響</label>
+                            <label>影響力</label>
                           </Tooltip>
                         </td>
                         <td>
@@ -836,7 +839,7 @@ class PersistentDrawer extends React.Component {
                             title={breakthroughHelp}
                             placement="right"
                           >
-                            <label>姿勢</label>
+                            <label>限界突破</label>
                           </Tooltip>
                         </td>
                         <td>
@@ -889,7 +892,8 @@ class PersistentDrawer extends React.Component {
                   className={classes.button}
                   variant="raised"
                   size="large"
-                  component={MyLink}
+                  component={Link}
+                  to="/menu"
                 >
                   <Save
                     className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -992,8 +996,10 @@ class PersistentDrawer extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>{head}</div>
-            <div>{resList}</div>
+            <form className={classes.container} noValidate autoComplete="off">
+              <div>{head}</div>
+              <div>{resList}</div>
+            </form>
             {this.state.resultList.map(data => (
               <div>
                 ID ： {data.title}
