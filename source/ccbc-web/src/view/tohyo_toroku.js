@@ -17,52 +17,24 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
 import { Link, BrowserRouter } from 'react-router-dom'
-import ButtonBase from '@material-ui/core/ButtonBase'
-import {
-  mailFolderListItems,
-  otherMailFolderListItems,
-  kanriListItems,
-  ippanListItems,
-  kojiListItems,
-  systemName,
-  restUrl
-} from './tileData'
+import { kanriListItems, ippanListItems, systemName, restUrl } from './tileData'
 import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepButton from '@material-ui/core/StepButton'
 import Avatar from '@material-ui/core/Avatar'
 import Save from '@material-ui/icons/Save'
-import Menu from '@material-ui/core/Menu'
-
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
 import MenuList from '@material-ui/core/MenuList'
-import Collapse from '@material-ui/core/Collapse'
-import Portal from '@material-ui/core/Portal'
 import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-
-const CustomTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
-  },
-  body: {
-    fontSize: 14
-  }
-}))(TableCell)
 
 const drawerWidth = 240
 
@@ -301,24 +273,6 @@ const styles = theme => ({
   }
 })
 
-const testData = [
-  {
-    url: '/images/yamashita.png',
-    title: '第５回EQトレーニング',
-    name: '剛田　武'
-  },
-  {
-    url: '/images/mikami.png',
-    title: '△△△案件プロジェクト報告',
-    name: '札幌　太郎'
-  },
-  {
-    url: '/images/ishigaki.jpg',
-    title: '◯◯◯案件プロジェクト報告',
-    name: '江別　野郎'
-  }
-]
-
 function getSteps1() {
   return ['', '', '', '', '', '', '', '', '', '']
 }
@@ -339,20 +293,7 @@ function getSteps5() {
   return ['', '', '', '', '', '', '', '', '', '']
 }
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return 'Step 1: Select campaign settings...'
-    case 1:
-      return 'Step 2: What is an ad group anyways?'
-    case 2:
-      return 'Step 3: This is the bit I really care about!'
-    default:
-      return 'Unknown step'
-  }
-}
-
-class PersistentDrawer extends React.Component {
+class TohyoTorokuForm extends React.Component {
   state = {
     open: false,
     open2: false,
@@ -393,7 +334,7 @@ class PersistentDrawer extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
-    // プルダウン用のマスタ読み込み
+
     request
       .post('/tohyo_toroku/find')
       .send(this.state)
@@ -450,6 +391,7 @@ class PersistentDrawer extends React.Component {
     this.setState({
       [name[cnt]]: event.target.value
     })
+    this.state.comment[cnt] = event.target.value
   }
 
   handleDrawerOpen = () => {
@@ -517,8 +459,15 @@ class PersistentDrawer extends React.Component {
     this.setState({ open2: false })
   }
 
-  onClick() {
-    BrowserRouter.push('/sample')
+  handleSubmit() {
+    request
+      .post('/tohyo_toroku/create')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          return
+        }
+      })
   }
 
   render() {
@@ -892,6 +841,7 @@ class PersistentDrawer extends React.Component {
                   className={classes.button}
                   variant="raised"
                   size="large"
+                  onClick={this.handleSubmit.bind(this)}
                   component={MenuLink}
                 >
                   <Save
@@ -999,16 +949,6 @@ class PersistentDrawer extends React.Component {
               <div>{head}</div>
               <div>{resList}</div>
             </form>
-            {this.state.resultList.map(data => (
-              <div>
-                ID ： {data.title}
-                <br />
-                名前 ： {data.shimei}
-                <br />
-                パスワード ： {data.image_file_nm}
-                <hr />
-              </div>
-            ))}
           </main>
           {after}
         </div>
@@ -1017,9 +957,9 @@ class PersistentDrawer extends React.Component {
   }
 }
 
-PersistentDrawer.propTypes = {
+TohyoTorokuForm.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(PersistentDrawer)
+export default withStyles(styles, { withTheme: true })(TohyoTorokuForm)

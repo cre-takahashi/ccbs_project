@@ -29,7 +29,7 @@ const query = (sql, params, res) => {
 router.post('/find', (req, res) => {
   var sql =
     'select tsen.t_senkyo_pk as t_senkyo_pk, tsen.senkyo_nm as senkyo_nm, tsen.tohyo_kaishi_dt as tohyo_kaishi_dt,' +
-    ' tsen.tohyo_shuryo_dt as tohyo_shuryo_dt, tsen.haifu_coin as haifu_coin,' +
+    ' tsen.tohyo_shuryo_dt as tohyo_shuryo_dt, tsen.haifu_coin as haifu_coin, tpre.t_presenter_pk as t_presenter_pk, ' +
     ' tpre.title as title, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as bc_account' +
     ' from t_senkyo tsen' +
     ' inner join t_presenter tpre on tsen.t_senkyo_pk = tpre.t_senkyo_pk' +
@@ -47,6 +47,56 @@ router.post('/find', (req, res) => {
       console.log('★★★')
       console.log(datas)
       res.json({ status: true, data: datas })
+    })
+})
+
+router.post('/create', (req, res) => {
+  console.log('◆◆◆')
+  var resultList = req.body.resultList
+  var sql =
+    'insert into t_tohyo (t_presenter_pk, t_shain_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
+    'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING t_tohyo_pk'
+
+  sequelize
+    .transaction(async function(tx) {
+      var resdatas = []
+      for (var i in resultList) {
+        var resdata = resultList[i]
+        await sequelize
+          .query(sql, {
+            transaction: tx,
+            replacements: [
+              resdata.t_presenter_pk,
+              Number(req.body.tShainPk),
+              req.body.activeStep1[i] + 1,
+              req.body.activeStep2[i] + 1,
+              req.body.activeStep3[i] + 1,
+              req.body.activeStep4[i] + 1,
+              req.body.activeStep5[i] + 1,
+              req.body.comment[i],
+              null,
+              '0',
+              null,
+              null
+            ]
+          })
+          .spread((datas, metadata) => {
+            console.log(datas)
+            resdatas.push(datas)
+          })
+      }
+      res.json({ status: true, data: resdatas })
+
+      // このあとにawait sequelizeXXXXを記載することで連続して処理をかける
+    })
+    .then(result => {
+      // コミットしたらこっち
+      console.log('正常')
+    })
+    .catch(e => {
+      // ロールバックしたらこっち
+      console.log('異常')
+      console.log(e)
     })
 })
 
