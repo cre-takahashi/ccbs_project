@@ -1,4 +1,5 @@
 import React from 'react'
+import request from 'superagent'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
@@ -15,6 +16,8 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
+import { Link } from 'react-router-dom'
+import ButtonBase from '@material-ui/core/ButtonBase'
 import {
   mailFolderListItems,
   otherMailFolderListItems,
@@ -24,17 +27,42 @@ import {
   systemName,
   restUrl
 } from './tileData'
-import Menu from '@material-ui/core/Menu'
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+
+import Stepper from '@material-ui/core/Stepper'
+import Step from '@material-ui/core/Step'
+import StepButton from '@material-ui/core/StepButton'
 import Avatar from '@material-ui/core/Avatar'
-import { Link } from 'react-router-dom'
+import Save from '@material-ui/icons/Save'
+import Menu from '@material-ui/core/Menu'
+
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
-import Paper from '@material-ui/core/Paper'
 import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
 import Portal from '@material-ui/core/Portal'
+import Paper from '@material-ui/core/Paper'
+import Tooltip from '@material-ui/core/Tooltip'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white
+  },
+  body: {
+    fontSize: 14
+  }
+}))(TableCell)
 
 const drawerWidth = 240
 
@@ -121,14 +149,196 @@ const styles = theme => ({
   },
   'contentShift-right': {
     marginRight: 0
+  },
+  image: {
+    position: 'relative',
+    height: 200,
+    [theme.breakpoints.down('xs')]: {
+      width: '100% !important', // Overrides inline-style
+      height: 100
+    },
+    '&:hover, &$focusVisible': {
+      zIndex: 1,
+      '& $imageBackdrop': {
+        opacity: 0.15
+      },
+      '& $imageMarked': {
+        opacity: 0
+      },
+      '& $imageTitle': {
+        border: '4px solid currentColor'
+      }
+    }
+  },
+  focusVisible: {},
+  imageButton: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.palette.common.white
+  },
+  imageSrc: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center 40%'
+  },
+  imageBackdrop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: theme.palette.common.black,
+    opacity: 0.4,
+    transition: theme.transitions.create('opacity')
+  },
+  imageTitle: {
+    position: 'relative',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 4}px ${theme
+      .spacing.unit + 6}px`
+  },
+  imageMarked: {
+    height: 3,
+    width: 18,
+    backgroundColor: theme.palette.common.white,
+    position: 'absolute',
+    bottom: -2,
+    left: 'calc(50% - 9px)',
+    transition: theme.transitions.create('opacity')
+  },
+  card2: {
+    display: 'flex'
+  },
+  details2: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  details3: {
+    display: 'table-cell',
+    verticalAlign: 'middle'
+  },
+  content2: {
+    flex: '1 0 auto'
+  },
+  cover2: {
+    width: 151,
+    height: 151
+  },
+  controls2: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingLeft: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit
+  },
+  completed: {
+    display: 'inline-block'
+  },
+  instructions: {
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit
+  },
+  stepSize: {
+    width: 20,
+    height: 10,
+    textAlign: 'left',
+    verticalAlign: 'top'
+  },
+  stepSize2: {
+    width: 15,
+    height: 5,
+    textAlign: 'left',
+    verticalAlign: 'top'
+  },
+  tdSize: {
+    textAlign: 'left',
+    verticalAlign: 'bottom',
+    paddingBottom: '7px'
+  },
+  input: {
+    margin: theme.spacing.unit
+  },
+  avatarRow: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  avatar: {
+    margin: 10
+  },
+  bigAvatar: {
+    width: 150,
+    height: 150
+  },
+  headLine: {
+    width: 350
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 900
+  },
+  paper: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto'
+  },
+  table: {
+    minWidth: 700
+  },
+  row: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default
+    }
   }
 })
 
-class PersistentDrawer extends React.Component {
+const testData = [
+  {
+    url: '/images/yamashita.png',
+    title: '第５回EQトレーニング',
+    name: '剛田　武'
+  },
+  {
+    url: '/images/mikami.png',
+    title: '△△△案件プロジェクト報告',
+    name: '札幌　太郎'
+  },
+  {
+    url: '/images/ishigaki.jpg',
+    title: '◯◯◯案件プロジェクト報告',
+    name: '江別　野郎'
+  }
+]
+
+class ShainKensakuForm extends React.Component {
   state = {
     open: false,
     open2: false,
-    anchor: 'left'
+    anchor: 'left',
+    completed: {},
+    comment: {},
+    haifuCoin: 150,
+    tohyoCoin: 0,
+    resultList: [],
+    userid: null,
+    password: null,
+    tShainPk: 0,
+    imageFileName: null,
+    shimei: null,
+    kengenCd: null
+  }
+
+  constructor(props) {
+    super(props)
   }
 
   /** コンポーネントのマウント時処理 */
@@ -139,10 +349,17 @@ class PersistentDrawer extends React.Component {
       this.setState({ userid: loginInfo['userid'] })
       this.setState({ password: loginInfo['password'] })
       this.setState({ tShainPk: loginInfo['tShainPk'] })
+      this.state.tShainPk = Number(loginInfo['tShainPk'])
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+  }
+
+  handleChange = (name, cnt) => event => {
+    this.setState({
+      [name[cnt]]: event.target.value
+    })
   }
 
   handleDrawerOpen = () => {
@@ -170,25 +387,9 @@ class PersistentDrawer extends React.Component {
     this.setState({ open2: false })
   }
 
-  update = () => {
-    var loginInfo = [
-      {
-        userid: document.js.userid.value,
-        password: document.js.password.value,
-        tShainPk: document.js.tShainPk.value,
-        imageFileName: document.js.imageFileName.value,
-        shimei: document.js.shimei.value,
-        kengenCd: document.js.kengenCd.value
-      }
-    ]
-    sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
-    alert('セッションストレージに反映しました')
-  }
-
   render() {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
-    const { anchorEl } = this.state
     const loginLink = props => <Link to="../" {...props} />
 
     const drawer = (
@@ -224,6 +425,8 @@ class PersistentDrawer extends React.Component {
     } else {
       after = drawer
     }
+
+    const MyLink = props => <Link to="/sample" {...props} />
 
     return (
       <div className={classes.root}>
@@ -288,6 +491,7 @@ class PersistentDrawer extends React.Component {
                       <Paper>
                         <MenuList role="menu">
                           <MenuItem
+                            id="logout"
                             onClick={this.handleLogoutClick}
                             component={loginLink}
                           >
@@ -313,102 +517,7 @@ class PersistentDrawer extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <Typography>
-              <div>
-                <h3>部品サンプル</h3>
-                <ul>
-                  <li>
-                    <a href="/radar">【01】レーダーチャート</a>
-                  </li>
-                  <li>
-                    <a href="/graph">【02】グラフ</a>
-                  </li>
-                  <li>
-                    <a href="/db">【03】データベース</a>
-                  </li>
-                  <li>
-                    <a href="/image">【04】イメージ</a>
-                  </li>
-                </ul>
-                <h3>テスト用セッションストレージ登録</h3>
-                <label>
-                  ここで入力したものがセッションストレージに格納されますのでテスト用に使ってください。<br />
-                  ブラウザを閉じる、またはログアウトしたタイミングでセッションストレージは破棄されます。<br />
-                  イメージファイル名（imageFileName）については、上記「部品サンプル【04】イメージ」で登録したファイル名を指定してください。
-                </label>
-                <br />
-                <form name="js">
-                  <label>userid：</label>
-                  <input type="text" name="userid" />&nbsp;
-                  <label>password：</label>
-                  <input type="text" name="password" />&nbsp;
-                  <label>tShainPk：</label>
-                  <input type="text" name="tShainPk" />&nbsp;
-                  <br />
-                  <label>imageFileName：</label>
-                  <input type="text" name="imageFileName" />&nbsp;
-                  <label>shimei：</label>
-                  <input type="text" name="shimei" />&nbsp;
-                  <label>kengenCd：</label>
-                  <input type="text" name="kengenCd" />&nbsp;
-                  <br />
-                  <input type="button" value="反映" onClick={this.update} />
-                </form>
-                <h3>画面モックアップサンプル（イテレーション１）</h3>
-                <ul>
-                  <li>
-                    <a href="/menu">【01】メインメニュー</a>
-                  </li>
-                  <li>
-                    <a href="/senkyo_kanri">【02】選挙管理</a>
-                  </li>
-                  <li>
-                    <a href="/senkyo_toroku">【03】選挙登録</a>
-                  </li>
-                  <li>
-                    <a href="/tohyo_toroku">【04】投票登録</a>
-                  </li>
-                </ul>
-                <h3>画面モックアップサンプル（イテレーション２）</h3>
-                <ul>
-                  <li>
-                    <a href="/tohyo_ichiran">【01】投票一覧</a>
-                  </li>
-                  <li>
-                    <a href="/tohyo_shokai_kobetsu">【02】投票照会（個別）</a>
-                  </li>
-                  <li>
-                    <a href="/tohyo_shokai_shosai">
-                      【03】投票照会（個別詳細）
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/coin_shokai">【04】コイン照会</a>
-                  </li>
-                  <li>
-                    <a href="/comment_shokai">【05】コメント照会</a>
-                  </li>
-                </ul>
-                <h3>画面モックアップサンプル（イテレーション３）</h3>
-                <ul>
-                  <li>
-                    <a href="/coin_zoyo">【01】コイン贈与</a>
-                  </li>
-                </ul>
-                <h3>画面モックアップサンプル（イテレーション４）</h3>
-                <ul>
-                  <li>
-                    <a href="/shain_kensaku">【01】社員検索</a>
-                  </li>
-                  <li>
-                    <a href="/shain_toroku">【02】社員登録</a>
-                  </li>
-                  <li>
-                    <a href="/tohyo_shokai_nendo">【03】投票照会（年度）</a>
-                  </li>
-                </ul>
-              </div>
-            </Typography>
+            <div>ここに実装すること</div>
           </main>
           {after}
         </div>
@@ -417,9 +526,9 @@ class PersistentDrawer extends React.Component {
   }
 }
 
-PersistentDrawer.propTypes = {
+ShainKensakuForm.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(PersistentDrawer)
+export default withStyles(styles, { withTheme: true })(ShainKensakuForm)
