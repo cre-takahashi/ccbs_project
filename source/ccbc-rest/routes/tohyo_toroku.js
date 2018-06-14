@@ -30,14 +30,16 @@ router.post('/find', (req, res) => {
   var sql =
     'select tsen.t_senkyo_pk as t_senkyo_pk, tsen.senkyo_nm as senkyo_nm, tsen.tohyo_kaishi_dt as tohyo_kaishi_dt,' +
     ' tsen.tohyo_shuryo_dt as tohyo_shuryo_dt, tsen.haifu_coin as haifu_coin, tpre.t_presenter_pk as t_presenter_pk, ' +
-    ' tpre.title as title, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as bc_account' +
+    ' tpre.title as title, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as bc_account, tshu.t_shussekisha_pk  as t_shussekisha_pk' +
     ' from t_senkyo tsen' +
     ' inner join t_presenter tpre on tsen.t_senkyo_pk = tpre.t_senkyo_pk' +
     ' inner join t_shain tsha on tpre.t_shain_pk = tsha.t_shain_pk' +
-    " where tsen.delete_flg = '0'  and tpre.delete_flg = '0' and tsha.delete_flg = '0'" +
-    ' and 1 = (select count(1) from t_senkyo tsen2 inner join t_shussekisha tshu2 on tsen2.t_senkyo_pk = tshu2.t_senkyo_pk' +
+    ' left join t_shussekisha tshu on tsen.t_senkyo_pk = tshu.t_senkyo_pk and tshu.t_shain_pk = :mypk' +
+    " where tsen.delete_flg = '0'  and tpre.delete_flg = '0' and tsha.delete_flg = '0' and tshu.delete_flg = '0'" +
+    ' and exists (select 1 from t_senkyo tsen2 inner join t_shussekisha tshu2 on tsen2.t_senkyo_pk = tshu2.t_senkyo_pk' +
     " where tsen2.delete_flg = '0' and tshu2.delete_flg = '0' and tshu2.t_shain_pk = :mypk)" +
-    ' and tsen.tohyo_kaishi_dt <= current_date and current_date <= tsen.tohyo_shuryo_dt and tpre.t_shain_pk <> :mypk'
+    " and not exists (select 1 from t_tohyo ttoh where ttoh.delete_flg = '0' and ttoh.t_presenter_pk = tpre.t_presenter_pk and ttoh.t_shussekisha_pk = tshu.t_shussekisha_pk and ttoh.transaction_id is not null)" +
+    ' and current_date between tsen.tohyo_kaishi_dt and tsen.tohyo_shuryo_dt and tpre.t_shain_pk <> :mypk'
   sequelize
     .query(sql, {
       replacements: { mypk: req.body.tShainPk },
@@ -54,7 +56,7 @@ router.post('/create', (req, res) => {
   console.log('◆◆◆')
   var resultList = req.body.resultList
   var sql =
-    'insert into t_tohyo (t_presenter_pk, t_shain_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
+    'insert into t_tohyo (t_presenter_pk, t_shussekisha_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
     'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING t_tohyo_pk'
 
   sequelize
@@ -67,7 +69,7 @@ router.post('/create', (req, res) => {
             transaction: tx,
             replacements: [
               resdata.t_presenter_pk,
-              Number(req.body.tShainPk),
+              resdata.t_shussekisha_pk,
               req.body.activeStep1[i] + 1,
               req.body.activeStep2[i] + 1,
               req.body.activeStep3[i] + 1,
