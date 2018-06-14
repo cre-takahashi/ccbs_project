@@ -54,6 +54,20 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+
+import { Redirect } from 'react-router-dom'
+import {
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  Radar,
+  Tooltip as Tooltip2
+} from 'recharts'
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -274,6 +288,10 @@ const styles = theme => ({
   avatar: {
     margin: 10
   },
+  PnlAvatar: {
+    width: 60,
+    height: 60
+  },
   bigAvatar: {
     width: 150,
     height: 150
@@ -362,6 +380,12 @@ class TohyoShokaiShosaiForm extends React.Component {
     })
   }
 
+  handleChangePnl = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false
+    })
+  }
+
   handleDrawerOpen = () => {
     this.setState({ open: true })
   }
@@ -391,6 +415,7 @@ class TohyoShokaiShosaiForm extends React.Component {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
+    const { expanded } = this.state
 
     const drawer = (
       <Drawer
@@ -427,6 +452,14 @@ class TohyoShokaiShosaiForm extends React.Component {
     }
 
     const MyLink = props => <Link to="/sample" {...props} />
+
+    const dataRadar = [
+      { rank: '資料作成', value: 120 },
+      { rank: '発表力', value: 85 },
+      { rank: '表現力', value: 65 },
+      { rank: '影響力', value: 35 },
+      { rank: '限界突破', value: 35 }
+    ]
 
     return (
       <div className={classes.root}>
@@ -482,25 +515,23 @@ class TohyoShokaiShosaiForm extends React.Component {
                   eventsEnabled={open2}
                   className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  <ClickAwayListener onClick={this.handleToggleClose}>
-                    <Grow
-                      in={open2}
-                      id="menu-list-grow"
-                      style={{ transformOrigin: '0 0 0' }}
-                    >
-                      <Paper>
-                        <MenuList role="menu">
-                          <MenuItem
-                            id="logout"
-                            onClick={this.handleLogoutClick}
-                            component={loginLink}
-                          >
-                            Logout
-                          </MenuItem>
-                        </MenuList>
-                      </Paper>
-                    </Grow>
-                  </ClickAwayListener>
+                  <Grow
+                    in={open2}
+                    id="menu-list-grow"
+                    style={{ transformOrigin: '0 0 0' }}
+                  >
+                    <Paper>
+                      <MenuList role="menu">
+                        <MenuItem
+                          id="logout"
+                          onClick={this.handleLogoutClick}
+                          component={loginLink}
+                        >
+                          Logout
+                        </MenuItem>
+                      </MenuList>
+                    </Paper>
+                  </Grow>
                 </Popper>
               </Manager>
             </Toolbar>
@@ -517,7 +548,178 @@ class TohyoShokaiShosaiForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div>
+              <Paper className={classes.root} elevation={4}>
+                <Typography variant="subhead" component="p">
+                  平成３０年度６月部会
+                </Typography>
+                <Typography variant="headline" component="h3">
+                  全体順位：１位　獲得コイン：340coin
+                </Typography>
+                <Typography variant="headline" component="h3">
+                  『新しい価値を創造する為に・・・』
+                </Typography>
+                <table>
+                  <tr>
+                    <td>
+                      <Avatar
+                        alt="Adelle Charles"
+                        src="/images/mikami.png"
+                        className={classNames(classes.PnlAvatar)}
+                      />
+                    </td>
+                    <td>
+                      <Typography
+                        component="p"
+                        variant="title"
+                        color="textSecondary"
+                      >
+                        北海道　一郎
+                      </Typography>
+                    </td>
+                  </tr>
+                </table>
+              </Paper>
+
+              <RadarChart // レーダーチャートのサイズや位置、データを指定
+                height={400} // レーダーチャートの全体の高さを指定
+                width={500} // レーダーチャートの全体の幅を指定
+                cx="50%" // 要素の左を基準に全体の50%移動
+                cy="50%" // 要素の上を基準に全体の50%移動
+                data={dataRadar} // ここにArray型のデータを指定
+              >
+                <PolarGrid /> // レーダーのグリッド線を表示
+                <PolarAngleAxis
+                  dataKey="rank" // Array型のデータの、数値を表示したい値のキーを指定
+                />
+                <Radar // レーダーの色や各パラメーターのタイトルを指定
+                  name="Mike" // hoverした時に表示される名前を指定
+                  dataKey="value" // Array型のデータのパラメータータイトルを指定
+                  stroke="#8884d8" // レーダーの線の色を指定
+                  fill="#8884d8" // レーダーの中身の色を指定
+                  fillOpacity={0.6} // レーダーの中身の色の薄さを指定
+                />
+                <Tooltip2 /> //hoverすると各パラメーターの値が表示される
+              </RadarChart>
+
+              <ExpansionPanel
+                expanded={expanded === 'panel1'}
+                onChange={this.handleChangePnl('panel1')}
+              >
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>
+                    <Avatar
+                      alt="Adelle Charles"
+                      src="/images/yamashita.png"
+                      className={classNames(classes.PnlAvatar)}
+                    />
+                    札幌　一郎
+                  </Typography>
+                  <Typography className={classes.secondaryHeading}>
+                    投票：500coin　コメントを読む
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>すごく良かった。 感動した。</Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+
+              <ExpansionPanel
+                expanded={expanded === 'panel2'}
+                onChange={this.handleChangePnl('panel2')}
+              >
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>
+                    <Avatar
+                      alt="Adelle Charles"
+                      src="/images/yamashita.png"
+                      className={classNames(classes.PnlAvatar)}
+                    />
+                    札幌　二郎
+                  </Typography>
+                  <Typography className={classes.secondaryHeading}>
+                    投票：400coin　コメントを読む
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    すごく良かった。 感動した。もっと聞きたい！！！
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+
+              <ExpansionPanel
+                expanded={expanded === 'panel3'}
+                onChange={this.handleChangePnl('panel3')}
+              >
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>
+                    <Avatar
+                      alt="Adelle Charles"
+                      src="/images/yamashita.png"
+                      className={classNames(classes.PnlAvatar)}
+                    />
+                    札幌　三郎
+                  </Typography>
+                  <Typography className={classes.secondaryHeading}>
+                    投票：300coin　コメントを読む
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    すごく良かった。 感動した。もっと聞きたい！！！
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+
+              <ExpansionPanel
+                expanded={expanded === 'panel4'}
+                onChange={this.handleChangePnl('panel4')}
+              >
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>
+                    <Avatar
+                      alt="Adelle Charles"
+                      src="/images/yamashita.png"
+                      className={classNames(classes.PnlAvatar)}
+                    />
+                    札幌　四郎
+                  </Typography>
+                  <Typography className={classes.secondaryHeading}>
+                    投票：200coin　コメントを読む
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    すごく良かった。 感動した。もっと聞きたい！！！
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+
+              <ExpansionPanel
+                expanded={expanded === 'panel5'}
+                onChange={this.handleChangePnl('panel5')}
+              >
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>
+                    <Avatar
+                      alt="Adelle Charles"
+                      src="/images/yamashita.png"
+                      className={classNames(classes.PnlAvatar)}
+                    />
+                    札幌　五郎
+                  </Typography>
+                  <Typography className={classes.secondaryHeading}>
+                    投票：100coin　コメントを読む
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Typography>
+                    すごく良かった。 感動した。もっと聞きたい！！！
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            </div>
           </main>
           {after}
         </div>
