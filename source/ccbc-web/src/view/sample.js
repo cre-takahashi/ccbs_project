@@ -29,7 +29,6 @@ import Avatar from '@material-ui/core/Avatar'
 import { Link } from 'react-router-dom'
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
 import Paper from '@material-ui/core/Paper'
 import MenuList from '@material-ui/core/MenuList'
@@ -279,24 +278,22 @@ class PersistentDrawer extends React.Component {
                   eventsEnabled={open2}
                   className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  <ClickAwayListener onClick={this.handleToggleClose}>
-                    <Grow
-                      in={open2}
-                      id="menu-list-grow"
-                      style={{ transformOrigin: '0 0 0' }}
-                    >
-                      <Paper>
-                        <MenuList role="menu">
-                          <MenuItem
-                            onClick={this.handleLogoutClick}
-                            component={loginLink}
-                          >
-                            Logout
-                          </MenuItem>
-                        </MenuList>
-                      </Paper>
-                    </Grow>
-                  </ClickAwayListener>
+                  <Grow
+                    in={open2}
+                    id="menu-list-grow"
+                    style={{ transformOrigin: '0 0 0' }}
+                  >
+                    <Paper>
+                      <MenuList role="menu">
+                        <MenuItem
+                          onClick={this.handleLogoutClick}
+                          component={loginLink}
+                        >
+                          Logout
+                        </MenuItem>
+                      </MenuList>
+                    </Paper>
+                  </Grow>
                 </Popper>
               </Manager>
             </Toolbar>

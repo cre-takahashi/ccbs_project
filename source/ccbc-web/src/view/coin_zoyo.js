@@ -41,7 +41,6 @@ import Menu from '@material-ui/core/Menu'
 
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
 import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
@@ -482,25 +481,23 @@ class CoinZoyoForm extends React.Component {
                   eventsEnabled={open2}
                   className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  <ClickAwayListener onClick={this.handleToggleClose}>
-                    <Grow
-                      in={open2}
-                      id="menu-list-grow"
-                      style={{ transformOrigin: '0 0 0' }}
-                    >
-                      <Paper>
-                        <MenuList role="menu">
-                          <MenuItem
-                            id="logout"
-                            onClick={this.handleLogoutClick}
-                            component={loginLink}
-                          >
-                            Logout
-                          </MenuItem>
-                        </MenuList>
-                      </Paper>
-                    </Grow>
-                  </ClickAwayListener>
+                  <Grow
+                    in={open2}
+                    id="menu-list-grow"
+                    style={{ transformOrigin: '0 0 0' }}
+                  >
+                    <Paper>
+                      <MenuList role="menu">
+                        <MenuItem
+                          id="logout"
+                          onClick={this.handleLogoutClick}
+                          component={loginLink}
+                        >
+                          Logout
+                        </MenuItem>
+                      </MenuList>
+                    </Paper>
+                  </Grow>
                 </Popper>
               </Manager>
             </Toolbar>
