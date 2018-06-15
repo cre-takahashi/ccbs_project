@@ -1,30 +1,9 @@
 const request = require('superagent')
 const express = require('express')
-const Sequelize = require('sequelize')
-const sequelize = new Sequelize(
-  'postgres://postgres:pgadmin@localhost:5432/postgres',
-  {
-    dialect: 'postgres',
-    operatorsAliases: false
-  }
-)
 const router = express.Router()
 const async = require('async')
-
-const db = require('./common/pg_helper.js')
-
-const query = (sql, params, res) => {
-  db.query(sql, params, (err, datas) => {
-    if (err) {
-      console.log(`failed...${err}`)
-      res.status(400).send(`エラーが発生しました<br />${err}`)
-      return
-    }
-    console.log('success!!')
-    console.log(datas)
-    res.json({ status: true, data: datas })
-  })
-}
+const db = require('./common/sequelize_helper.js').sequelize
+const bcdomain = require('./common/constans.js').bcdomain
 
 router.post('/find', (req, res) => {
   var sql =
@@ -40,10 +19,10 @@ router.post('/find', (req, res) => {
     " where tsen2.delete_flg = '0' and tshu2.delete_flg = '0' and tshu2.t_shain_pk = :mypk)" +
     " and not exists (select 1 from t_tohyo ttoh where ttoh.delete_flg = '0' and ttoh.t_presenter_pk = tpre.t_presenter_pk and ttoh.t_shussekisha_pk = tshu.t_shussekisha_pk and ttoh.transaction_id is not null)" +
     ' and current_date between tsen.tohyo_kaishi_dt and tsen.tohyo_shuryo_dt and tpre.t_shain_pk <> :mypk'
-  sequelize
+  db
     .query(sql, {
       replacements: { mypk: req.body.tShainPk },
-      type: sequelize.QueryTypes.RAW
+      type: db.QueryTypes.RAW
     })
     .spread((datas, metadata) => {
       console.log('★★★')
@@ -59,12 +38,12 @@ router.post('/create', (req, res) => {
     'insert into t_tohyo (t_presenter_pk, t_shussekisha_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
     'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING t_tohyo_pk'
 
-  sequelize
+  db
     .transaction(async function(tx) {
       var resdatas = []
       for (var i in resultList) {
         var resdata = resultList[i]
-        await sequelize
+        await db
           .query(sql, {
             transaction: tx,
             replacements: [
@@ -87,9 +66,9 @@ router.post('/create', (req, res) => {
             resdatas.push(datas)
           })
       }
-      res.json({ status: true, data: resdatas })
-
       // このあとにawait sequelizeXXXXを記載することで連続して処理をかける
+
+      res.json({ status: true, data: resdatas })
     })
     .then(result => {
       // コミットしたらこっち
@@ -104,7 +83,7 @@ router.post('/create', (req, res) => {
 
 router.post('/findA', (req, res) => {
   // プルダウン用のマスタ読み込み
-  request.post('http://localhost:3002/bc-api/add_account').end((err, res) => {
+  request.post(bcdomain + '/bc-api/add_account').end((err, res) => {
     console.log('★★★')
     if (err) {
       console.log('★' + err)
@@ -117,9 +96,9 @@ router.post('/findA', (req, res) => {
   console.log('OK')
   console.log(req.params)
 
-  sequelize
+  db
     .transaction(async function(tx) {
-      await sequelize
+      await db
         .query('select * from test', { transaction: tx })
         .spread((datas, metadata) => {
           console.log(datas)
