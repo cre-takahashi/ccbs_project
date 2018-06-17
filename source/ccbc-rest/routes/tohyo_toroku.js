@@ -38,11 +38,16 @@ router.post('/create', (req, res) => {
     'insert into t_tohyo (t_presenter_pk, t_shussekisha_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
     'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING t_tohyo_pk'
 
+  var sql2 = 'update t_tohyo set transaction_id = ? where t_tohyo_pk = ?'
+
   db
     .transaction(async function(tx) {
       var resdatas = []
       for (var i in resultList) {
         var resdata = resultList[i]
+        var t_tohyo_pk = null
+        var transaction_id = null
+        console.log('◆１')
         await db
           .query(sql, {
             transaction: tx,
@@ -62,8 +67,33 @@ router.post('/create', (req, res) => {
             ]
           })
           .spread((datas, metadata) => {
+            console.log('◆２')
             console.log(datas)
             resdatas.push(datas)
+            t_tohyo_pk = datas[0].t_tohyo_pk
+
+            // BC呼び出し
+            request.post(bcdomain + '/bc-api/add_account').end((err, res) => {
+              console.log('◆３')
+              console.log('★★★')
+              if (err) {
+                console.log('★' + err)
+                return
+              }
+              // 検索結果表示
+              console.log('★★★' + res)
+              transaction_id = res.body.bc_account
+            })
+          })
+        console.log('◆４')
+        await db
+          .query(sql2, {
+            transaction: tx,
+            replacements: [transaction_id, t_tohyo_pk]
+          })
+          .spread((datas, metadata) => {
+            console.log('◆５')
+            console.log(datas)
           })
       }
       // このあとにawait sequelizeXXXXを記載することで連続して処理をかける
