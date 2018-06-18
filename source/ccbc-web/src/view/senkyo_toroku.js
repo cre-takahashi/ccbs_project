@@ -53,7 +53,6 @@ import { lighten } from '@material-ui/core/styles/colorManipulator'
 import Menu from '@material-ui/core/Menu'
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
 import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
@@ -514,8 +513,8 @@ class PersistentDrawer extends React.Component {
       checked2: [1],
 
       election: null,
-      startDate:null,
-      endDate:null,
+      startDate: null,
+      endDate: null,
       multiline: 'Controlled',
       currency: 'EUR',
       name: [],
@@ -583,7 +582,7 @@ class PersistentDrawer extends React.Component {
     if (checked) {
       this.setState({ selected: this.state.resultList.map(n => n.id) })
       calCoin = this.state.resultList.length * this.state.selected2.length * 500
-    }else{
+    } else {
       this.setState({ selected: [] })
     }
     this.setState({ coin: calCoin })
@@ -628,7 +627,7 @@ class PersistentDrawer extends React.Component {
     if (checked) {
       this.setState({ selected2: this.state.resultList.map(n => n.id) })
       calCoin = this.state.resultList.length * this.state.selected.length * 500
-    }else{
+    } else {
       this.setState({ selected2: [] })
     }
     this.setState({ coin: calCoin })
@@ -854,24 +853,22 @@ class PersistentDrawer extends React.Component {
                   eventsEnabled={open2}
                   className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  <ClickAwayListener onClick={this.handleToggleClose}>
-                    <Grow
-                      in={open2}
-                      id="menu-list-grow"
-                      style={{ transformOrigin: '0 0 0' }}
-                    >
-                      <Paper>
-                        <MenuList role="menu">
-                          <MenuItem
-                            onClick={this.handleLogoutClick}
-                            component={loginLink}
-                          >
-                            Logout
-                          </MenuItem>
-                        </MenuList>
-                      </Paper>
-                    </Grow>
-                  </ClickAwayListener>
+                  <Grow
+                    in={open2}
+                    id="menu-list-grow"
+                    style={{ transformOrigin: '0 0 0' }}
+                  >
+                    <Paper>
+                      <MenuList role="menu">
+                        <MenuItem
+                          onClick={this.handleLogoutClick}
+                          component={loginLink}
+                        >
+                          Logout
+                        </MenuItem>
+                      </MenuList>
+                    </Paper>
+                  </Grow>
                 </Popper>
               </Manager>
             </Toolbar>
@@ -1080,22 +1077,24 @@ class PersistentDrawer extends React.Component {
                 />
               </Paper>
               {(() => {
-              return (
-                <Button
-                  className={classes.button}
-                  variant="raised"
-                  size="large"
-                  onClick={this.handleSubmit.bind(this)}
-                  component={MenuLink}
-                >
-                  <Save
-                    className={classNames(classes.leftIcon, classes.iconSmall)}
-                  />
-                  SAVE
-                </Button>
-              )
-
-          })()}
+                return (
+                  <Button
+                    className={classes.button}
+                    variant="raised"
+                    size="large"
+                    onClick={this.handleSubmit.bind(this)}
+                    component={MenuLink}
+                  >
+                    <Save
+                      className={classNames(
+                        classes.leftIcon,
+                        classes.iconSmall
+                      )}
+                    />
+                    SAVE
+                  </Button>
+                )
+              })()}
               <a href="#top" title="ページ最上部へ">
                 <div align="right">
                   <img src="/images/yajirusi-ue.png" width="50" height="50" />
