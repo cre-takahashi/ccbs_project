@@ -12,6 +12,7 @@ const serverRouter = require('./routes/server')
 const imageRouter = require('./routes/image')
 const tohyoTorokuRouter = require('./routes/tohyo_toroku')
 const senkyoKanriRouter = require('./routes/senkyo_kanri')
+const senkyoTorokuRouter = require('./routes/senkyo_toroku')
 
 const app = express()
 
@@ -31,6 +32,7 @@ app.use('/server', serverRouter)
 app.use('/image', imageRouter)
 app.use('/tohyo_toroku', tohyoTorokuRouter)
 app.use('/senkyo_kanri', senkyoKanriRouter)
+app.use('/senkyo_toroku', senkyoTorokuRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

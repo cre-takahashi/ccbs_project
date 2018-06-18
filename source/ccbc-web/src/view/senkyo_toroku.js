@@ -1,4 +1,5 @@
 import React from 'react'
+import request from 'superagent'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
@@ -52,6 +53,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator'
 import Menu from '@material-ui/core/Menu'
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
 import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
@@ -64,7 +66,13 @@ function createData(name, image) {
 }
 
 const columnData = [
-  { id: 'name', numeric: false, disablePadding: true, label: '名前' }
+  { id: 'name', numeric: false, disablePadding: true, label: '名前' },
+  {
+    id: 'title',
+    numeric: false,
+    disablePadding: true,
+    label: '発表タイトル'
+  }
 ]
 
 class EnhancedTableHead extends React.Component {
@@ -75,20 +83,32 @@ class EnhancedTableHead extends React.Component {
   render() {
     const {
       onSelectAllClick,
+      onSelectAllClick2,
       order,
       orderBy,
       numSelected,
+      numSelected2,
       rowCount
     } = this.props
+    const MenuLink = props => <Link to="/menu" {...props} />
 
     return (
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
+            参加者
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={numSelected === rowCount}
               onChange={onSelectAllClick}
+            />
+          </TableCell>
+          <TableCell padding="checkbox">
+            発表者
+            <Checkbox
+              indeterminate={numSelected2 > 0 && numSelected2 < rowCount}
+              checked={numSelected2 === rowCount}
+              onChange={onSelectAllClick2}
             />
           </TableCell>
           {columnData.map(column => {
@@ -126,6 +146,7 @@ EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
+  onSelectAllClick2: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired
@@ -423,24 +444,24 @@ const images2 = [
   }
 ]
 
-const member = [
-  {
-    value: 1,
-    name: '山田　太郎'
-  },
-  {
-    value: 2,
-    name: '田中　達也'
-  },
-  {
-    value: 3,
-    name: '中田　花子'
-  },
-  {
-    value: 4,
-    name: '中村　一郎'
-  }
-]
+//const member = [
+//{
+//value: 1,
+//name: '山田　太郎'
+//},
+//{
+//  value: 2,
+//    name: '田中　達也'
+//  },
+//  {
+//    value: 3,
+//    name: '中田　花子'
+//  },
+//  {
+//    value: 4,
+//    name: '中村　一郎'
+//  }
+//]
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -453,7 +474,7 @@ const MenuProps = {
   }
 }
 
-const names = ['山田　太郎', '田中　達也', '中田　花子', '中村　一郎']
+//const names = ['山田　太郎', '田中　達也', '中田　花子', '中村　一郎']
 
 class PersistentDrawer extends React.Component {
   constructor(props, context) {
@@ -463,19 +484,19 @@ class PersistentDrawer extends React.Component {
       order: 'asc',
       orderBy: 'name',
       selected: [],
-      data: [
-        createData('札幌　太郎', '/images/ishigaki.jpg'),
-        createData('札幌　次郎', '/images/mikami.png'),
-        createData('札幌　三郎', '/images/yamashita.png'),
-        createData('中央　花子', '/images/ishigaki.jpg'),
-        createData('中央　太郎', '/images/yamashita.png'),
-        createData('山田　太郎', '/images/sample.jpg'),
-        createData('山田　次郎', '/images/yamashita.png'),
-        createData('山田　花子', '/images/sample.jpg'),
-        createData('管理者　太郎', '/images/ishigaki.jpg'),
-        createData('管理者　花子', '/images/sample.jpg'),
-        createData('苫小牧　太郎', '/images/mikami.png')
-      ].sort((a, b) => (a.name < b.name ? -1 : 1)),
+      //data: [
+      //   createData('札幌　太郎', '/images/ishigaki.jpg'),
+      //   createData('札幌　次郎', '/images/mikami.png'),
+      //   createData('札幌　三郎', '/images/yamashita.png'),
+      //   createData('中央　花子', '/images/ishigaki.jpg'),
+      //   createData('中央　太郎', '/images/yamashita.png'),
+      //   createData('山田　太郎', '/images/sample.jpg'),
+      //   createData('山田　次郎', '/images/yamashita.png'),
+      //   createData('山田　花子', '/images/sample.jpg'),
+      //   createData('管理者　太郎', '/images/ishigaki.jpg'),
+      //   createData('管理者　花子', '/images/sample.jpg'),
+      //   createData('苫小牧　太郎', '/images/mikami.png')
+      // ].sort((a, b) => (a.name < b.name ? -1 : 1)),
       page: 0,
       rowsPerPage: 5,
       open: false,
@@ -483,10 +504,24 @@ class PersistentDrawer extends React.Component {
       anchor: 'left',
       checked: [1],
 
-      election: '平成30年10月部会',
+      //      order2: 'asc',
+      //      orderBy2: 'name',
+      selected2: [],
+      //      page2: 0,
+      //      rowsPerPage2: 5,
+      open2: false,
+      anchor2: 'left',
+      checked2: [1],
+
+      election: null,
+      startDate:null,
+      endDate:null,
       multiline: 'Controlled',
       currency: 'EUR',
-      name: []
+      name: [],
+      anchorEl: null,
+      coin: '0',
+      resultList: []
     }
   }
 
@@ -502,6 +537,25 @@ class PersistentDrawer extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+
+    var now = new Date()
+    var month = now.getMonth() + 1
+    this.setState({
+      election: now.getFullYear() + '年' + month + '月部会'
+    })
+
+    request
+      .post('/senkyo_toroku/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          alert(err)
+          return
+        }
+        var resList = res.body.data
+        // 検索結果表示
+        this.setState({ resultList: resList })
+      })
   }
 
   handleRequestSort = (event, property) => {
@@ -512,20 +566,27 @@ class PersistentDrawer extends React.Component {
       order = 'asc'
     }
 
-    const data =
+    const resultList =
       order === 'desc'
-        ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-        : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1))
+        ? this.state.resultList.sort(
+            (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
+          )
+        : this.state.resultList.sort(
+            (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1)
+          )
 
-    this.setState({ data, order, orderBy })
+    this.setState({ resultList, order, orderBy })
   }
 
   handleSelectAllClick = (event, checked) => {
+    var calCoin = 0
     if (checked) {
-      this.setState({ selected: this.state.data.map(n => n.id) })
-      return
+      this.setState({ selected: this.state.resultList.map(n => n.id) })
+      calCoin = this.state.resultList.length * this.state.selected2.length * 500
+    }else{
+      this.setState({ selected: [] })
     }
-    this.setState({ selected: [] })
+    this.setState({ coin: calCoin })
   }
 
   handleClick = (event, id) => {
@@ -546,7 +607,9 @@ class PersistentDrawer extends React.Component {
       )
     }
 
+    var calCoin = newSelected.length * this.state.selected2.length * 500
     this.setState({ selected: newSelected })
+    this.setState({ coin: calCoin })
   }
 
   handleChangePage = (event, page) => {
@@ -559,15 +622,60 @@ class PersistentDrawer extends React.Component {
 
   isSelected = id => this.state.selected.indexOf(id) !== -1
 
+  // 2つめ
+  handleSelectAllClick2 = (event, checked) => {
+    var calCoin = 0
+    if (checked) {
+      this.setState({ selected2: this.state.resultList.map(n => n.id) })
+      calCoin = this.state.resultList.length * this.state.selected.length * 500
+    }else{
+      this.setState({ selected2: [] })
+    }
+    this.setState({ coin: calCoin })
+  }
+
+  handleClick3 = (event, id) => {
+    const { selected2 } = this.state
+    const selectedIndex2 = selected2.indexOf(id)
+    let newSelected2 = []
+
+    if (selectedIndex2 === -1) {
+      newSelected2 = newSelected2.concat(selected2, id)
+    } else if (selectedIndex2 === 0) {
+      newSelected2 = newSelected2.concat(selected2.slice(1))
+    } else if (selectedIndex2 === selected2.length - 1) {
+      newSelected2 = newSelected2.concat(selected2.slice(0, -1))
+    } else if (selectedIndex2 > 0) {
+      newSelected2 = newSelected2.concat(
+        selected2.slice(0, selectedIndex2),
+        selected2.slice(selectedIndex2 + 1)
+      )
+    }
+
+    var calCoin = newSelected2.length * this.state.selected.length * 500
+    this.setState({ selected2: newSelected2 })
+    this.setState({ coin: calCoin })
+  }
+
+  isSelected2 = id => this.state.selected2.indexOf(id) !== -1
+  // ↑ここまで
+
   handleChange = name => event => {
     this.setState({ [name]: event.target.value })
   }
 
-  handleChange = election => event => {
+  handleChange2 = (name, cnt) => event => {
     this.setState({
-      [election]: event.target.value
+      [name[cnt]]: event.target.value
     })
+    this.state.comment[cnt] = event.target.value
   }
+
+  // handleChange = election => event => {
+  //   this.setState({
+  //     [election]: event.target.value
+  //   })
+  // }
 
   handleDrawerOpen = () => {
     this.setState({ open: true })
@@ -610,13 +718,53 @@ class PersistentDrawer extends React.Component {
     this.setState({ open2: false })
   }
 
+  handleClick2 = event => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+
+  handleClose = () => {
+    this.setState({ anchorEl: null })
+  }
+
+  handleSubmit() {
+    request
+      .post('/senkyo_toroku/create')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          return
+        }
+      })
+  }
+
   render() {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state
+    const {
+      resultList,
+      order,
+      orderBy,
+      selected,
+      rowsPerPage,
+      page
+    } = this.state
     const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
+      rowsPerPage -
+      Math.min(rowsPerPage, resultList.length - page * rowsPerPage)
     const loginLink = props => <Link to="../" {...props} />
+    const MenuLink = props => <Link to="/menu" {...props} />
+
+    const {
+      order2,
+      orderBy2,
+      selected2,
+      rowsPerPage2,
+      page2,
+      coin
+    } = this.state
+    const emptyRows2 =
+      rowsPerPage2 -
+      Math.min(rowsPerPage2, resultList.length2 - page2 * rowsPerPage2)
 
     const drawer = (
       <Drawer
@@ -706,22 +854,24 @@ class PersistentDrawer extends React.Component {
                   eventsEnabled={open2}
                   className={classNames({ [classes.popperClose]: !open2 })}
                 >
-                  <Grow
-                    in={open2}
-                    id="menu-list-grow"
-                    style={{ transformOrigin: '0 0 0' }}
-                  >
-                    <Paper>
-                      <MenuList role="menu">
-                        <MenuItem
-                          onClick={this.handleLogoutClick}
-                          component={loginLink}
-                        >
-                          Logout
-                        </MenuItem>
-                      </MenuList>
-                    </Paper>
-                  </Grow>
+                  <ClickAwayListener onClick={this.handleToggleClose}>
+                    <Grow
+                      in={open2}
+                      id="menu-list-grow"
+                      style={{ transformOrigin: '0 0 0' }}
+                    >
+                      <Paper>
+                        <MenuList role="menu">
+                          <MenuItem
+                            onClick={this.handleLogoutClick}
+                            component={loginLink}
+                          >
+                            Logout
+                          </MenuItem>
+                        </MenuList>
+                      </Paper>
+                    </Grow>
+                  </ClickAwayListener>
                 </Popper>
               </Manager>
             </Toolbar>
@@ -741,6 +891,15 @@ class PersistentDrawer extends React.Component {
 
             <form className={classes.container} noValidate autoComplete="off">
               <h2>
+                <a href="#bottom" title="ページ最下部へ">
+                  <div align="right">
+                    <img
+                      src="/images/yajirusi-shita.png"
+                      width="50"
+                      height="50"
+                    />
+                  </div>
+                </a>
                 <img
                   src="/images/yajirushi.png"
                   alt="サンプル"
@@ -763,20 +922,24 @@ class PersistentDrawer extends React.Component {
                 />
                 <br />
                 <TextField
-                  id="textarea"
+                  id="date"
                   label="開始日"
-                  placeholder="投票開始日を入力（yyyy/mm/dd）"
-                  multiline
+                  type="date"
                   className={classes.textField2}
-                  margin="normal"
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  onChange={this.handleChange('startDate')}
                 />
                 <TextField
-                  id="textarea"
+                  id="date"
                   label="終了日"
-                  placeholder="投票終了日を入力（yyyy/mm/dd）"
-                  multiline
+                  type="date"
                   className={classes.textField2}
-                  margin="normal"
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  onChange={this.handleChange('endDate')}
                 />
                 <br />
                 <TextField
@@ -792,10 +955,12 @@ class PersistentDrawer extends React.Component {
                 <TextField
                   id="textarea"
                   label="配布コイン数"
+                  value={this.state.coin}
                   placeholder=""
                   multiline
                   className={classes.textField2}
                   margin="normal"
+                  disabled
                 />
               </Paper>
               <br />
@@ -810,7 +975,6 @@ class PersistentDrawer extends React.Component {
                 <strong>参加者選択</strong>
               </h2>
               <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} />
                 <div className={classes.tableWrapper}>
                   <Table className={classes.table} aria-labelledby="tableTitle">
                     <EnhancedTableHead
@@ -819,20 +983,24 @@ class PersistentDrawer extends React.Component {
                       orderBy={orderBy}
                       onSelectAllClick={this.handleSelectAllClick}
                       onRequestSort={this.handleRequestSort}
-                      rowCount={data.length}
+                      //rowCount={data.length}
+                      rowCount={this.state.resultList.length}
+                      numSelected2={selected2.length}
+                      onSelectAllClick2={this.handleSelectAllClick2}
                     />
                     <TableBody>
-                      {data
+                      {this.state.resultList
                         .slice(
                           page * rowsPerPage,
                           page * rowsPerPage + rowsPerPage
                         )
                         .map(n => {
                           const isSelected = this.isSelected(n.id)
+                          const isSelected2 = this.isSelected2(n.id)
                           return (
                             <TableRow
                               hover
-                              onClick={event => this.handleClick(event, n.id)}
+                              // onClick={event => this.handleClick(event, n.id)}
                               role="checkbox"
                               aria-checked={isSelected}
                               tabIndex={-1}
@@ -843,16 +1011,47 @@ class PersistentDrawer extends React.Component {
                                 padding="checkbox"
                                 style={{ width: '5%' }}
                               >
-                                <Checkbox checked={isSelected} />
+                                <Checkbox
+                                  onClick={event =>
+                                    this.handleClick(event, n.id)
+                                  }
+                                  checked={isSelected}
+                                />
+                              </TableCell>
+                              <TableCell
+                                padding="checkbox"
+                                style={{ width: '5%' }}
+                              >
+                                <Checkbox
+                                  onClick={event =>
+                                    this.handleClick3(event, n.id)
+                                  }
+                                  checked={isSelected2}
+                                />
                               </TableCell>
                               <TableCell padding="none" style={{ width: '5%' }}>
-                                <Avatar src={n.image} />
+                                <Avatar
+                                  src={restUrl + `uploads/${n.image_file_nm}`}
+                                />
                               </TableCell>
                               <TableCell
                                 padding="none"
                                 style={{ width: '90%' }}
                               >
-                                {n.name}
+                                {n.shimei}
+                              </TableCell>
+                              <TableCell
+                                padding="none"
+                                style={{ width: '70%' }}
+                              >
+                                <TextField
+                                  id="title"
+                                  label="Title"
+                                  className={classes.textField}
+                                  value={n.title}
+                                  onChange={this.handleChange('title')}
+                                  margin="normal"
+                                />
                               </TableCell>
                             </TableRow>
                           )
@@ -867,7 +1066,7 @@ class PersistentDrawer extends React.Component {
                 </div>
                 <TablePagination
                   component="div"
-                  count={data.length}
+                  count={resultList.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   backIconButtonProps={{
@@ -880,13 +1079,29 @@ class PersistentDrawer extends React.Component {
                   onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
               </Paper>
+              {(() => {
+              return (
+                <Button
+                  className={classes.button}
+                  variant="raised"
+                  size="large"
+                  onClick={this.handleSubmit.bind(this)}
+                  component={MenuLink}
+                >
+                  <Save
+                    className={classNames(classes.leftIcon, classes.iconSmall)}
+                  />
+                  SAVE
+                </Button>
+              )
 
-              <Button className={classes.button} variant="raised" size="large">
-                <Save
-                  className={classNames(classes.leftIcon, classes.iconSmall)}
-                />
-                Save
-              </Button>
+          })()}
+              <a href="#top" title="ページ最上部へ">
+                <div align="right">
+                  <img src="/images/yajirusi-ue.png" width="50" height="50" />
+                </div>
+              </a>
+              <a name="bottom" />
             </form>
           </main>
           {after}
