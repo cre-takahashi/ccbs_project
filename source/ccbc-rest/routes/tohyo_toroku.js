@@ -34,69 +34,18 @@ router.post('/find', (req, res) => {
 router.post('/create', (req, res) => {
   console.log('◆◆◆')
   var resultList = req.body.resultList
-  var sql =
-    'insert into t_tohyo (t_presenter_pk, t_shussekisha_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
-    'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING t_tohyo_pk'
-
-  var sql2 = 'update t_tohyo set transaction_id = ? where t_tohyo_pk = ?'
 
   db
     .transaction(async function(tx) {
       var resdatas = []
       for (var i in resultList) {
         var resdata = resultList[i]
-        var t_tohyo_pk = null
-        var transaction_id = null
         console.log('◆１')
-        await db
-          .query(sql, {
-            transaction: tx,
-            replacements: [
-              resdata.t_presenter_pk,
-              resdata.t_shussekisha_pk,
-              req.body.activeStep1[i] + 1,
-              req.body.activeStep2[i] + 1,
-              req.body.activeStep3[i] + 1,
-              req.body.activeStep4[i] + 1,
-              req.body.activeStep5[i] + 1,
-              req.body.comment[i],
-              null,
-              '0',
-              null,
-              null
-            ]
-          })
-          .spread((datas, metadata) => {
-            console.log('◆２')
-            console.log(datas)
-            resdatas.push(datas)
-            t_tohyo_pk = datas[0].t_tohyo_pk
 
-            // BC呼び出し
-            request.post(bcdomain + '/bc-api/add_account').end((err, res) => {
-              console.log('◆３')
-              console.log('★★★')
-              if (err) {
-                console.log('★' + err)
-                return
-              }
-              // 検索結果表示
-              console.log('★★★' + res)
-              transaction_id = res.body.bc_account
-            })
-          })
-        console.log('◆４')
-        await db
-          .query(sql2, {
-            transaction: tx,
-            replacements: [transaction_id, t_tohyo_pk]
-          })
-          .spread((datas, metadata) => {
-            console.log('◆５')
-            console.log(datas)
-          })
+        var t_tohyo_pk = await dbinsert(tx, resdatas, resdata, req, i)
+        var transaction_id = await bcrequest()
+        await dbupdate(tx, t_tohyo_pk, transaction_id)
       }
-      // このあとにawait sequelizeXXXXを記載することで連続して処理をかける
 
       res.json({ status: true, data: resdatas })
     })
@@ -110,6 +59,68 @@ router.post('/create', (req, res) => {
       console.log(e)
     })
 })
+
+function dbinsert(tx, resdatas, resdata, req, i) {
+  return new Promise((resolve, reject) => {
+    var sql =
+      'insert into t_tohyo (t_presenter_pk, t_shussekisha_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING t_tohyo_pk'
+    db
+      .query(sql, {
+        transaction: tx,
+        replacements: [
+          resdata.t_presenter_pk,
+          resdata.t_shussekisha_pk,
+          req.body.activeStep1[i] + 1,
+          req.body.activeStep2[i] + 1,
+          req.body.activeStep3[i] + 1,
+          req.body.activeStep4[i] + 1,
+          req.body.activeStep5[i] + 1,
+          req.body.comment[i],
+          null,
+          '0',
+          null,
+          null
+        ]
+      })
+      .spread((datas, metadata) => {
+        console.log('◆３')
+        console.log(datas)
+        resdatas.push(datas)
+        return resolve(datas[0].t_tohyo_pk)
+      })
+  })
+}
+
+function bcrequest() {
+  return new Promise((resolve, reject) => {
+    request.post(bcdomain + '/bc-api/add_account').end((err, res) => {
+      console.log('★★★')
+      if (err) {
+        console.log('★' + err)
+        return
+      }
+      // 検索結果表示
+      console.log('★★★' + res)
+      return resolve(res.body.bc_account)
+    })
+  })
+}
+
+function dbupdate(tx, t_tohyo_pk, transaction_id) {
+  return new Promise((resolve, reject) => {
+    var sql2 = 'update t_tohyo set transaction_id = ? where t_tohyo_pk = ?'
+    db
+      .query(sql2, {
+        transaction: tx,
+        replacements: [transaction_id, t_tohyo_pk]
+      })
+      .spread((datas, metadata) => {
+        console.log(datas)
+        return resolve(datas)
+      })
+  })
+}
 
 router.post('/findA', (req, res) => {
   // プルダウン用のマスタ読み込み
