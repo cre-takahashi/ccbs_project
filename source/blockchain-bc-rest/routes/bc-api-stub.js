@@ -21,4 +21,16 @@ router.post("/login", function(req, res, err) {
   res.json({ result: true });
 });
 
+/**
+ * コイン送金
+ */
+router.post("/send_coin", function(req, res, err) {
+  console.log("send_coin:param:" + JSON.stringify(req.body));
+  var fromAccount = req.body.from_account;
+  var toAccount = req.body.to_account;
+  var password = req.body.password;
+  var coin = req.body.coin;
+  res.json({ transaction: "test_transaction" });
+});
+
 module.exports = router;

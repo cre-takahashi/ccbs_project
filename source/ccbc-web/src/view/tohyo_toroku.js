@@ -304,7 +304,7 @@ class TohyoTorokuForm extends React.Component {
     activeStep5: {},
     completed: {},
     comment: {},
-    haifuCoin: 150,
+    coin: 0,
     tohyoCoin: 0,
     headList: [],
     resultList: [],
