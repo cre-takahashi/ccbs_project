@@ -81,11 +81,11 @@ function dbinsert(tx, resdatas, resdata, req, i) {
       'insert into t_tohyo (t_presenter_pk, t_shussekisha_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
       'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING t_tohyo_pk'
 
-    var comment = req.body.comment[i]
     // 改行変換
-    if (comment != '' && comment != null) {
-      comment = String(comment).replace(/\r?\n/g, '<br>')
-    }
+    // var comment = req.body.comment[i]
+    // if (comment != '' && comment != null) {
+    //   comment = String(comment).replace(/\r?\n/g, '<br>')
+    // }
     db
       .query(sql, {
         transaction: tx,
@@ -97,7 +97,7 @@ function dbinsert(tx, resdatas, resdata, req, i) {
           req.body.activeStep3[i] + 1,
           req.body.activeStep4[i] + 1,
           req.body.activeStep5[i] + 1,
-          comment,
+          req.body.comment[i],
           null,
           '0',
           req.body.userid
