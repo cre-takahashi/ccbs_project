@@ -59,15 +59,15 @@ export const images2 = [
 
 export const kanriListItems = (
   <div>
-    <ListItem button component={Link} to="/">
+    <ListItem button component={Link} to="/shain_kensaku">
       <Avatar alt="shain_kanri" src="/images/shain_kanri.png" />
       <ListItemText primary="社員管理" />
     </ListItem>
-    <ListItem button component={Link} to="/">
+    <ListItem button component={Link} to="/senkyo_kanri">
       <Avatar alt="shain_kanri" src="/images/senkyo_kanri.png" />
       <ListItemText primary="選挙管理" />
     </ListItem>
-    <ListItem button component={Link} to="/">
+    <ListItem button component={Link} to="/coin_shokai">
       <Avatar alt="shain_kanri" src="/images/coin_shokai.png" />
       <ListItemText primary="コイン照会" />
     </ListItem>
@@ -76,15 +76,15 @@ export const kanriListItems = (
 
 export const ippanListItems = (
   <div>
-    <ListItem button component={Link} to="/">
+    <ListItem button component={Link} to="/tohyo_toroku">
       <Avatar alt="shain_kanri" src="/images/senkyo.png" />
       <ListItemText primary="投票" />
     </ListItem>
-    <ListItem button component={Link} to="/">
+    <ListItem button component={Link} to="/tohyo_ichiran">
       <Avatar alt="shain_kanri" src="/images/tohyo_kekka.png" />
       <ListItemText primary="投票結果" />
     </ListItem>
-    <ListItem button component={Link} to="/">
+    <ListItem button component={Link} to="/coin_zoyo">
       <Avatar alt="shain_kanri" src="/images/zoyo.png" />
       <ListItemText primary="コイン贈与" />
     </ListItem>
