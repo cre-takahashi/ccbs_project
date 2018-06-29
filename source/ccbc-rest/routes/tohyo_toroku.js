@@ -163,10 +163,10 @@ function insertTohyo(tx, resdatas, resdata, req, i) {
 function bcrequest(req, from, to, sum_coin) {
   return new Promise((resolve, reject) => {
     var param = {
-      from_account: from,
-      to_account: to,
-      password: req.body.password,
-      coin: sum_coin
+      from_account: [from],
+      to_account: [to],
+      password: [req.body.password],
+      coin: [sum_coin]
     }
     request
       .post(bcdomain + '/bc-api/send_coin')
@@ -179,7 +179,7 @@ function bcrequest(req, from, to, sum_coin) {
         }
         // 検索結果表示
         console.log('★★★' + res)
-        return resolve(res.body.transaction)
+        return resolve(res.body.transaction[0])
       })
   })
 }
