@@ -12,7 +12,7 @@ router.post('/find', (req, res) => {
   var sql =
     'select tsen.t_senkyo_pk as t_senkyo_pk, tsen.senkyo_nm as senkyo_nm, tsen.tohyo_kaishi_dt as tohyo_kaishi_dt,' +
     ' tsen.tohyo_shuryo_dt as tohyo_shuryo_dt, tsen.haifu_coin as haifu_coin, tpre.t_presenter_pk as t_presenter_pk, ' +
-    ' tpre.title as title, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as to_account, tshu.t_shussekisha_pk  as t_shussekisha_pk, tsha2.bc_account as from_account' +
+    ' tpre.title as title, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as to_account, tsha.t_shain_pk as to_t_shain_pk, tshu.t_shussekisha_pk  as t_shussekisha_pk, tsha2.bc_account as from_account, tsha2.t_shain_pk as from_t_shain_pk' +
     ' from t_senkyo tsen' +
     ' inner join t_presenter tpre on tsen.t_senkyo_pk = tpre.t_senkyo_pk' +
     ' inner join t_shain tsha on tpre.t_shain_pk = tsha.t_shain_pk' +
@@ -45,13 +45,54 @@ router.post('/create', (req, res) => {
   db
     .transaction(async function(tx) {
       var resdatas = []
+      var haifu_coin = resultList[0].haifu_coin
       for (var i in resultList) {
         var resdata = resultList[i]
         console.log('◆１')
+        var sum_coin =
+          req.body.activeStep1[i] +
+          req.body.activeStep2[i] +
+          req.body.activeStep3[i] +
+          req.body.activeStep4[i] +
+          req.body.activeStep5[i] +
+          5
+        haifu_coin -= sum_coin
 
-        var t_tohyo_pk = await dbinsert(tx, resdatas, resdata, req, i)
-        var transaction_id = await bcrequest(req, resdata, i)
-        await dbupdate(tx, t_tohyo_pk, transaction_id)
+        var t_tohyo_pk = await insertTohyo(tx, resdatas, resdata, req, i)
+        var transaction_id = await bcrequest(
+          req,
+          resdata.from_account,
+          resdata.to_account,
+          sum_coin
+        )
+        await updateTohyo(tx, t_tohyo_pk, transaction_id)
+        await insertZoyo(
+          tx,
+          resdata.from_t_shain_pk,
+          resdata.to_t_shain_pk,
+          resdata.senkyo_nm,
+          req.body.userid,
+          transaction_id
+        )
+      }
+
+      if (haifu_coin > 0) {
+        // コイン返却
+        var datas = await selectKanrisha(tx)
+        var transaction_id = await bcrequest(
+          req,
+          resultList[0].from_account,
+          datas[0].bc_account,
+          haifu_coin
+        )
+        await insertZoyo(
+          tx,
+          resultList[0].from_t_shain_pk,
+          datas[0].t_shain_pk,
+          resultList[0].senkyo_nm,
+          req.body.userid,
+          transaction_id
+        )
       }
 
       res.json({ status: true, data: resdatas })
@@ -75,7 +116,7 @@ router.post('/create', (req, res) => {
  * @param {*} req
  * @param {*} i
  */
-function dbinsert(tx, resdatas, resdata, req, i) {
+function insertTohyo(tx, resdatas, resdata, req, i) {
   return new Promise((resolve, reject) => {
     var sql =
       'insert into t_tohyo (t_presenter_pk, t_shussekisha_pk, hyoka1, hyoka2, hyoka3, hyoka4, hyoka5, hyoka_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
@@ -115,22 +156,15 @@ function dbinsert(tx, resdatas, resdata, req, i) {
 /**
  * BCコイン送金用関数
  * @param {*} req
- * @param {*} resdata
- * @param {*} i
+ * @param {*} from
+ * @param {*} to
+ * @param {*} sum_coin
  */
-function bcrequest(req, resdata, i) {
+function bcrequest(req, from, to, sum_coin) {
   return new Promise((resolve, reject) => {
-    var sum_coin =
-      req.body.activeStep1[i] +
-      req.body.activeStep2[i] +
-      req.body.activeStep3[i] +
-      req.body.activeStep4[i] +
-      req.body.activeStep5[i] +
-      5
-
     var param = {
-      from_account: resdata.from_account,
-      to_account: resdata.to_account,
+      from_account: from,
+      to_account: to,
       password: req.body.password,
       coin: sum_coin
     }
@@ -156,13 +190,60 @@ function bcrequest(req, resdata, i) {
  * @param {*} t_tohyo_pk
  * @param {*} transaction_id
  */
-function dbupdate(tx, t_tohyo_pk, transaction_id) {
+function updateTohyo(tx, t_tohyo_pk, transaction_id) {
   return new Promise((resolve, reject) => {
     var sql2 = 'update t_tohyo set transaction_id = ? where t_tohyo_pk = ?'
     db
       .query(sql2, {
         transaction: tx,
         replacements: [transaction_id, t_tohyo_pk]
+      })
+      .spread((datas, metadata) => {
+        console.log(datas)
+        return resolve(datas)
+      })
+  })
+}
+
+function insertZoyo(
+  tx,
+  moto_pk,
+  saki_pk,
+  zoyo_comment,
+  userid,
+  transaction_id
+) {
+  return new Promise((resolve, reject) => {
+    var sql =
+      'insert into t_zoyo (zoyo_moto_shain_pk, zoyo_saki_shain_pk, zoyo_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, current_timestamp) RETURNING t_zoyo_pk'
+    db
+      .query(sql, {
+        transaction: tx,
+        replacements: [
+          moto_pk,
+          saki_pk,
+          zoyo_comment,
+          transaction_id,
+          '0',
+          userid
+        ]
+      })
+      .spread((datas, metadata) => {
+        console.log(datas)
+        return resolve(datas[0].t_zoyo_pk)
+      })
+  })
+}
+
+function selectKanrisha(tx) {
+  return new Promise((resolve, reject) => {
+    // 管理者権限コードは1の前提
+    var sql =
+      "select t_shain_pk, bc_account from t_shain where delete_flg = '0' and kengen_cd = '1'"
+    db
+      .query(sql, {
+        transaction: tx
       })
       .spread((datas, metadata) => {
         console.log(datas)
