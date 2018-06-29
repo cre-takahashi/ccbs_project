@@ -132,7 +132,7 @@ const styles = theme => ({
     '&:hover, &$focusVisible': {
       zIndex: 1,
       '& $imageBackdrop': {
-        opacity: 0.15
+        opacity: 1
       },
       '& $imageMarked': {
         opacity: 0
@@ -199,19 +199,19 @@ const images = [
     url: '/images/shain_kanri.png',
     title: '社員管理',
     width: '33%',
-    path: '/'
+    path: '/shain_kensaku'
   },
   {
     url: '/images/senkyo_kanri.png',
     title: '選挙管理',
     width: '34%',
-    path: '/'
+    path: '/senkyo_kanri'
   },
   {
     url: '/images/coin_shokai.png',
     title: 'コイン照会',
     width: '33%',
-    path: '/'
+    path: '/coin_shokai'
   }
 ]
 
@@ -220,19 +220,19 @@ const images2 = [
     url: '/images/senkyo.png',
     title: '投票',
     width: '33%',
-    path: '/'
+    path: '/tohyo_toroku'
   },
   {
     url: '/images/tohyo_kekka.png',
     title: '投票結果',
     width: '34%',
-    path: '/'
+    path: '/tohyo_ichiran'
   },
   {
     url: '/images/zoyo.png',
     title: 'コイン贈与',
     width: '33%',
-    path: '/'
+    path: '/coin_zoyo'
   }
 ]
 
