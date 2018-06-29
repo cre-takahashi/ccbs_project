@@ -326,6 +326,11 @@ class PersistentDrawer extends React.Component {
                   <li>
                     <a href="/image">【04】イメージ</a>
                   </li>
+                  <li>
+                    <a href="/redux">
+                      【05】Reduxサンプル（画面間の値受け渡し）
+                    </a>
+                  </li>
                 </ul>
                 <h3>テスト用セッションストレージ登録</h3>
                 <label>
