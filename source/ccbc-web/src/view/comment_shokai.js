@@ -7,7 +7,6 @@ import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
-import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Divider from '@material-ui/core/Divider'
@@ -52,6 +51,37 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import pink from '@material-ui/core/colors/pink'
+import green from '@material-ui/core/colors/green'
+import FolderIcon from '@material-ui/icons/Folder'
+import PageviewIcon from '@material-ui/icons/Pageview'
+import AssignmentIcon from '@material-ui/icons/Assignment'
+import Delete from '@material-ui/icons/Delete'
+import FileUpload from '@material-ui/icons/FileUpload'
+import KeyboardVoice from '@material-ui/icons/KeyboardVoice'
+import Icon from '@material-ui/core/Icon'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Slide from '@material-ui/core/Slide'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import InboxIcon from '@material-ui/icons/Inbox'
+import DraftsIcon from '@material-ui/icons/Drafts'
+import Checkbox from '@material-ui/core/Checkbox'
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormLabel from '@material-ui/core/FormLabel'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -59,7 +89,7 @@ const CustomTableCell = withStyles(theme => ({
     color: theme.palette.common.white
   },
   body: {
-    fontSize: 14
+    fontSize: 40
   }
 }))(TableCell)
 
@@ -67,7 +97,19 @@ const drawerWidth = 240
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+    backgroundColor: 'basic'
+  },
+  table: {
+    minWidth: 1020
+  },
+  listroot: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper
   },
   appFrame: {
     zIndex: 1,
@@ -246,6 +288,11 @@ const styles = theme => ({
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit
   },
+  textField2: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 400
+  },
   stepSize: {
     width: 20,
     height: 10,
@@ -297,6 +344,73 @@ const styles = theme => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
+  },
+  pinkAvatar: {
+    margin: 10,
+    color: '#fff',
+    backgroundColor: pink[500]
+  },
+  greenAvatar: {
+    margin: 10,
+    color: '#fff',
+    backgroundColor: green[500]
+  },
+  row: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  button: {
+    margin: theme.spacing.unit
+  },
+  paperroot: theme.mixins.gutters({
+    paddingTop: 16,
+    paddingBottom: 16,
+    marginTop: theme.spacing.unit * 3
+  }),
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  textFieldDate: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200
+  },
+  rootRadio: {
+    display: 'flex'
+  },
+  formControl: {
+    margin: theme.spacing.unit * 3
+  },
+  group: {
+    margin: `${theme.spacing.unit}px 0`
+  },
+  rootSelect: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  formControlSelect: {
+    margin: theme.spacing.unit,
+    minWidth: 120
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2
+  },
+  rootTable: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto'
+  },
+  textFieldTextField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200
+  },
+  menu: {
+    width: 200
+  },
+  formControlComponents: {
+    margin: theme.spacing.unit
   }
 })
 
@@ -317,7 +431,39 @@ const testData = [
     name: '江別　野郎'
   }
 ]
-
+function Transition(props) {
+  return <Slide direction="up" {...props} />
+}
+let id = 0
+function createData(name, calories, fat, carbs, protein) {
+  id += 1
+  return { id, name, calories, fat, carbs, protein }
+}
+const data = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9)
+]
+const currencies = [
+  {
+    value: 'USD',
+    label: '$'
+  },
+  {
+    value: 'EUR',
+    label: '€'
+  },
+  {
+    value: 'BTC',
+    label: '฿'
+  },
+  {
+    value: 'JPY',
+    label: '¥'
+  }
+]
 class CommentShokaiForm extends React.Component {
   state = {
     open: false,
@@ -333,9 +479,45 @@ class CommentShokaiForm extends React.Component {
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    checkedA: true,
+    checkedB: true,
+    checkedF: true,
+    value: 'female',
+    age: '',
+    name: 'hai',
+    name2: 'Cat in the Hat',
+    age2: '',
+    multiline: 'Controlled',
+    currency: 'EUR',
+    name3: 'Composed TextField'
   }
 
+  handleClickOpen = () => {
+    this.setState({ open: true })
+  }
+
+  handleClose = () => {
+    this.setState({ open: false })
+  }
+
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.checked })
+  }
+  handleChange2 = event => {
+    this.setState({ value: event.target.value })
+  }
+  handleChangeSelect = event => {
+    this.setState({ [event.target.name]: event.target.value })
+  }
+  handleChange3 = name => event => {
+    this.setState({
+      [name]: event.target.value
+    })
+  }
+  handleChange4 = event => {
+    this.setState({ name: event.target.value })
+  }
   constructor(props) {
     super(props)
   }
@@ -382,8 +564,9 @@ class CommentShokaiForm extends React.Component {
     if (this.target1.contains(event.target)) {
       return
     }
-
-    this.setState({ open2: false })
+  }
+  handleChangeChecked = name => event => {
+    this.setState({ [name]: event.target.checked })
   }
 
   render() {
@@ -486,7 +669,7 @@ class CommentShokaiForm extends React.Component {
                     id="menu-list-grow"
                     style={{ transformOrigin: '0 0 0' }}
                   >
-                    <Paper>
+                    <Paper className={classes.root}>
                       <MenuList role="menu">
                         <MenuItem
                           id="logout"
@@ -514,7 +697,48 @@ class CommentShokaiForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div />
+            <div>
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>コメント情報</strong>
+              </h2>
+              <Paper className={classes.root}>
+                <TableBody className={classes.table}>
+                  <TableRow component="th" scope="row">
+                    <TableCell>投票・コイン贈与</TableCell>
+                    <TableCell>平成30年度10月部会</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>投票（授与）者</TableCell>
+                    <TableCell>札幌 花子</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>受領コイン</TableCell>
+                    <TableCell>500</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>コメント</TableCell>
+                    <TableCell>
+                      <TextField
+                        id="textarea"
+                        value="○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○"
+                        multiline
+                        className={classes.textField2}
+                        margin="normal"
+                        disabled
+                      />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Paper>
+            </div>
           </main>
           {after}
         </div>

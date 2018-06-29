@@ -52,6 +52,12 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import NativeSelect from '@material-ui/core/NativeSelect'
+import Select from '@material-ui/core/Select'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import Input from '@material-ui/core/Input'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -297,6 +303,14 @@ const styles = theme => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
+  },
+  rootForm: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120
   }
 })
 
@@ -333,7 +347,9 @@ class TohyoIchiran extends React.Component {
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    Target_year: '',
+    name: ''
   }
 
   constructor(props) {
@@ -355,10 +371,8 @@ class TohyoIchiran extends React.Component {
     }
   }
 
-  handleChange = (name, cnt) => event => {
-    this.setState({
-      [name[cnt]]: event.target.value
-    })
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value })
   }
 
   handleDrawerOpen = () => {
@@ -514,7 +528,165 @@ class TohyoIchiran extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div>
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>対象年度</strong>
+              </h2>
+              <form className={classes.root} autoComplete="off">
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="Target_year-simple">対象年度</InputLabel>
+                  <Select
+                    value={this.state.Target_year}
+                    onChange={this.handleChange}
+                    inputProps={{
+                      name: 'Target_year',
+                      id: 'Target_year-simple'
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em>指定なし</em>
+                    </MenuItem>
+                    <MenuItem value={1}>2018年</MenuItem>
+                    <MenuItem value={2}>2019年</MenuItem>
+                    <MenuItem value={3}>2020年</MenuItem>
+                  </Select>
+                </FormControl>
+              </form>
+              <br />
+              <br />
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>選挙情報</strong>
+              </h2>
+              <Paper className={classes.root}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <CustomTableCell>No</CustomTableCell>
+                      <CustomTableCell>選挙名</CustomTableCell>
+                      <CustomTableCell>開始日</CustomTableCell>
+                      <CustomTableCell>終了日</CustomTableCell>
+                      <CustomTableCell>照会</CustomTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <CustomTableCell>1</CustomTableCell>
+                      <CustomTableCell>平成30年度9月部会</CustomTableCell>
+                      <CustomTableCell>2018/9/20</CustomTableCell>
+                      <CustomTableCell>2018/9/26</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          ボタン
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2</CustomTableCell>
+                      <CustomTableCell>平成30年度8月部会</CustomTableCell>
+                      <CustomTableCell>2018/8/20</CustomTableCell>
+                      <CustomTableCell>2018/8/26</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          ボタン
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>3</CustomTableCell>
+                      <CustomTableCell>平成30年度7月部会</CustomTableCell>
+                      <CustomTableCell>2018/7/20</CustomTableCell>
+                      <CustomTableCell>2018/7/26</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          ボタン
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>4</CustomTableCell>
+                      <CustomTableCell>平成30年度6月部会</CustomTableCell>
+                      <CustomTableCell>2018/6/20</CustomTableCell>
+                      <CustomTableCell>2018/6/26</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          ボタン
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>5</CustomTableCell>
+                      <CustomTableCell>平成30年度5月部会</CustomTableCell>
+                      <CustomTableCell>2018/5/20</CustomTableCell>
+                      <CustomTableCell>2018/5/26</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          ボタン
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Paper>
+              <br />
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>年度情報</strong>
+              </h2>
+              <br />
+              <Button
+                variant="raised"
+                color="primary"
+                size="large"
+                className={classes.button}
+              >
+                グラフ表示
+              </Button>
+            </div>
           </main>
           {after}
         </div>

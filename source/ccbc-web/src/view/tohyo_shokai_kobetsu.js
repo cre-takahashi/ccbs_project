@@ -52,14 +52,24 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import Icon from '@material-ui/core/Icon'
+import ListItem from '@material-ui/core/ListItem'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    backgroundColor: 'whitesmoke',
+    color: '#4e454a',
+    fontSize: 28,
+    paddingTop: 10,
+    paddingBottom: 10,
+    fontWeight: 80
   },
   body: {
-    fontSize: 14
+    fontSize: 24,
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: '#4e454a',
+    fontWeight: 20
   }
 }))(TableCell)
 
@@ -67,7 +77,8 @@ const drawerWidth = 240
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginTop: 10
   },
   appFrame: {
     zIndex: 1,
@@ -193,10 +204,6 @@ const styles = theme => ({
   },
   imageBackdrop: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
     backgroundColor: theme.palette.common.black,
     opacity: 0.4,
     transition: theme.transitions.create('opacity')
@@ -270,33 +277,139 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center'
   },
-  avatar: {
-    margin: 10
-  },
   bigAvatar: {
-    width: 150,
-    height: 150
+    width: 110,
+    height: 110
   },
-  headLine: {
-    width: 350
+  middleAvatar: {
+    width: 80,
+    height: 80
   },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 900
+  smallAvatar: {
+    width: 50,
+    height: 50
   },
   paper: {
     width: '100%',
     marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto'
+    overflowX: 'auto',
+    tableLayout: 'fixed',
+    backgroundColor: 'whitesmoke'
   },
   table: {
-    minWidth: 700
+    width: 1400,
+    marginLeft: 250
   },
   row: {
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
+  },
+  gurade: {
+    background: 'linear-gradient(90deg, #FF1493 100%, #f5f5f5 0%)'
+  },
+  gurade2: {
+    background: 'linear-gradient(90deg, #FF1493 90%, #f5f5f5 95%)'
+  },
+  gurade3: {
+    background: 'linear-gradient(90deg, #FF1493 70%, #f5f5f5 75%)'
+  },
+  gurade4: {
+    background: 'linear-gradient(90deg, #FF1493 50%, #f5f5f5 55%)'
+  },
+  gurade5: {
+    background: 'linear-gradient(90deg, #FF1493 20%, #f5f5f5 25%)'
+  },
+  coin: {
+    width: 300
+  },
+  rankAvatar: {
+    paddingLeft: 200
+  },
+  rankTitle: {
+    whiteSpace: 'nowrap',
+    marginTop: '15px'
+  },
+  td: {
+    paddingLeft: '240px'
+  },
+  medalAvatar: {
+    width: 130,
+    height: 130
+  },
+  shimei: {
+    paddingRight: 50,
+    whiteSpace: 'nowrap'
+  },
+  nendo_senkyo_name: {
+    padding: 20,
+    marginTop: 10
+  },
+  nendo_senkyo_table: {
+    width: 500
+  },
+  body_name: {
+    paddingLeft: 125,
+    color: '#393f4c'
+  },
+  head_name: {
+    paddingLeft: 30,
+    color: '#393f4c'
+  },
+  coinAvater: {
+    width: 40,
+    height: 40,
+    align: 'top'
+  },
+  rank1: {
+    fontSize: 40
+  },
+  rank1Name: {
+    paddingRight: 50,
+    fontSize: 40,
+    color: '#393f4c'
+  },
+  rank2: {
+    fontSize: 35,
+    color: '#393f4c'
+  },
+  background1: {
+    position: 'relative',
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    })
+  },
+  background1Shift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  },
+  'background1Shift-before': {
+    content: ' ',
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    width: 0,
+    height: 0,
+    borderStyle: 'solid',
+    borderWidth: '0 10 10 0',
+    borderColor: 'transparent',
+    borderRightColor: '#a6a6a6'
+  },
+  'background1-after': {
+    content: ' ',
+    position: 'absolute',
+    top: '100%',
+    right: 0,
+    width: 0,
+    height: 0,
+    borderStyle: 'solid',
+    borderWidth: '10 10 0 0',
+    borderColor: 'transparent',
+    borderTopColor: '#a6a6a6'
   }
 })
 
@@ -315,8 +428,34 @@ const testData = [
     url: '/images/ishigaki.jpg',
     title: '◯◯◯案件プロジェクト報告',
     name: '江別　野郎'
+  },
+  {
+    url: '/images/medal_g_n.png',
+    title: '金メダルアイコン',
+    name: '金メダル'
+  },
+  {
+    url: '/images/medal_s_n.png',
+    title: '銀メダルアイコン',
+    name: '銀メダル'
+  },
+  {
+    url: '/images/medal_c_n.png',
+    title: '銅メダルアイコン',
+    name: '銅メダル'
+  },
+  {
+    url: '/images/coin.png',
+    title: 'コインアイコン',
+    name: 'コイン'
   }
 ]
+
+let id = 0
+function createData(no, avatar, name, title, coin, colorbar) {
+  id += 1
+  return { no, avatar, name, title, coin, colorbar }
+}
 
 class TohyoShokaiKobetsuForm extends React.Component {
   state = {
@@ -514,7 +653,473 @@ class TohyoShokaiKobetsuForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div>
+              <Paper className={classes.nendo_senkyo_name}>
+                <Table className={classes.nendo_senkyo_table}>
+                  <TableRow>
+                    <th>
+                      <Typography component="p">年度</Typography>
+                      <Typography variant="headline" component="h3">
+                        2018年
+                      </Typography>
+                    </th>
+                    <th>
+                      <Typography component="p">選挙名</Typography>
+                      <Typography variant="headline" component="h3">
+                        平成30年度9月部会
+                      </Typography>
+                    </th>
+                  </TableRow>
+                </Table>
+              </Paper>
+              <br />
+              <br />
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="20"
+                />
+                <strong>ランキング</strong>
+              </h2>
+              <Paper className={classes.paper}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow className={classes.background1}>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.rankAvatar}
+                      >
+                        <td>
+                          <Avatar
+                            alt="金メダル"
+                            src="/images/medal_g_n.png"
+                            className={classes.medalAvatar}
+                          />
+                        </td>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="札幌 太郎"
+                                  src="/images/mikami.png"
+                                  className={classes.bigAvatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.rank1Name}>
+                                  札幌 太郎
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                <span className={classes.rank1}>油彩画</span>
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableHead>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell className={classes.coin}>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          className={classes.coinAvater}
+                        />
+                        800
+                        <div className={classes.gurade}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.rankAvatar}
+                      >
+                        <td>
+                          <Avatar
+                            alt="銀メダル"
+                            src="/images/medal_s_n.png"
+                            className={classes.medalAvatar}
+                          />
+                        </td>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="Remy Sharp"
+                                  src="/images/yamashita.png"
+                                  className={classes.middleAvatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.rank2}>
+                                  中央 花子
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                配属後に始めた習慣
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableHead>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          className={classes.coinAvater}
+                        />
+                        780
+                        <div className={classes.gurade2}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.rankAvatar}
+                      >
+                        <td>
+                          <Avatar
+                            alt="銅メダル"
+                            src="/images/medal_c_n.png"
+                            className={classes.medalAvatar}
+                          />
+                        </td>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="Remy Sharp"
+                                  src="/images/ishigaki.jpg"
+                                  className={classes.smallAvatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.head_name}>
+                                  本 州男
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                概念だけでもわかる！p-進数
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableHead>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          className={classes.coinAvater}
+                        />
+                        600
+                        <div className={classes.gurade3}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.td}
+                      >
+                        <td>4</td>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableBody>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="Remy Sharp"
+                                  src="/images/mikami.png"
+                                  className={classes.avatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.body_name}>
+                                  中央 智子
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                プレゼンノウハウ
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          width="30"
+                          height="30"
+                        />
+                        500
+                        <div className={classes.gurade4}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.td}
+                      >
+                        <td>5</td>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableBody>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="Remy Sharp"
+                                  src="/images/yamashita.png"
+                                  className={classes.avatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.body_name}>
+                                  網走 順子
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                泣き叫ぶ声…事件証拠として流された10分間の殺害音声
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          width="30"
+                          height="30"
+                        />
+                        250
+                        <div className={classes.gurade5}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.td}
+                      >
+                        6
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableBody>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="札幌 太郎"
+                                  src="/images/mikami.png"
+                                  className={classes.avatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.body_name}>
+                                  北見 圭吾
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                甘くて美味しいみかんの見分け方
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          width="30"
+                          height="30"
+                        />
+                        100
+                        <div className={classes.gurade5}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.td}
+                      >
+                        <td>7</td>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableBody>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="Remy Sharp"
+                                  src="/images/yamashita.png"
+                                  className={classes.avatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.body_name}>
+                                  函館 祥子
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                きのこvsたけのこ
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          width="30"
+                          height="30"
+                        />
+                        100
+                        <div className={classes.gurade5}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell
+                        component="th"
+                        scope="row"
+                        className={classes.td}
+                      >
+                        <td>8</td>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <Table>
+                          <TableBody>
+                            <TableRow>
+                              <CustomTableCell>
+                                <Avatar
+                                  alt="Remy Sharp"
+                                  src="/images/ishigaki.jpg"
+                                  className={classes.avatar}
+                                />
+                              </CustomTableCell>
+                              <CustomTableCell>
+                                <a href="" className={classes.body_name}>
+                                  十勝 和夫
+                                </a>
+                              </CustomTableCell>
+                            </TableRow>
+                            <TableRow>
+                              <CustomTableCell
+                                colspan="2"
+                                className={classes.rankTitle}
+                              >
+                                伝わるフォント
+                              </CustomTableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </CustomTableCell>
+                      <CustomTableCell>
+                        <img
+                          alt="コイン"
+                          src="/images/coin.png"
+                          width="30"
+                          height="30"
+                        />
+                        100
+                        <div className={classes.gurade5}>
+                          <br />
+                        </div>
+                      </CustomTableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Paper>
+              <br />
+              <br />
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="top"
+                  width="30"
+                  height="30"
+                />
+                <strong>未投票者</strong>
+              </h2>
+              <Table className={classes.nendo_senkyo_table}>
+                <Paper className={classes.nendo_senkyo_name}>
+                  <Typography component="p">氏名（漢字）</Typography>
+                  <Typography variant="headline" component="h3">
+                    北海 道子
+                  </Typography>
+                </Paper>
+              </Table>
+            </div>
           </main>
           {after}
         </div>

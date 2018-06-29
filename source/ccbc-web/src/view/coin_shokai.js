@@ -52,6 +52,10 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -291,12 +295,35 @@ const styles = theme => ({
     overflowX: 'auto'
   },
   table: {
-    minWidth: 700
+    minWidth: 1850
   },
   row: {
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120
+  },
+  coinInfo: {
+    padding: 20,
+    marginTop: 10
+  },
+  coinInfoTable: {
+    width: 500
+  },
+  addToPaper: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginTop: 10,
+    marginLeft: 1000
+  },
+  InputLabel: {
+    whiteSpace: 'nowrap'
+  },
+  select: {
+    width: 140
   }
 })
 
@@ -333,7 +360,9 @@ class CoinShokaiForm extends React.Component {
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    year_info: '',
+    target_manager: ''
   }
 
   constructor(props) {
@@ -355,10 +384,8 @@ class CoinShokaiForm extends React.Component {
     }
   }
 
-  handleChange = (name, cnt) => event => {
-    this.setState({
-      [name[cnt]]: event.target.value
-    })
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value })
   }
 
   handleDrawerOpen = () => {
@@ -514,7 +541,293 @@ class CoinShokaiForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div>
+              <Paper className={classes.coinInfo}>
+                <Table className={classes.coinInfoTable}>
+                  <TableRow>
+                    <th>
+                      <form className={classes.root} autoComplete="off">
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor="Target_year">
+                            年度情報
+                          </InputLabel>
+                          <Select
+                            value={this.state.year_info}
+                            onChange={this.handleChange}
+                            input={<Input name="year_info" id="Target_year" />}
+                          >
+                            <MenuItem value="">
+                              <em>指定なし</em>
+                            </MenuItem>
+                            <MenuItem value={1}>2018年</MenuItem>
+                            <MenuItem value={2}>2017年</MenuItem>
+                            <MenuItem value={3}>2016年</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </form>
+                    </th>
+                    <th>
+                      <form className={classes.root} autoComplete="off">
+                        <FormControl className={classes.formControl}>
+                          <InputLabel
+                            htmlFor="Target_manager"
+                            className={classes.InputLabel}
+                          >
+                            対象（管理者用）
+                          </InputLabel>
+                          <Select
+                            value={this.state.target_manager}
+                            onChange={this.handleChange}
+                            input={
+                              <Input
+                                name="target_manager"
+                                id="Target_Manager"
+                              />
+                            }
+                            className={classes.select}
+                          >
+                            <MenuItem value="">
+                              <em>指定なし</em>
+                            </MenuItem>
+                            <MenuItem value={1}>札幌 太郎</MenuItem>
+                            <MenuItem value={2}>中央 花子</MenuItem>
+                            <MenuItem value={3}>網走 順子</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </form>
+                    </th>
+                    <th>
+                      <Typography component="p">発表数</Typography>
+                      <Typography variant="headline" component="h3">
+                        3
+                      </Typography>
+                    </th>
+                  </TableRow>
+                </Table>
+              </Paper>
+              <br />
+              <Table className={classes.table}>
+                <TableRow>
+                  <CustomTableCell>
+                    <h2>
+                      <img
+                        src="/images/yajirushi.png"
+                        alt="サンプル"
+                        align="top"
+                        width="30"
+                        height="20"
+                      />
+                      <strong>受領情報（投票（授与）者→本人）</strong>
+                    </h2>
+                  </CustomTableCell>
+                  <Paper className={classes.addToPaper}>
+                    <CustomTableCell>受領コイン計</CustomTableCell>
+                    <CustomTableCell>5,000</CustomTableCell>
+                  </Paper>
+                </TableRow>
+              </Table>
+              <Paper className={classes.root}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <CustomTableCell>日付</CustomTableCell>
+                      <CustomTableCell>投票・コイン贈与</CustomTableCell>
+                      <CustomTableCell>投票（授与）者</CustomTableCell>
+                      <CustomTableCell>受領コイン</CustomTableCell>
+                      <CustomTableCell>コメント</CustomTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <CustomTableCell>2018/10/26</CustomTableCell>
+                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
+                      <CustomTableCell>札幌 花子</CustomTableCell>
+                      <CustomTableCell>500</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2018/10/20</CustomTableCell>
+                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
+                      <CustomTableCell>札幌 三郎</CustomTableCell>
+                      <CustomTableCell>300</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2018/10/16</CustomTableCell>
+                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
+                      <CustomTableCell>苫小牧 次郎</CustomTableCell>
+                      <CustomTableCell>200</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2018/07/21</CustomTableCell>
+                      <CustomTableCell>平成30年度7月部会</CustomTableCell>
+                      <CustomTableCell>札幌 花子</CustomTableCell>
+                      <CustomTableCell>1,500</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2018/03/28</CustomTableCell>
+                      <CustomTableCell>コイン贈与（受領）</CustomTableCell>
+                      <CustomTableCell>札幌 三郎</CustomTableCell>
+                      <CustomTableCell>500</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2018/03/20</CustomTableCell>
+                      <CustomTableCell>コイン贈与（受領）</CustomTableCell>
+                      <CustomTableCell>北海道 四郎</CustomTableCell>
+                      <CustomTableCell>2,000</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Paper>
+              <br />
+              <Table className={classes.table}>
+                <TableRow>
+                  <CustomTableCell>
+                    <h2>
+                      <img
+                        src="/images/yajirushi.png"
+                        alt="サンプル"
+                        align="top"
+                        width="30"
+                        height="20"
+                      />
+                      <strong>授与情報（本人→投票相手・受領相手）</strong>
+                    </h2>
+                  </CustomTableCell>
+                  <Paper className={classes.addToPaper}>
+                    <CustomTableCell>授与コイン計</CustomTableCell>
+                    <CustomTableCell>1,500</CustomTableCell>
+                  </Paper>
+                </TableRow>
+              </Table>
+              <Paper className={classes.root}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <CustomTableCell>日付</CustomTableCell>
+                      <CustomTableCell>投票・コイン贈与</CustomTableCell>
+                      <CustomTableCell>投票（受領）相手</CustomTableCell>
+                      <CustomTableCell>授与コイン</CustomTableCell>
+                      <CustomTableCell>コメント</CustomTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <CustomTableCell>2018/10/30</CustomTableCell>
+                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
+                      <CustomTableCell>札幌 花子</CustomTableCell>
+                      <CustomTableCell>500</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2018/10/26</CustomTableCell>
+                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
+                      <CustomTableCell>札幌 三郎</CustomTableCell>
+                      <CustomTableCell>700</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <CustomTableCell>2018/03/31</CustomTableCell>
+                      <CustomTableCell>コイン贈与（授与）</CustomTableCell>
+                      <CustomTableCell>札幌 四郎</CustomTableCell>
+                      <CustomTableCell>300</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="primary"
+                          size="large"
+                          className={classes.button}
+                        >
+                          照会
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Paper>
+              <Paper className={classes.coinInfo}>
+                <Typography component="p">最終所持コイン数</Typography>
+                <Typography variant="headline" component="h3">
+                  4,000
+                </Typography>
+              </Paper>
+            </div>
           </main>
           {after}
         </div>
