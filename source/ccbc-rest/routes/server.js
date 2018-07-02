@@ -25,4 +25,14 @@ router.get('/find', (req, res) => {
   query(sql, params, res)
 })
 
+router.post('/check', (req, res) => {
+  console.log('check!')
+  var input = req.body.inputtext
+  var result = false
+  if (input === 'test') {
+    result = true
+  }
+  res.json({ status: result })
+})
+
 module.exports = router
