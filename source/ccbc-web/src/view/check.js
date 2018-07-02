@@ -8,22 +8,33 @@ const styles = theme => ({
 })
 
 class CheckForm extends Component {
-  constructor(props) {
-    super(props)
-    const params = this.props.match
-    this.state = {
-      msg: ''
-    }
+  state = {
+    msg: '',
+    inputtext: '',
+    aaa: 'aaa'
   }
 
   onClick = event => {
     this.setState({ msg: '' })
     var test = document.getElementById('test').value
-    if (test === 'test') {
-      window.location.href = '/check_success'
-    } else {
-      this.setState({ msg: '入力エラーです。testを入力してください。' })
-    }
+    this.setState({ inputtext: test })
+    this.state.inputtext = test
+
+    request
+      .post('/server/check')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          this.setState({ msg: '予期せぬエラーです。' })
+          return
+        }
+        var result = res.body.status
+        if (result) {
+          window.location.href = '/check_success'
+        } else {
+          this.setState({ msg: '入力エラーです。testを入力してください。' })
+        }
+      })
   }
 
   render() {
