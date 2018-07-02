@@ -16,7 +16,8 @@ import { countReducer } from './reducers/count'
 import HeaderForm from './view/header'
 import FooterForm from './view/footer'
 import LoginForm from './view/login'
-
+import CheckForm from './view/check'
+import CheckSuccessForm from './view/check_success'
 import ReduxForm from './view/redux'
 import ReduxCountForm from './view/redux_count'
 import ReduxDisplayForm from './view/redux_display'
@@ -57,6 +58,11 @@ ReactDOM.render(
       <div>
         <Route exact path="/" component={LoginForm} />
         <Route path="/sample" component={SampleForm} />
+
+        <Route path="/check" component={HeaderForm} />
+        <Route path="/check" component={CheckForm} />
+        <Route path="/check_success" component={HeaderForm} />
+        <Route path="/check_success" component={CheckSuccessForm} />
 
         <Route path="/redux" component={HeaderForm} />
         <Route path="/redux" component={ReduxForm} />
