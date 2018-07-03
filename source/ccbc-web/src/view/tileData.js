@@ -59,15 +59,15 @@ export const images2 = [
 
 export const kanriListItems = (
   <div>
-    <ListItem button component={Link} to="/shain_kensaku">
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/shain_kanri.png" />
       <ListItemText primary="社員管理" />
     </ListItem>
-    <ListItem button component={Link} to="/senkyo_kanri">
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/senkyo_kanri.png" />
       <ListItemText primary="選挙管理" />
     </ListItem>
-    <ListItem button component={Link} to="/coin_shokai">
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/coin_shokai.png" />
       <ListItemText primary="コイン照会" />
     </ListItem>
@@ -76,15 +76,15 @@ export const kanriListItems = (
 
 export const ippanListItems = (
   <div>
-    <ListItem button component={Link} to="/tohyo_toroku">
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/senkyo.png" />
       <ListItemText primary="投票" />
     </ListItem>
-    <ListItem button component={Link} to="/tohyo_ichiran">
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/tohyo_kekka.png" />
       <ListItemText primary="投票結果" />
     </ListItem>
-    <ListItem button component={Link} to="/coin_zoyo">
+    <ListItem button component={Link} to="/">
       <Avatar alt="shain_kanri" src="/images/zoyo.png" />
       <ListItemText primary="コイン贈与" />
     </ListItem>
@@ -149,5 +149,63 @@ export const otherMailFolderListItems = (
       </ListItemIcon>
       <ListItemText primary="Spam" />
     </ListItem>
+  </div>
+)
+
+export const documentHelp = (
+  <div>
+    <div>①資料全体を通して統一感があった。</div>
+    <div>②「見やすい」「分かりやすい」「理解しやすい」資料になっていた。</div>
+    <div>③話の流れを表現した構成で資料が作られていた。</div>
+    <div>④量・質が適当だった。</div>
+    <div>⑤定量的・定性的な観点を意識した資料になっていた。</div>
+    <div>等</div>
+  </div>
+)
+
+export const presentationHelp = (
+  <div>
+    <div>①人前に立っても、臆せずに、落ち着いて発表していた。</div>
+    <div>②質問などの突発事態が発生しても、臨機応変な対応が行えていた。</div>
+    <div>
+      ③理解しやすい、聞きやすい内容だった（メリハリがあって、間の取り方が適切。
+    </div>
+    <div>　発表の構成（導入・本論・終幕　等）が分かりやすい等）。</div>
+    <div>
+      ④適切な時間で効率よく言いたい事が伝わるわかりやすい説明ができていた。
+    </div>
+    <div>等</div>
+  </div>
+)
+
+export const expressionHelp = (
+  <div>
+    <div>①専門用語を使いすぎず、わかりやすい表現をしていた。</div>
+    <div>②表情に配慮していた。（ノンバーバルスキル）</div>
+    <div>
+      ③声の大きさ、質、イントネーションに配慮していた。（ノンバーバルスキル）
+    </div>
+    <div>
+      ④ジェスチャー等を交えた動作による状況説明を配慮していた。（ノンバーバルスキル）
+    </div>
+    <div>等</div>
+  </div>
+)
+
+export const influenceHelp = (
+  <div>
+    <div>①発表を聞いた後、行動したいと感じた。</div>
+    <div>②発表を聞いた後、インスピレーションを得た。</div>
+    <div>③資料の構成、表現を手本にしたい、真似したいと感じた。</div>
+    <div>等</div>
+  </div>
+)
+
+export const breakthroughHelp = (
+  <div>
+    <div>①過去の自分自身を一歩でも半歩でも超えていた。</div>
+    <div>②前例のないことにチャレンジしていた。</div>
+    <div>③苦手を克服する、得意なことを更に伸ばす取り組みをしていた。</div>
+    <div>等</div>
   </div>
 )

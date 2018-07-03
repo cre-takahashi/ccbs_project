@@ -17,7 +17,17 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
 import { Link, BrowserRouter } from 'react-router-dom'
-import { kanriListItems, ippanListItems, systemName, restUrl } from './tileData'
+import {
+  kanriListItems,
+  ippanListItems,
+  systemName,
+  restUrl,
+  documentHelp,
+  presentationHelp,
+  expressionHelp,
+  influenceHelp,
+  breakthroughHelp
+} from './tileData'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Stepper from '@material-ui/core/Stepper'
@@ -554,65 +564,6 @@ class TohyoTorokuForm extends React.Component {
         )
       }
     })
-
-    const documentHelp = (
-      <div>
-        <div>①資料全体を通して統一感があった。</div>
-        <div>
-          ②「見やすい」「分かりやすい」「理解しやすい」資料になっていた。
-        </div>
-        <div>③話の流れを表現した構成で資料が作られていた。</div>
-        <div>④量・質が適当だった。</div>
-        <div>⑤定量的・定性的な観点を意識した資料になっていた。</div>
-        <div>等</div>
-      </div>
-    )
-
-    const presentationHelp = (
-      <div>
-        <div>①人前に立っても、臆せずに、落ち着いて発表していた。</div>
-        <div>②質問などの突発事態が発生しても、臨機応変な対応が行えていた。</div>
-        <div>
-          ③理解しやすい、聞きやすい内容だった（メリハリがあって、間の取り方が適切。発表の構成（導入・本論・終幕　等）が分かりやすい等）。
-        </div>
-        <div>
-          ④適切な時間で効率よく言いたい事が伝わるわかりやすい説明ができていた。
-        </div>
-        <div>等</div>
-      </div>
-    )
-
-    const expressionHelp = (
-      <div>
-        <div>①専門用語を使いすぎず、わかりやすい表現をしていた。</div>
-        <div>②表情に配慮していた。（ノンバーバルスキル）</div>
-        <div>
-          ③声の大きさ、質、イントネーションに配慮していた。（ノンバーバルスキル）
-        </div>
-        <div>
-          ④ジェスチャー等を交えた動作による状況説明を配慮していた。（ノンバーバルスキル）
-        </div>
-        <div>等</div>
-      </div>
-    )
-
-    const influenceHelp = (
-      <div>
-        <div>①発表を聞いた後、行動したいと感じた。</div>
-        <div>②発表を聞いた後、インスピレーションを得た。</div>
-        <div>③資料の構成、表現を手本にしたい、真似したいと感じた。</div>
-        <div>等</div>
-      </div>
-    )
-
-    const breakthroughHelp = (
-      <div>
-        <div>①過去の自分自身を一歩でも半歩でも超えていた。</div>
-        <div>②前例のないことにチャレンジしていた。</div>
-        <div>③苦手を克服する、得意なことを更に伸ばす取り組みをしていた。</div>
-        <div>等</div>
-      </div>
-    )
 
     var resList = this.state.resultList.map((data, i) => {
       return (

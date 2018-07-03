@@ -24,7 +24,12 @@ import {
   ippanListItems,
   kojiListItems,
   systemName,
-  restUrl
+  restUrl,
+  documentHelp,
+  presentationHelp,
+  expressionHelp,
+  influenceHelp,
+  breakthroughHelp
 } from './tileData'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
@@ -301,7 +306,7 @@ const styles = theme => ({
   },
   stepSize2: {
     width: 15,
-    height: 5,
+    height: 20,
     textAlign: 'left',
     verticalAlign: 'top'
   },
@@ -413,6 +418,10 @@ const styles = theme => ({
     margin: theme.spacing.unit
   }
 })
+
+function getSteps1() {
+  return ['', '', '', '', '', '', '', '', '', '']
+}
 
 const testData = [
   {
@@ -609,6 +618,7 @@ class CommentShokaiForm extends React.Component {
     }
 
     const MyLink = props => <Link to="/sample" {...props} />
+    const steps1 = getSteps1()
 
     return (
       <div className={classes.root}>
@@ -734,6 +744,166 @@ class CommentShokaiForm extends React.Component {
                         margin="normal"
                         disabled
                       />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Tooltip
+                        id="tooltip-right"
+                        title={documentHelp}
+                        placement="right"
+                      >
+                        <label>資料作成</label>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Stepper
+                        nonLinear
+                        activeStep={4}
+                        className={classes.stepSize2}
+                      >
+                        {steps1.map((label, index) => {
+                          return (
+                            <Step key={label} className={classes.stepSize2}>
+                              <StepButton
+                                completed={this.state.completed[index]}
+                                className={classes.stepSize2}
+                                disabled={true}
+                              >
+                                {label}
+                              </StepButton>
+                            </Step>
+                          )
+                        })}
+                      </Stepper>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Tooltip
+                        id="tooltip-right"
+                        title={presentationHelp}
+                        placement="right"
+                      >
+                        <label>発表力</label>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Stepper
+                        nonLinear
+                        activeStep={4}
+                        className={classes.stepSize2}
+                      >
+                        {steps1.map((label, index) => {
+                          return (
+                            <Step key={label} className={classes.stepSize2}>
+                              <StepButton
+                                completed={this.state.completed[index]}
+                                className={classes.stepSize2}
+                                disabled={true}
+                              >
+                                {label}
+                              </StepButton>
+                            </Step>
+                          )
+                        })}
+                      </Stepper>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Tooltip
+                        id="tooltip-right"
+                        title={expressionHelp}
+                        placement="right"
+                      >
+                        <label>表現力</label>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Stepper
+                        nonLinear
+                        activeStep={8}
+                        className={classes.stepSize2}
+                      >
+                        {steps1.map((label, index) => {
+                          return (
+                            <Step key={label} className={classes.stepSize2}>
+                              <StepButton
+                                completed={this.state.completed[index]}
+                                className={classes.stepSize2}
+                                disabled={true}
+                              >
+                                {label}
+                              </StepButton>
+                            </Step>
+                          )
+                        })}
+                      </Stepper>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Tooltip
+                        id="tooltip-right"
+                        title={influenceHelp}
+                        placement="right"
+                      >
+                        <label>影響力</label>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Stepper
+                        nonLinear
+                        activeStep={2}
+                        className={classes.stepSize2}
+                      >
+                        {steps1.map((label, index) => {
+                          return (
+                            <Step key={label} className={classes.stepSize2}>
+                              <StepButton
+                                completed={this.state.completed[index]}
+                                className={classes.stepSize2}
+                                disabled={true}
+                              >
+                                {label}
+                              </StepButton>
+                            </Step>
+                          )
+                        })}
+                      </Stepper>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Tooltip
+                        id="tooltip-right"
+                        title={breakthroughHelp}
+                        placement="right"
+                      >
+                        <label>限界突破</label>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Stepper
+                        nonLinear
+                        activeStep={3}
+                        className={classes.stepSize2}
+                      >
+                        {steps1.map((label, index) => {
+                          return (
+                            <Step key={label} className={classes.stepSize2}>
+                              <StepButton
+                                completed={this.state.completed[index]}
+                                className={classes.stepSize2}
+                                disabled={true}
+                              >
+                                {label}
+                              </StepButton>
+                            </Step>
+                          )
+                        })}
+                      </Stepper>
                     </TableCell>
                   </TableRow>
                 </TableBody>
