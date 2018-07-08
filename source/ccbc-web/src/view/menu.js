@@ -194,27 +194,10 @@ const styles = theme => ({
   }
 })
 
-const images = [
-  {
-    url: '/images/shain_kanri.png',
-    title: '社員管理',
-    width: '33%',
-    path: '/shain_kensaku'
-  },
-  {
-    url: '/images/senkyo_kanri.png',
-    title: '選挙管理',
-    width: '34%',
-    path: '/senkyo_kanri'
-  },
-  {
-    url: '/images/coin_shokai.png',
-    title: 'コイン照会',
-    width: '33%',
-    path: '/coin_shokai'
-  }
-]
+// 管理者のみ表示するメニューのため、コンポーネントのマウント時処理で判定
+var images = []
 
+// 権限による表示制御のないメニューのため、constとして定義
 const images2 = [
   {
     url: '/images/senkyo.png',
@@ -246,6 +229,7 @@ class PersistentDrawer extends React.Component {
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
+
     for (var i in loginInfos) {
       var loginInfo = loginInfos[i]
       this.setState({ userid: loginInfo['userid'] })
@@ -254,6 +238,30 @@ class PersistentDrawer extends React.Component {
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
+
+      // 管理者のみ表示
+      if (loginInfo.kengenCd === '1') {
+        images = [
+          {
+            url: '/images/shain_kanri.png',
+            title: '社員管理',
+            width: '33%',
+            path: '/shain_kensaku'
+          },
+          {
+            url: '/images/senkyo_kanri.png',
+            title: '選挙管理',
+            width: '34%',
+            path: '/senkyo_kanri'
+          },
+          {
+            url: '/images/coin_shokai.png',
+            title: 'コイン照会',
+            width: '33%',
+            path: '/coin_shokai'
+          }
+        ]
+      }
     }
   }
 
@@ -306,9 +314,9 @@ class PersistentDrawer extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
+        {kanriListItems}
         <Divider />
-        <List>{ippanListItems}</List>
+        {ippanListItems}
       </Drawer>
     )
 
