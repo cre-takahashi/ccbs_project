@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import VpnKey from '@material-ui/icons/VpnKey'
+import request from 'superagent'
 
 import SampleForm from './sample'
 
@@ -73,12 +74,12 @@ class TextFields extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      name: 'Cat in the Hat',
-      age: '',
-      multiline: 'Controlled',
-      currency: 'JPN',
       id: '',
-      passwordInput: ''
+      passwordInput: '',
+      bc_account: '',
+      image_file_nm: '',
+      shimei: '',
+      kengen_cd: ''
     }
   }
 
@@ -95,23 +96,75 @@ class TextFields extends React.Component {
   }
 
   handleClick = event => {
-    // TODO ここでサーバ（BC）へリクエストを送ってログイン情報を取得し、セッションストレージに格納して持ち回る
-    var loginInfo = [
-      {
-        userid: this.state.id, // ここはログイン画面で入力された値を設定
-        password: this.state.passwordInput, // ここはログイン画面で入力された値を設定
-        tShainPk: null, // ここはDBから読み込んだ値を設定
-        imageFileName: 'yamashita.png', // ここはDBから読み込んだ値を設定
-        shimei: '札幌　花子', // ここはDBから読み込んだ値を設定
-        kengenCd: '1' // ここはDBから読み込んだ値を設定
-      }
-    ]
-    sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
+    // ユーザIDからDBを検索して、社員情報を取得
+    request
+      .post('/login/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          return
+        }
+        if (res.body.status) {
+          window.location.href = '/menu'
+        } else {
+          this.setState({ msg: 'ログインに失敗しました' })
+          return
+        }
+
+        // 結果が取得できない場合は終了
+        if (typeof res.body.data === 'undefined') {
+          return
+        }
+        var resList = res.body.data[0]
+
+        // alert(resList.user_id)
+        // alert(resList.bc_account)
+        // alert(resList.image_file_nm)
+        // alert(resList.shimei)
+        // alert(resList.kengen_cd)
+
+        // // 取得結果設定
+        this.setState({ id: resList.user_id })
+        this.setState({ bc_account: resList.bc_account })
+        this.setState({ image_file_nm: resList.image_file_nm })
+        this.setState({ shimei: resList.shimei })
+        this.setState({ kengen_cd: resList.kengen_cd })
+        this.setState({ password: this.state.passwordInput })
+
+        // TODO ここでサーバ（BC）へリクエストを送ってログイン情報を取得し、セッションストレージに格納して持ち回る
+        var loginInfo = [
+          {
+            userid: resList.user_id, // ここはログイン画面で入力された値を設定
+            password: this.state.passwordInput, // ここはログイン画面で入力された値を設定
+            tShainPk: resList.bc_account, // ここはDBから読み込んだ値を設定
+            imageFileName: resList.image_file_nm, // ここはDBから読み込んだ値を設定
+            shimei: resList.shimei, // ここはDBから読み込んだ値を設定
+            kengenCd: resList.kengen_cd // ここはDBから読み込んだ値を設定
+          }
+        ]
+        // alert(loginInfo.userid)
+        // alert(loginInfo.password)
+        // alert(loginInfo.tShainPk)
+        // alert(loginInfo.imageFileName)
+        // alert(loginInfo.shimei)
+        // alert(loginInfo.kengenCd)
+
+        sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
+
+        var loginInfo2 = JSON.parse(sessionStorage.getItem('loginInfo'))
+
+        // alert(loginInfo2.userid)
+        // alert(loginInfo2.password)
+        // alert(loginInfo2.tShainPk)
+        // alert(loginInfo2.imageFileName)
+        // alert(loginInfo2.shimei)
+        // alert(loginInfo2.kengenCd)
+      })
   }
 
   render() {
     const { classes } = this.props
-    const MyLink = props => <Link to="/sample" {...props} />
+    const MyLink = props => <Link to="/menu" {...props} />
 
     return (
       <form className={classes.container} noValidate autoComplete="off">
@@ -226,12 +279,12 @@ class TextFields extends React.Component {
                     variant="raised"
                     color="default"
                     onClick={this.handleClick}
-                    component={MyLink}
                     fullWidth="true"
                   >
                     login
                     <FileUpload className={classes.rightIcon} />
                   </Button>
+                  {this.state.msg}
                 </td>
                 <td />
               </tr>

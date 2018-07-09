@@ -443,25 +443,6 @@ const images2 = [
   }
 ]
 
-//const member = [
-//{
-//value: 1,
-//name: '山田　太郎'
-//},
-//{
-//  value: 2,
-//    name: '田中　達也'
-//  },
-//  {
-//    value: 3,
-//    name: '中田　花子'
-//  },
-//  {
-//    value: 4,
-//    name: '中村　一郎'
-//  }
-//]
-
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -473,8 +454,6 @@ const MenuProps = {
   }
 }
 
-//const names = ['山田　太郎', '田中　達也', '中田　花子', '中村　一郎']
-
 class PersistentDrawer extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -483,35 +462,16 @@ class PersistentDrawer extends React.Component {
       order: 'asc',
       orderBy: 'name',
       selected: [],
-      //data: [
-      //   createData('札幌　太郎', '/images/ishigaki.jpg'),
-      //   createData('札幌　次郎', '/images/mikami.png'),
-      //   createData('札幌　三郎', '/images/yamashita.png'),
-      //   createData('中央　花子', '/images/ishigaki.jpg'),
-      //   createData('中央　太郎', '/images/yamashita.png'),
-      //   createData('山田　太郎', '/images/sample.jpg'),
-      //   createData('山田　次郎', '/images/yamashita.png'),
-      //   createData('山田　花子', '/images/sample.jpg'),
-      //   createData('管理者　太郎', '/images/ishigaki.jpg'),
-      //   createData('管理者　花子', '/images/sample.jpg'),
-      //   createData('苫小牧　太郎', '/images/mikami.png')
-      // ].sort((a, b) => (a.name < b.name ? -1 : 1)),
       page: 0,
       rowsPerPage: 5,
       open: false,
       open2: false,
       anchor: 'left',
       checked: [1],
-
-      //      order2: 'asc',
-      //      orderBy2: 'name',
       selected2: [],
-      //      page2: 0,
-      //      rowsPerPage2: 5,
       open2: false,
       anchor2: 'left',
       checked2: [1],
-
       election: null,
       startDate: null,
       endDate: null,
@@ -520,7 +480,10 @@ class PersistentDrawer extends React.Component {
       name: [],
       anchorEl: null,
       coin: '0',
-      resultList: []
+      resultList: [],
+      happyotitle: [],
+      bcaccount: null,
+      bccoin: '0'
     }
   }
 
@@ -532,6 +495,7 @@ class PersistentDrawer extends React.Component {
       this.setState({ userid: loginInfo['userid'] })
       this.setState({ password: loginInfo['password'] })
       this.setState({ tShainPk: loginInfo['tShainPk'] })
+      this.state.tShainPk = Number(loginInfo['tShainPk'])
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
@@ -542,6 +506,7 @@ class PersistentDrawer extends React.Component {
     this.setState({
       election: now.getFullYear() + '年' + month + '月部会'
     })
+    var account = null
 
     request
       .post('/senkyo_toroku/find')
@@ -552,8 +517,10 @@ class PersistentDrawer extends React.Component {
           return
         }
         var resList = res.body.data
+        var bccoin = String(res.body.bccoin)
         // 検索結果表示
         this.setState({ resultList: resList })
+        this.setState({ bccoin: bccoin })
       })
   }
 
@@ -663,18 +630,9 @@ class PersistentDrawer extends React.Component {
     this.setState({ [name]: event.target.value })
   }
 
-  handleChange2 = (name, cnt) => event => {
-    this.setState({
-      [name[cnt]]: event.target.value
-    })
-    this.state.comment[cnt] = event.target.value
+  handleChange2 = (name, id) => event => {
+    this.state.happyotitle[id] = event.target.value
   }
-
-  // handleChange = election => event => {
-  //   this.setState({
-  //     [election]: event.target.value
-  //   })
-  // }
 
   handleDrawerOpen = () => {
     this.setState({ open: true })
@@ -941,8 +899,8 @@ class PersistentDrawer extends React.Component {
                 <br />
                 <TextField
                   id="textarea"
-                  label="管理局所持コイン数"
-                  value="98500"
+                  label="所持コイン数"
+                  value={this.state.bccoin}
                   placeholder=""
                   multiline
                   className={classes.textField2}
@@ -980,7 +938,6 @@ class PersistentDrawer extends React.Component {
                       orderBy={orderBy}
                       onSelectAllClick={this.handleSelectAllClick}
                       onRequestSort={this.handleRequestSort}
-                      //rowCount={data.length}
                       rowCount={this.state.resultList.length}
                       numSelected2={selected2.length}
                       onSelectAllClick2={this.handleSelectAllClick2}
@@ -991,13 +948,12 @@ class PersistentDrawer extends React.Component {
                           page * rowsPerPage,
                           page * rowsPerPage + rowsPerPage
                         )
-                        .map(n => {
+                        .map((n, i) => {
                           const isSelected = this.isSelected(n.id)
                           const isSelected2 = this.isSelected2(n.id)
                           return (
                             <TableRow
                               hover
-                              // onClick={event => this.handleClick(event, n.id)}
                               role="checkbox"
                               aria-checked={isSelected}
                               tabIndex={-1}
@@ -1042,11 +998,15 @@ class PersistentDrawer extends React.Component {
                                 style={{ width: '70%' }}
                               >
                                 <TextField
-                                  id="title"
+                                  id="happyotitle"
+                                  name="happyotitle"
                                   label="Title"
                                   className={classes.textField}
-                                  value={n.title}
-                                  onChange={this.handleChange('title')}
+                                  value={this.state.happyotitle[i]}
+                                  onChange={this.handleChange2(
+                                    'happyotitle',
+                                    i
+                                  )}
                                   margin="normal"
                                 />
                               </TableCell>
