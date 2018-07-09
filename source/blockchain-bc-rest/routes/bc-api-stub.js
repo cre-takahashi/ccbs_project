@@ -1,9 +1,9 @@
 /**
  * ブロックチェーンAPIスタブ
  */
-var request = require('superagent')
-var express = require('express')
-var router = express.Router()
+var request = require("superagent");
+var express = require("express");
+var router = express.Router();
 
 /**
  * ------------------------------------------------------------
@@ -15,14 +15,17 @@ var router = express.Router()
  *          [ message ]    - エラーメッセージ(エラー時のみ)
  * ------------------------------------------------------------
  */
-router.post('/add_account', function (req, res, err) {
-  console.log("★add_account:param:" + JSON.stringify(req.body))
+router.post("/add_account", function(req, res, err) {
+  console.log("★add_account:param:" + JSON.stringify(req.body));
 
   // 正常時
-  res.json({ bc_account: "0xtest000000000000000000000000000000000000", result: true })
+  res.json({
+    bc_account: "0xtest000000000000000000000000000000000000",
+    result: true
+  });
   // エラー時
   //res.json({ result: false, message: "エラーです。" })
-})
+});
 
 /**
  * ------------------------------------------------------------
@@ -34,16 +37,16 @@ router.post('/add_account', function (req, res, err) {
  *          [ message ]  - エラーメッセージ(エラー時のみ)
  * ------------------------------------------------------------
  */
-router.post('/login', function (req, res, err) {
-  console.log("★login:param:" + JSON.stringify(req.body))
+router.post("/login", function(req, res, err) {
+  console.log("★login:param:" + JSON.stringify(req.body));
 
   // 正常時(ログイン成功)
-  res.json({ result: true })
+  res.json({ result: true });
   // 正常時(通常のログイン失敗)
   //res.json({ result: false })
   // エラー時
   //res.json({ result: false, message: "エラーです。" })
-})
+});
 
 /**
  * ------------------------------------------------------------
@@ -58,20 +61,21 @@ router.post('/login', function (req, res, err) {
  *          [ message ]        - エラーメッセージ(エラー時のみ)
  * ------------------------------------------------------------
  */
-router.post('/send_coin', function (req, res, err) {
-  console.log("send_coin:param:" + JSON.stringify(req.body))
-  var toAccounts = req.body.to_account
-  var resTransactions = new Array(toAccounts.length)
-  var i = 0
+router.post("/send_coin", function(req, res, err) {
+  console.log("send_coin:param:" + JSON.stringify(req.body));
+  var toAccounts = req.body.to_account;
+  var resTransactions = new Array(toAccounts.length);
+  var i = 0;
   while (i < toAccounts.length) {
-    resTransactions[i] = "0xtest000000000000000000000000000000000000000000000000000000000000"
-    i++
+    resTransactions[i] =
+      "0xtest000000000000000000000000000000000000000000000000000000000000";
+    i++;
   }
   // 正常時
-  res.json({ transaction: resTransactions, result: true })
+  res.json({ transaction: resTransactions, result: true });
   // エラー時
   //res.json({ transaction: new Array(toAccounts.length), result: false, message: "エラーです。" })
-})  
+});
 
 /**
  * ------------------------------------------------------------
@@ -83,14 +87,14 @@ router.post('/send_coin', function (req, res, err) {
  *          [ message ] - エラーメッセージ(エラー時のみ)
  * ------------------------------------------------------------
  */
-router.post('/get_coin', function (req, res, err) {
-  console.log("get_coin:param:" + JSON.stringify(req.body))
+router.post("/get_coin", function(req, res, err) {
+  console.log("get_coin:param:" + JSON.stringify(req.body));
 
   // 正常時
-  res.json({ coin: 100, result: true })
+  res.json({ coin: 100, result: true });
   // エラー時
   //res.json({ coin: 0, result: false, message: "エラーです。" })
-})
+});
 
 /**
  * ------------------------------------------------------------
@@ -103,13 +107,28 @@ router.post('/get_coin', function (req, res, err) {
  *          [ message ] - エラーメッセージ(エラー時のみ)
  * ------------------------------------------------------------
  */
-router.post('/get_coin_year', function (req, res, err) {
-  console.log("get_coin:param:" + JSON.stringify(req.body))
+router.post("/get_coin_year", function(req, res, err) {
+  console.log("get_coin:param:" + JSON.stringify(req.body));
 
   // 正常時
-  res.json({ coin: 2000, result: true })
+  res.json({ coin: 2000, result: true });
   // エラー時
   //res.json({ coin: 0, result: false, message: "エラーです。" })
-})
+});
 
-module.exports = router
+// TODO 仮実装　情報照会（ランキング）
+router.post("/get_rank", function(req, res, err) {
+  console.log("get_rank:param:" + JSON.stringify(req.body));
+
+  // 正常時
+  res.json({
+    from_account: "0xtest000000000000000000000000000000000000",
+    to_account: "0xtest000000000000000000000000000000000001",
+    coin: 200,
+    result: true
+  });
+  // エラー時
+  //res.json({ coin: 0, result: false, message: "エラーです。" })
+});
+
+module.exports = router;
