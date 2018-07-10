@@ -259,13 +259,11 @@ const styles = theme => ({
     width: 150,
     height: 150
   },
-  headLine: {
-    width: 350
-  },
+  headLine: {},
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 900
+    width: 700
   },
   paper: {
     width: '100%',
@@ -550,13 +548,16 @@ class TohyoTorokuForm extends React.Component {
               <Typography gutterBottom variant="headline" component="h2">
                 {this.state.resultList[0].senkyo_nm}
               </Typography>
-              <Typography component="p">
+              <Typography component="p" style={{ fontSize: '120%' }}>
                 発表者に対して評価とコメントをつけて下さい。（配布しきれなかったコインは自動で回収されます）
               </Typography>
-              <Typography component="p">
+              <Typography component="p" style={{ fontSize: '120%' }}>
                 配布コイン数：{this.state.resultList[0].haifu_coin}
               </Typography>
-              <Typography component="p">
+              <Typography component="p" style={{ fontSize: '120%' }}>
+                1点辺りのコイン数：{this.state.resultList[0].haifu_coin}
+              </Typography>
+              <Typography component="p" style={{ fontSize: '120%' }}>
                 投票コイン数：{this.state.tohyoCoin}
               </Typography>
             </CardContent>
@@ -575,7 +576,7 @@ class TohyoTorokuForm extends React.Component {
                   <div>
                     <table>
                       <tr>
-                        <td rowspan="3" width="50%">
+                        <td rowspan="3" width="30%">
                           <Avatar
                             alt="Adelle Charles"
                             src={restUrl + `uploads/${data.image_file_nm}`}
@@ -586,7 +587,7 @@ class TohyoTorokuForm extends React.Component {
                           />
                         </td>
 
-                        <td width="10%" className={classes.tdSize}>
+                        <td width="5%" className={classes.tdSize}>
                           <Tooltip
                             id="tooltip-right"
                             title={documentHelp}
@@ -595,7 +596,7 @@ class TohyoTorokuForm extends React.Component {
                             <label>資料作成</label>
                           </Tooltip>
                         </td>
-                        <td width="40%">
+                        <td width="25%">
                           <Stepper
                             nonLinear
                             activeStep={activeStep1[i]}
@@ -615,6 +616,20 @@ class TohyoTorokuForm extends React.Component {
                               )
                             })}
                           </Stepper>
+                        </td>
+                        <td rowspan="6">
+                          <TextField
+                            id="comment"
+                            label="コメント"
+                            multiline
+                            rows="12"
+                            rowsMax="12"
+                            value={this.state.comment[i]}
+                            onChange={this.handleChange('comment', i)}
+                            className={classes.textField}
+                            margin="normal"
+                            style={{ fontSize: '120%' }}
+                          />
                         </td>
                       </tr>
                       <tr>
@@ -726,9 +741,9 @@ class TohyoTorokuForm extends React.Component {
                         <td>
                           <Typography
                             variant="subheading"
-                            color="textSecondary"
+                            style={{ fontSize: '120%' }}
                           >
-                            {data.shimei}　{this.calculateCoinLine(i)}coin
+                            {data.shimei}
                           </Typography>
                         </td>
 
@@ -764,18 +779,14 @@ class TohyoTorokuForm extends React.Component {
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="3">
-                          <TextField
-                            id="comment"
-                            label="コメント"
-                            multiline
-                            rows="5"
-                            rowsMax="5"
-                            value={this.state.comment[i]}
-                            onChange={this.handleChange('comment', i)}
-                            className={classes.textField}
-                            margin="normal"
-                          />
+                        <td>
+                          <Typography
+                            variant="subheading"
+                            style={{ fontSize: '140%' }}
+                          >
+                            {this.calculateCoinLine(i)}点<label>　</label>
+                            {this.calculateCoinLine(i)}coin
+                          </Typography>
                         </td>
                       </tr>
                     </table>
@@ -787,18 +798,24 @@ class TohyoTorokuForm extends React.Component {
           {(() => {
             if (i === this.state.resultList.length - 1) {
               return (
-                <Button
-                  className={classes.button}
-                  variant="raised"
-                  size="large"
-                  onClick={this.handleSubmit.bind(this)}
-                  component={MenuLink}
-                >
-                  <Save
-                    className={classNames(classes.leftIcon, classes.iconSmall)}
-                  />
-                  SAVE
-                </Button>
+                <div>
+                  <br />
+                  <Button
+                    className={classes.button}
+                    variant="raised"
+                    size="large"
+                    onClick={this.handleSubmit.bind(this)}
+                    component={MenuLink}
+                  >
+                    <Save
+                      className={classNames(
+                        classes.leftIcon,
+                        classes.iconSmall
+                      )}
+                    />
+                    SAVE
+                  </Button>
+                </div>
               )
             }
           })()}

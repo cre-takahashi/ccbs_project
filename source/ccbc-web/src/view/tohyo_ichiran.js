@@ -18,6 +18,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import ButtonBase from '@material-ui/core/ButtonBase'
+import Assessment from '@material-ui/icons/Assessment'
 import {
   mailFolderListItems,
   otherMailFolderListItems,
@@ -591,7 +592,7 @@ class TohyoIchiran extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
@@ -607,7 +608,7 @@ class TohyoIchiran extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
@@ -623,7 +624,7 @@ class TohyoIchiran extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
@@ -639,7 +640,7 @@ class TohyoIchiran extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
@@ -655,7 +656,7 @@ class TohyoIchiran extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
@@ -680,11 +681,14 @@ class TohyoIchiran extends React.Component {
               <br />
               <Button
                 variant="raised"
-                color="primary"
+                color="default"
                 size="large"
                 className={classes.button}
               >
-                グラフ表示
+                <Assessment
+                  className={classNames(classes.leftIcon, classes.iconSmall)}
+                />
+                GRAPH
               </Button>
             </div>
           </main>

@@ -124,7 +124,7 @@ const styles = theme => ({
   },
   image: {
     position: 'relative',
-    height: 200,
+    height: 400,
     [theme.breakpoints.down('xs')]: {
       width: '100% !important', // Overrides inline-style
       height: 100
@@ -177,7 +177,8 @@ const styles = theme => ({
   imageTitle: {
     position: 'relative',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 4}px ${theme
-      .spacing.unit + 6}px`
+      .spacing.unit + 6}px`,
+    fontSize: '300%'
   },
   imageMarked: {
     height: 3,
@@ -444,7 +445,6 @@ class PersistentDrawer extends React.Component {
                         className={classes.imageTitle}
                       >
                         {image.title}
-                        <span className={classes.imageMarked} />
                       </Typography>
                     </span>
                   </ButtonBase>
@@ -480,7 +480,6 @@ class PersistentDrawer extends React.Component {
                         className={classes.imageTitle}
                       >
                         {image.title}
-                        <span className={classes.imageMarked} />
                       </Typography>
                     </span>
                   </ButtonBase>

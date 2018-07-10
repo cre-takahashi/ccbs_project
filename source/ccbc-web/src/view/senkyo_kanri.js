@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import AddCircle from '@material-ui/icons/AddCircle'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import ButtonBase from '@material-ui/core/ButtonBase'
@@ -70,7 +71,8 @@ const drawerWidth = 240
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    fontSize: '120%'
   },
   appFrame: {
     zIndex: 1,
@@ -421,24 +423,34 @@ class PersistentDrawer extends React.Component {
                 <Table className={classes.table}>
                   <TableHead>
                     <TableRow>
-                      <CustomTableCell>選挙名</CustomTableCell>
-                      <CustomTableCell>投票開始日</CustomTableCell>
-                      <CustomTableCell>投票終了日</CustomTableCell>
+                      <CustomTableCell style={{ fontSize: '100%' }}>
+                        選挙名
+                      </CustomTableCell>
+                      <CustomTableCell style={{ fontSize: '100%' }}>
+                        投票開始日
+                      </CustomTableCell>
+                      <CustomTableCell style={{ fontSize: '100%' }}>
+                        投票終了日
+                      </CustomTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {this.state.resultList.map(n => {
                       return (
                         <TableRow className={classes.row} key={n.id}>
-                          <CustomTableCell component="th" scope="row">
+                          <CustomTableCell
+                            component="th"
+                            scope="row"
+                            style={{ fontSize: '100%' }}
+                          >
                             {n.senkyo_nm}
                           </CustomTableCell>
-                          <CustomTableCell>
+                          <CustomTableCell style={{ fontSize: '100%' }}>
                             {moment(new Date(n.tohyo_kaishi_dt)).format(
                               'YYYY/MM/DD'
                             )}
                           </CustomTableCell>
-                          <CustomTableCell>
+                          <CustomTableCell style={{ fontSize: '100%' }}>
                             {moment(new Date(n.tohyo_shuryo_dt)).format(
                               'YYYY/MM/DD'
                             )}
@@ -452,12 +464,15 @@ class PersistentDrawer extends React.Component {
               <p>
                 <Button
                   variant="raised"
-                  color="primary"
                   component={SenkyoTorokuLink}
                   size="large"
+                  color="default"
                   className={classes.button}
                 >
-                  追加
+                  <AddCircle
+                    className={classNames(classes.leftIcon, classes.iconSmall)}
+                  />
+                  ADD
                 </Button>
               </p>
             </div>

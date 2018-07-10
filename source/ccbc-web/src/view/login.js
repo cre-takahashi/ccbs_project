@@ -107,7 +107,9 @@ class TextFields extends React.Component {
         if (res.body.status) {
           window.location.href = '/menu'
         } else {
-          this.setState({ msg: 'ログインに失敗しました' })
+          this.setState({
+            msg: 'ユーザ名またはパスワードを確認してください'
+          })
           return
         }
 
@@ -284,7 +286,14 @@ class TextFields extends React.Component {
                     login
                     <FileUpload className={classes.rightIcon} />
                   </Button>
-                  {this.state.msg}
+                  <Typography
+                    component="p"
+                    style={{
+                      color: 'red'
+                    }}
+                  >
+                    {this.state.msg}
+                  </Typography>
                 </td>
                 <td />
               </tr>
