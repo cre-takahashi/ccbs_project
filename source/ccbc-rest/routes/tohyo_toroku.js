@@ -18,7 +18,7 @@ router.post('/find', (req, res) => {
     ' inner join t_shain tsha on tpre.t_shain_pk = tsha.t_shain_pk' +
     ' left join t_shussekisha tshu on tsen.t_senkyo_pk = tshu.t_senkyo_pk and tshu.t_shain_pk = :mypk' +
     ' left join t_shain tsha2 on tsha2.t_shain_pk = :mypk' +
-    " where tsen.delete_flg = '0'  and tpre.delete_flg = '0' and tsha.delete_flg = '0' and tshu.delete_flg = '0'" +
+    " where tsen.delete_flg = '0'  and tpre.delete_flg = '0' and tsha.delete_flg = '0' and tshu.delete_flg = '0' and tsha.kengen_cd <> '3' " +
     ' and exists (select 1 from t_senkyo tsen2 inner join t_shussekisha tshu2 on tsen2.t_senkyo_pk = tshu2.t_senkyo_pk' +
     " where tsen2.delete_flg = '0' and tshu2.delete_flg = '0' and tshu2.t_shain_pk = :mypk)" +
     " and not exists (select 1 from t_tohyo ttoh where ttoh.delete_flg = '0' and ttoh.t_presenter_pk = tpre.t_presenter_pk and ttoh.t_shussekisha_pk = tshu.t_shussekisha_pk and ttoh.transaction_id is not null)" +
