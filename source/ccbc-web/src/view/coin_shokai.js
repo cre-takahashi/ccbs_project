@@ -18,6 +18,9 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import ButtonBase from '@material-ui/core/ButtonBase'
+import Web from '@material-ui/icons/Web'
+import Checkbox from '@material-ui/core/Checkbox'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import {
   mailFolderListItems,
   otherMailFolderListItems,
@@ -60,10 +63,11 @@ import InputLabel from '@material-ui/core/InputLabel'
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
+    fontSize: 18
   },
   body: {
-    fontSize: 14
+    fontSize: 18
   }
 }))(TableCell)
 
@@ -294,9 +298,7 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto'
   },
-  table: {
-    minWidth: 1850
-  },
+  table: {},
   row: {
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
@@ -314,10 +316,9 @@ const styles = theme => ({
     width: 500
   },
   addToPaper: {
-    paddingLeft: 20,
-    paddingRight: 20,
     marginTop: 10,
-    marginLeft: 1000
+    marginLeft: 650,
+    fontSize: 18
   },
   InputLabel: {
     whiteSpace: 'nowrap'
@@ -597,6 +598,16 @@ class CoinShokaiForm extends React.Component {
                       </form>
                     </th>
                     <th>
+                      <Typography style={{ marginTop: 15 }}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox color="default" value="checkedG" />
+                          }
+                          label="事務局表示"
+                        />
+                      </Typography>
+                    </th>
+                    <th>
                       <Typography component="p">発表数</Typography>
                       <Typography variant="headline" component="h3">
                         3
@@ -608,21 +619,21 @@ class CoinShokaiForm extends React.Component {
               <br />
               <Table className={classes.table}>
                 <TableRow>
-                  <CustomTableCell>
-                    <h2>
-                      <img
-                        src="/images/yajirushi.png"
-                        alt="サンプル"
-                        align="top"
-                        width="30"
-                        height="20"
-                      />
-                      <strong>受領情報（投票（授与）者→本人）</strong>
-                    </h2>
-                  </CustomTableCell>
+                  <h2>
+                    <img
+                      src="/images/yajirushi.png"
+                      alt="サンプル"
+                      align="bottom"
+                      width="30"
+                      height="20"
+                    />
+                    <strong>獲得コイン情報</strong>
+                  </h2>
                   <Paper className={classes.addToPaper}>
-                    <CustomTableCell>受領コイン計</CustomTableCell>
-                    <CustomTableCell>5,000</CustomTableCell>
+                    <CustomTableCell>受領コイン計：1,500</CustomTableCell>
+                    <CustomTableCell>
+                      受領コイン計（事務局含む）：2,500
+                    </CustomTableCell>
                   </Paper>
                 </TableRow>
               </Table>
@@ -646,10 +657,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -662,10 +679,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -678,10 +701,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -694,10 +723,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -710,10 +745,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -726,10 +767,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -740,21 +787,21 @@ class CoinShokaiForm extends React.Component {
               <br />
               <Table className={classes.table}>
                 <TableRow>
-                  <CustomTableCell>
-                    <h2>
-                      <img
-                        src="/images/yajirushi.png"
-                        alt="サンプル"
-                        align="top"
-                        width="30"
-                        height="20"
-                      />
-                      <strong>授与情報（本人→投票相手・受領相手）</strong>
-                    </h2>
-                  </CustomTableCell>
+                  <h2>
+                    <img
+                      src="/images/yajirushi.png"
+                      alt="サンプル"
+                      align="bottom"
+                      width="30"
+                      height="20"
+                    />
+                    <strong>投票コイン情報</strong>
+                  </h2>
                   <Paper className={classes.addToPaper}>
-                    <CustomTableCell>授与コイン計</CustomTableCell>
-                    <CustomTableCell>1,500</CustomTableCell>
+                    <CustomTableCell>授与コイン計：1,500</CustomTableCell>
+                    <CustomTableCell>
+                      授与コイン計（事務局含む）：2,500
+                    </CustomTableCell>
                   </Paper>
                 </TableRow>
               </Table>
@@ -778,10 +825,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -794,10 +847,16 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
@@ -810,22 +869,22 @@ class CoinShokaiForm extends React.Component {
                       <CustomTableCell>
                         <Button
                           variant="raised"
-                          color="primary"
+                          color="default"
                           size="large"
                           className={classes.button}
                         >
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
                           照会
                         </Button>
                       </CustomTableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
-              </Paper>
-              <Paper className={classes.coinInfo}>
-                <Typography component="p">最終所持コイン数</Typography>
-                <Typography variant="headline" component="h3">
-                  4,000
-                </Typography>
               </Paper>
             </div>
           </main>

@@ -263,7 +263,7 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 700
+    width: 500
   },
   paper: {
     width: '100%',

@@ -297,8 +297,7 @@ const styles = theme => ({
     backgroundColor: 'whitesmoke'
   },
   table: {
-    width: 1400,
-    marginLeft: 250
+    marginLeft: 0
   },
   row: {
     '&:nth-of-type(odd)': {
@@ -324,7 +323,7 @@ const styles = theme => ({
     width: 300
   },
   rankAvatar: {
-    paddingLeft: 200
+    paddingLeft: 0
   },
   rankTitle: {
     whiteSpace: 'nowrap',
@@ -678,7 +677,7 @@ class TohyoShokaiKobetsuForm extends React.Component {
                 <img
                   src="/images/yajirushi.png"
                   alt="サンプル"
-                  align="top"
+                  align="bottom"
                   width="30"
                   height="20"
                 />
@@ -693,13 +692,11 @@ class TohyoShokaiKobetsuForm extends React.Component {
                         scope="row"
                         className={classes.rankAvatar}
                       >
-                        <td>
-                          <Avatar
-                            alt="金メダル"
-                            src="/images/medal_g_n.png"
-                            className={classes.medalAvatar}
-                          />
-                        </td>
+                        <Avatar
+                          alt="金メダル"
+                          src="/images/medal_g_n.png"
+                          className={classes.medalAvatar}
+                        />
                       </CustomTableCell>
                       <CustomTableCell>
                         <Table>
@@ -747,13 +744,11 @@ class TohyoShokaiKobetsuForm extends React.Component {
                         scope="row"
                         className={classes.rankAvatar}
                       >
-                        <td>
-                          <Avatar
-                            alt="銀メダル"
-                            src="/images/medal_s_n.png"
-                            className={classes.medalAvatar}
-                          />
-                        </td>
+                        <Avatar
+                          alt="銀メダル"
+                          src="/images/medal_s_n.png"
+                          className={classes.medalAvatar}
+                        />
                       </CustomTableCell>
                       <CustomTableCell>
                         <Table>
@@ -801,13 +796,11 @@ class TohyoShokaiKobetsuForm extends React.Component {
                         scope="row"
                         className={classes.rankAvatar}
                       >
-                        <td>
-                          <Avatar
-                            alt="銅メダル"
-                            src="/images/medal_c_n.png"
-                            className={classes.medalAvatar}
-                          />
-                        </td>
+                        <Avatar
+                          alt="銅メダル"
+                          src="/images/medal_c_n.png"
+                          className={classes.medalAvatar}
+                        />
                       </CustomTableCell>
                       <CustomTableCell>
                         <Table>
@@ -855,9 +848,9 @@ class TohyoShokaiKobetsuForm extends React.Component {
                       <CustomTableCell
                         component="th"
                         scope="row"
-                        className={classes.td}
+                        style={{ paddingLeft: 60 }}
                       >
-                        <td>4</td>
+                        4
                       </CustomTableCell>
                       <CustomTableCell>
                         <Table>
@@ -904,9 +897,9 @@ class TohyoShokaiKobetsuForm extends React.Component {
                       <CustomTableCell
                         component="th"
                         scope="row"
-                        className={classes.td}
+                        style={{ paddingLeft: 60 }}
                       >
-                        <td>5</td>
+                        5
                       </CustomTableCell>
                       <CustomTableCell>
                         <Table>
@@ -953,7 +946,7 @@ class TohyoShokaiKobetsuForm extends React.Component {
                       <CustomTableCell
                         component="th"
                         scope="row"
-                        className={classes.td}
+                        style={{ paddingLeft: 60 }}
                       >
                         6
                       </CustomTableCell>
@@ -1002,9 +995,9 @@ class TohyoShokaiKobetsuForm extends React.Component {
                       <CustomTableCell
                         component="th"
                         scope="row"
-                        className={classes.td}
+                        style={{ paddingLeft: 60 }}
                       >
-                        <td>7</td>
+                        7
                       </CustomTableCell>
                       <CustomTableCell>
                         <Table>
@@ -1051,9 +1044,9 @@ class TohyoShokaiKobetsuForm extends React.Component {
                       <CustomTableCell
                         component="th"
                         scope="row"
-                        className={classes.td}
+                        style={{ paddingLeft: 60 }}
                       >
-                        <td>8</td>
+                        8
                       </CustomTableCell>
                       <CustomTableCell>
                         <Table>

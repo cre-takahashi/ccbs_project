@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import ButtonBase from '@material-ui/core/ButtonBase'
 import Assessment from '@material-ui/icons/Assessment'
+import Web from '@material-ui/icons/Web'
 import {
   mailFolderListItems,
   otherMailFolderListItems,
@@ -63,10 +64,11 @@ import Input from '@material-ui/core/Input'
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
+    fontSize: 18
   },
   body: {
-    fontSize: 14
+    fontSize: 18
   }
 }))(TableCell)
 
@@ -534,7 +536,7 @@ class TohyoIchiran extends React.Component {
                 <img
                   src="/images/yajirushi.png"
                   alt="サンプル"
-                  align="top"
+                  align="bottom"
                   width="30"
                   height="20"
                 />
@@ -566,7 +568,7 @@ class TohyoIchiran extends React.Component {
                 <img
                   src="/images/yajirushi.png"
                   alt="サンプル"
-                  align="top"
+                  align="bottom"
                   width="30"
                   height="20"
                 />
@@ -578,8 +580,8 @@ class TohyoIchiran extends React.Component {
                     <TableRow>
                       <CustomTableCell>No</CustomTableCell>
                       <CustomTableCell>選挙名</CustomTableCell>
-                      <CustomTableCell>開始日</CustomTableCell>
-                      <CustomTableCell>終了日</CustomTableCell>
+                      <CustomTableCell>投票開始日</CustomTableCell>
+                      <CustomTableCell>投票終了日</CustomTableCell>
                       <CustomTableCell>照会</CustomTableCell>
                     </TableRow>
                   </TableHead>
@@ -596,7 +598,13 @@ class TohyoIchiran extends React.Component {
                           size="large"
                           className={classes.button}
                         >
-                          ボタン
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          照会
                         </Button>
                       </CustomTableCell>
                     </TableRow>
@@ -612,7 +620,13 @@ class TohyoIchiran extends React.Component {
                           size="large"
                           className={classes.button}
                         >
-                          ボタン
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          照会
                         </Button>
                       </CustomTableCell>
                     </TableRow>
@@ -628,7 +642,13 @@ class TohyoIchiran extends React.Component {
                           size="large"
                           className={classes.button}
                         >
-                          ボタン
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          照会
                         </Button>
                       </CustomTableCell>
                     </TableRow>
@@ -644,7 +664,13 @@ class TohyoIchiran extends React.Component {
                           size="large"
                           className={classes.button}
                         >
-                          ボタン
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          照会
                         </Button>
                       </CustomTableCell>
                     </TableRow>
@@ -660,7 +686,13 @@ class TohyoIchiran extends React.Component {
                           size="large"
                           className={classes.button}
                         >
-                          ボタン
+                          <Web
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          照会
                         </Button>
                       </CustomTableCell>
                     </TableRow>
@@ -672,13 +704,12 @@ class TohyoIchiran extends React.Component {
                 <img
                   src="/images/yajirushi.png"
                   alt="サンプル"
-                  align="top"
+                  align="bottom"
                   width="30"
                   height="20"
                 />
                 <strong>年度情報</strong>
               </h2>
-              <br />
               <Button
                 variant="raised"
                 color="default"
@@ -688,7 +719,7 @@ class TohyoIchiran extends React.Component {
                 <Assessment
                   className={classNames(classes.leftIcon, classes.iconSmall)}
                 />
-                GRAPH
+                グラフ
               </Button>
             </div>
           </main>

@@ -82,7 +82,8 @@ const drawerWidth = 240
 
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    fontSize: 18
   },
   appFrame: {
     zIndex: 1,
@@ -550,9 +551,10 @@ class TohyoShokaiShosaiForm extends React.Component {
             <div className={classes.drawerHeader} />
             <div>
               <Paper className={classes.root} elevation={4}>
-                <Typography variant="subhead" component="p">
+                <Typography variant="headline" component="p">
                   平成３０年度６月部会
                 </Typography>
+                <br />
                 <Typography variant="headline" component="h3">
                   全体順位：１位　獲得コイン：340coin
                 </Typography>
@@ -593,7 +595,7 @@ class TohyoShokaiShosaiForm extends React.Component {
                   dataKey="rank" // Array型のデータの、数値を表示したい値のキーを指定
                 />
                 <Radar // レーダーの色や各パラメーターのタイトルを指定
-                  name="Mike" // hoverした時に表示される名前を指定
+                  name="点数" // hoverした時に表示される名前を指定
                   dataKey="value" // Array型のデータのパラメータータイトルを指定
                   stroke="#8884d8" // レーダーの線の色を指定
                   fill="#8884d8" // レーダーの中身の色を指定
@@ -607,7 +609,10 @@ class TohyoShokaiShosaiForm extends React.Component {
                 onChange={this.handleChangePnl('panel1')}
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>
+                  <Typography
+                    className={classes.heading}
+                    style={{ fontSize: '18px' }}
+                  >
                     <Avatar
                       alt="Adelle Charles"
                       src="/images/yamashita.png"
@@ -615,12 +620,14 @@ class TohyoShokaiShosaiForm extends React.Component {
                     />
                     札幌　一郎
                   </Typography>
-                  <Typography className={classes.secondaryHeading}>
-                    投票：500coin　コメントを読む
+                  <Typography style={{ fontSize: '18px' }}>
+                    投票：500coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
                   </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <Typography>すごく良かった。 感動した。</Typography>
+                  <Typography style={{ fontSize: '18px' }}>
+                    すごく良かった。 感動した。
+                  </Typography>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
 
@@ -629,7 +636,10 @@ class TohyoShokaiShosaiForm extends React.Component {
                 onChange={this.handleChangePnl('panel2')}
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>
+                  <Typography
+                    className={classes.heading}
+                    style={{ fontSize: '18px' }}
+                  >
                     <Avatar
                       alt="Adelle Charles"
                       src="/images/yamashita.png"
@@ -637,12 +647,12 @@ class TohyoShokaiShosaiForm extends React.Component {
                     />
                     札幌　二郎
                   </Typography>
-                  <Typography className={classes.secondaryHeading}>
-                    投票：400coin　コメントを読む
+                  <Typography style={{ fontSize: '18px' }}>
+                    投票：400coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
                   </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <Typography>
+                  <Typography style={{ fontSize: '18px' }}>
                     すごく良かった。 感動した。もっと聞きたい！！！
                   </Typography>
                 </ExpansionPanelDetails>
@@ -653,7 +663,10 @@ class TohyoShokaiShosaiForm extends React.Component {
                 onChange={this.handleChangePnl('panel3')}
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>
+                  <Typography
+                    className={classes.heading}
+                    style={{ fontSize: '18px' }}
+                  >
                     <Avatar
                       alt="Adelle Charles"
                       src="/images/yamashita.png"
@@ -661,12 +674,12 @@ class TohyoShokaiShosaiForm extends React.Component {
                     />
                     札幌　三郎
                   </Typography>
-                  <Typography className={classes.secondaryHeading}>
-                    投票：300coin　コメントを読む
+                  <Typography style={{ fontSize: '18px' }}>
+                    投票：300coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
                   </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <Typography>
+                  <Typography style={{ fontSize: '18px' }}>
                     すごく良かった。 感動した。もっと聞きたい！！！
                   </Typography>
                 </ExpansionPanelDetails>
@@ -677,7 +690,10 @@ class TohyoShokaiShosaiForm extends React.Component {
                 onChange={this.handleChangePnl('panel4')}
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>
+                  <Typography
+                    className={classes.heading}
+                    style={{ fontSize: '18px' }}
+                  >
                     <Avatar
                       alt="Adelle Charles"
                       src="/images/yamashita.png"
@@ -685,12 +701,12 @@ class TohyoShokaiShosaiForm extends React.Component {
                     />
                     札幌　四郎
                   </Typography>
-                  <Typography className={classes.secondaryHeading}>
-                    投票：200coin　コメントを読む
+                  <Typography style={{ fontSize: '18px' }}>
+                    投票：200coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
                   </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <Typography>
+                  <Typography style={{ fontSize: '18px' }}>
                     すごく良かった。 感動した。もっと聞きたい！！！
                   </Typography>
                 </ExpansionPanelDetails>
@@ -701,7 +717,10 @@ class TohyoShokaiShosaiForm extends React.Component {
                 onChange={this.handleChangePnl('panel5')}
               >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>
+                  <Typography
+                    className={classes.heading}
+                    style={{ fontSize: '18px' }}
+                  >
                     <Avatar
                       alt="Adelle Charles"
                       src="/images/yamashita.png"
@@ -709,12 +728,12 @@ class TohyoShokaiShosaiForm extends React.Component {
                     />
                     札幌　五郎
                   </Typography>
-                  <Typography className={classes.secondaryHeading}>
-                    投票：100coin　コメントを読む
+                  <Typography style={{ fontSize: '18px' }}>
+                    投票：100coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
                   </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <Typography>
+                  <Typography style={{ fontSize: '18px' }}>
                     すごく良かった。 感動した。もっと聞きたい！！！
                   </Typography>
                 </ExpansionPanelDetails>

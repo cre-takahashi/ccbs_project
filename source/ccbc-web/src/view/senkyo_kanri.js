@@ -72,7 +72,7 @@ const drawerWidth = 240
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    fontSize: '120%'
+    fontSize: '105%'
   },
   appFrame: {
     zIndex: 1,

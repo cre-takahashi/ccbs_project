@@ -91,7 +91,8 @@ import Select from '@material-ui/core/Select'
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
+    fontSize: '18px'
   },
   body: {
     fontSize: 40
@@ -106,10 +107,12 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
-    backgroundColor: 'basic'
+    backgroundColor: 'basic',
+    fontSize: '18px'
   },
   table: {
-    minWidth: 1020
+    minWidth: 1020,
+    fontSize: '18px'
   },
   listroot: {
     width: '100%',
@@ -713,7 +716,7 @@ class CommentShokaiForm extends React.Component {
                 <img
                   src="/images/yajirushi.png"
                   alt="サンプル"
-                  align="top"
+                  align="bottom"
                   width="30"
                   height="20"
                 />
@@ -722,32 +725,29 @@ class CommentShokaiForm extends React.Component {
               <Paper className={classes.root}>
                 <TableBody className={classes.table}>
                   <TableRow component="th" scope="row">
-                    <TableCell>投票・コイン贈与</TableCell>
-                    <TableCell>平成30年度10月部会</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>投票（授与）者</TableCell>
-                    <TableCell>札幌 花子</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>受領コイン</TableCell>
-                    <TableCell>500</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>コメント</TableCell>
-                    <TableCell>
-                      <TextField
-                        id="textarea"
-                        value="○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○"
-                        multiline
-                        className={classes.textField2}
-                        margin="normal"
-                        disabled
-                      />
+                    <TableCell style={{ fontSize: '18px' }}>
+                      投票・コイン贈与
+                    </TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
+                      平成30年度10月部会
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
+                      投票（授与）者
+                    </TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
+                      札幌 花子
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{ fontSize: '18px' }}>
+                      受領コイン
+                    </TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>500</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Tooltip
                         id="tooltip-right"
                         title={documentHelp}
@@ -756,7 +756,7 @@ class CommentShokaiForm extends React.Component {
                         <label>資料作成</label>
                       </Tooltip>
                     </TableCell>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Stepper
                         nonLinear
                         activeStep={4}
@@ -779,7 +779,7 @@ class CommentShokaiForm extends React.Component {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Tooltip
                         id="tooltip-right"
                         title={presentationHelp}
@@ -788,7 +788,7 @@ class CommentShokaiForm extends React.Component {
                         <label>発表力</label>
                       </Tooltip>
                     </TableCell>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Stepper
                         nonLinear
                         activeStep={4}
@@ -811,7 +811,7 @@ class CommentShokaiForm extends React.Component {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Tooltip
                         id="tooltip-right"
                         title={expressionHelp}
@@ -820,7 +820,7 @@ class CommentShokaiForm extends React.Component {
                         <label>表現力</label>
                       </Tooltip>
                     </TableCell>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Stepper
                         nonLinear
                         activeStep={8}
@@ -843,7 +843,7 @@ class CommentShokaiForm extends React.Component {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Tooltip
                         id="tooltip-right"
                         title={influenceHelp}
@@ -875,7 +875,7 @@ class CommentShokaiForm extends React.Component {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
                       <Tooltip
                         id="tooltip-right"
                         title={breakthroughHelp}
@@ -904,6 +904,12 @@ class CommentShokaiForm extends React.Component {
                           )
                         })}
                       </Stepper>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{ fontSize: '18px' }}>コメント</TableCell>
+                    <TableCell style={{ fontSize: '18px' }}>
+                      抑揚があり、すごくよかった。
                     </TableCell>
                   </TableRow>
                 </TableBody>
