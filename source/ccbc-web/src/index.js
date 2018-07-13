@@ -12,6 +12,7 @@ import {
   routerMiddleware
 } from 'react-router-redux'
 import { countReducer } from './reducers/count'
+import { coinShokaiReducer } from './reducers/coin_shokai'
 
 import HeaderForm from './view/header'
 import FooterForm from './view/footer'
@@ -47,6 +48,7 @@ const middleware = routerMiddleware(history)
 const store = createStore(
   combineReducers({
     count: countReducer,
+    coinShokai: coinShokaiReducer,
     routing: routerReducer
   }),
   applyMiddleware(middleware)
