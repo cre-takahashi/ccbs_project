@@ -17,6 +17,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 import ButtonBase from '@material-ui/core/ButtonBase'
+import { connect } from 'react-redux'
 import {
   mailFolderListItems,
   otherMailFolderListItems,
@@ -502,7 +503,12 @@ class CommentShokaiForm extends React.Component {
     age2: '',
     multiline: 'Controlled',
     currency: 'EUR',
-    name3: 'Composed TextField'
+    name3: 'Composed TextField',
+    tTohyoPk: null,
+    tZoyoPk: null,
+    title: '',
+    tohyosha: '',
+    coin: 0
   }
 
   handleClickOpen = () => {
@@ -536,6 +542,7 @@ class CommentShokaiForm extends React.Component {
 
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
+    // セッションストレージからログイン情報を取得
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
     for (var i in loginInfos) {
       var loginInfo = loginInfos[i]
@@ -547,6 +554,29 @@ class CommentShokaiForm extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+
+    // 遷移元画面からの引き渡しパラメータ
+    const { coinShokai } = this.props
+    if (coinShokai.tTohyoPk != null) {
+      this.state.tTohyoPk = Number(coinShokai.tTohyoPk)
+    }
+    if (coinShokai.tZoyoPk != null) {
+      this.state.tZoyoPk = Number(coinShokai.tZoyoPk)
+    }
+    this.state.title = coinShokai.title
+    this.state.tohyosha = coinShokai.tohyosha
+    this.state.coin = coinShokai.coin
+
+    request
+      .post('/comment_shokai/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          return
+        }
+        var resList = res.body.data
+        this.setState({ resultList: resList })
+      })
   }
 
   handleChange = (name, cnt) => event => {
@@ -582,7 +612,7 @@ class CommentShokaiForm extends React.Component {
   }
 
   render() {
-    const { classes, theme } = this.props
+    const { classes, theme, coinShokai } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
 
@@ -622,6 +652,269 @@ class CommentShokaiForm extends React.Component {
 
     const MyLink = props => <Link to="/sample" {...props} />
     const steps1 = getSteps1()
+
+    var resList = this.state.resultList.map((data, i) => {
+      if (coinShokai.tTohyoPk != null) {
+        return (
+          <div>
+            <h2>
+              <img
+                src="/images/yajirushi.png"
+                alt="サンプル"
+                align="bottom"
+                width="30"
+                height="20"
+              />
+              <strong>コメント情報</strong>
+            </h2>
+            <Paper className={classes.root}>
+              <TableBody className={classes.table}>
+                <TableRow component="th" scope="row">
+                  <TableCell style={{ fontSize: '18px' }}>
+                    投票・コイン贈与
+                  </TableCell>
+                  <TableCell style={{ fontSize: '18px', minWidth: '300px' }}>
+                    {this.state.title}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    投票（授与）者
+                  </TableCell>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    {this.state.tohyosha}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>受領コイン</TableCell>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    {this.state.coin}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Tooltip
+                      id="tooltip-right"
+                      title={documentHelp}
+                      placement="right"
+                    >
+                      <label>資料作成</label>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Stepper
+                      nonLinear
+                      activeStep={data.hyoka1 - 1}
+                      className={classes.stepSize2}
+                    >
+                      {steps1.map((label, index) => {
+                        return (
+                          <Step key={label} className={classes.stepSize2}>
+                            <StepButton
+                              completed={this.state.completed[index]}
+                              className={classes.stepSize2}
+                              disabled={true}
+                            >
+                              {label}
+                            </StepButton>
+                          </Step>
+                        )
+                      })}
+                    </Stepper>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Tooltip
+                      id="tooltip-right"
+                      title={presentationHelp}
+                      placement="right"
+                    >
+                      <label>発表力</label>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Stepper
+                      nonLinear
+                      activeStep={data.hyoka2 - 1}
+                      className={classes.stepSize2}
+                    >
+                      {steps1.map((label, index) => {
+                        return (
+                          <Step key={label} className={classes.stepSize2}>
+                            <StepButton
+                              completed={this.state.completed[index]}
+                              className={classes.stepSize2}
+                              disabled={true}
+                            >
+                              {label}
+                            </StepButton>
+                          </Step>
+                        )
+                      })}
+                    </Stepper>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Tooltip
+                      id="tooltip-right"
+                      title={expressionHelp}
+                      placement="right"
+                    >
+                      <label>表現力</label>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Stepper
+                      nonLinear
+                      activeStep={data.hyoka3 - 1}
+                      className={classes.stepSize2}
+                    >
+                      {steps1.map((label, index) => {
+                        return (
+                          <Step key={label} className={classes.stepSize2}>
+                            <StepButton
+                              completed={this.state.completed[index]}
+                              className={classes.stepSize2}
+                              disabled={true}
+                            >
+                              {label}
+                            </StepButton>
+                          </Step>
+                        )
+                      })}
+                    </Stepper>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Tooltip
+                      id="tooltip-right"
+                      title={influenceHelp}
+                      placement="right"
+                    >
+                      <label>影響力</label>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell>
+                    <Stepper
+                      nonLinear
+                      activeStep={data.hyoka4 - 1}
+                      className={classes.stepSize2}
+                    >
+                      {steps1.map((label, index) => {
+                        return (
+                          <Step key={label} className={classes.stepSize2}>
+                            <StepButton
+                              completed={this.state.completed[index]}
+                              className={classes.stepSize2}
+                              disabled={true}
+                            >
+                              {label}
+                            </StepButton>
+                          </Step>
+                        )
+                      })}
+                    </Stepper>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    <Tooltip
+                      id="tooltip-right"
+                      title={breakthroughHelp}
+                      placement="right"
+                    >
+                      <label>限界突破</label>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell>
+                    <Stepper
+                      nonLinear
+                      activeStep={data.hyoka5 - 1}
+                      className={classes.stepSize2}
+                    >
+                      {steps1.map((label, index) => {
+                        return (
+                          <Step key={label} className={classes.stepSize2}>
+                            <StepButton
+                              completed={this.state.completed[index]}
+                              className={classes.stepSize2}
+                              disabled={true}
+                            >
+                              {label}
+                            </StepButton>
+                          </Step>
+                        )
+                      })}
+                    </Stepper>
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>コメント</TableCell>
+                  <TableCell
+                    style={{ fontSize: '18px', whiteSpace: 'pre-wrap' }}
+                  >
+                    {data.hyoka_comment}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Paper>
+          </div>
+        )
+      } else {
+        return (
+          <div>
+            <h2>
+              <img
+                src="/images/yajirushi.png"
+                alt="サンプル"
+                align="bottom"
+                width="30"
+                height="20"
+              />
+              <strong>コメント情報</strong>
+            </h2>
+            <Paper className={classes.root}>
+              <TableBody className={classes.table}>
+                <TableRow component="th" scope="row">
+                  <TableCell style={{ fontSize: '18px' }}>
+                    投票・コイン贈与
+                  </TableCell>
+                  <TableCell style={{ fontSize: '18px', minWidth: '300px' }}>
+                    {this.state.title}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    投票（授与）者
+                  </TableCell>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    {this.state.tohyosha}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>受領コイン</TableCell>
+                  <TableCell style={{ fontSize: '18px' }}>
+                    {this.state.coin}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ fontSize: '18px' }}>コメント</TableCell>
+                  <TableCell
+                    style={{ fontSize: '18px', whiteSpace: 'pre-wrap' }}
+                  >
+                    {data.zoyo_comment}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Paper>
+          </div>
+        )
+      }
+    })
 
     return (
       <div className={classes.root}>
@@ -710,211 +1003,7 @@ class CommentShokaiForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div />
-            <div>
-              <h2>
-                <img
-                  src="/images/yajirushi.png"
-                  alt="サンプル"
-                  align="bottom"
-                  width="30"
-                  height="20"
-                />
-                <strong>コメント情報</strong>
-              </h2>
-              <Paper className={classes.root}>
-                <TableBody className={classes.table}>
-                  <TableRow component="th" scope="row">
-                    <TableCell style={{ fontSize: '18px' }}>
-                      投票・コイン贈与
-                    </TableCell>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      平成30年度10月部会
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      投票（授与）者
-                    </TableCell>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      札幌 花子
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      受領コイン
-                    </TableCell>
-                    <TableCell style={{ fontSize: '18px' }}>500</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Tooltip
-                        id="tooltip-right"
-                        title={documentHelp}
-                        placement="right"
-                      >
-                        <label>資料作成</label>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Stepper
-                        nonLinear
-                        activeStep={4}
-                        className={classes.stepSize2}
-                      >
-                        {steps1.map((label, index) => {
-                          return (
-                            <Step key={label} className={classes.stepSize2}>
-                              <StepButton
-                                completed={this.state.completed[index]}
-                                className={classes.stepSize2}
-                                disabled={true}
-                              >
-                                {label}
-                              </StepButton>
-                            </Step>
-                          )
-                        })}
-                      </Stepper>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Tooltip
-                        id="tooltip-right"
-                        title={presentationHelp}
-                        placement="right"
-                      >
-                        <label>発表力</label>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Stepper
-                        nonLinear
-                        activeStep={4}
-                        className={classes.stepSize2}
-                      >
-                        {steps1.map((label, index) => {
-                          return (
-                            <Step key={label} className={classes.stepSize2}>
-                              <StepButton
-                                completed={this.state.completed[index]}
-                                className={classes.stepSize2}
-                                disabled={true}
-                              >
-                                {label}
-                              </StepButton>
-                            </Step>
-                          )
-                        })}
-                      </Stepper>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Tooltip
-                        id="tooltip-right"
-                        title={expressionHelp}
-                        placement="right"
-                      >
-                        <label>表現力</label>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Stepper
-                        nonLinear
-                        activeStep={8}
-                        className={classes.stepSize2}
-                      >
-                        {steps1.map((label, index) => {
-                          return (
-                            <Step key={label} className={classes.stepSize2}>
-                              <StepButton
-                                completed={this.state.completed[index]}
-                                className={classes.stepSize2}
-                                disabled={true}
-                              >
-                                {label}
-                              </StepButton>
-                            </Step>
-                          )
-                        })}
-                      </Stepper>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Tooltip
-                        id="tooltip-right"
-                        title={influenceHelp}
-                        placement="right"
-                      >
-                        <label>影響力</label>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      <Stepper
-                        nonLinear
-                        activeStep={2}
-                        className={classes.stepSize2}
-                      >
-                        {steps1.map((label, index) => {
-                          return (
-                            <Step key={label} className={classes.stepSize2}>
-                              <StepButton
-                                completed={this.state.completed[index]}
-                                className={classes.stepSize2}
-                                disabled={true}
-                              >
-                                {label}
-                              </StepButton>
-                            </Step>
-                          )
-                        })}
-                      </Stepper>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      <Tooltip
-                        id="tooltip-right"
-                        title={breakthroughHelp}
-                        placement="right"
-                      >
-                        <label>限界突破</label>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      <Stepper
-                        nonLinear
-                        activeStep={3}
-                        className={classes.stepSize2}
-                      >
-                        {steps1.map((label, index) => {
-                          return (
-                            <Step key={label} className={classes.stepSize2}>
-                              <StepButton
-                                completed={this.state.completed[index]}
-                                className={classes.stepSize2}
-                                disabled={true}
-                              >
-                                {label}
-                              </StepButton>
-                            </Step>
-                          )
-                        })}
-                      </Stepper>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ fontSize: '18px' }}>コメント</TableCell>
-                    <TableCell style={{ fontSize: '18px' }}>
-                      抑揚があり、すごくよかった。
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Paper>
-            </div>
+            {resList}
           </main>
           {after}
         </div>
@@ -928,4 +1017,10 @@ CommentShokaiForm.propTypes = {
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(CommentShokaiForm)
+const mapState = state => ({
+  coinShokai: state.coinShokai
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState)(CommentShokaiForm)
+)
