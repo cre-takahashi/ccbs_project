@@ -10,6 +10,12 @@ const bcdomain = require('./common/constans.js').bcdomain
  */
 router.post('/find', async (req, res) => {
   var datas = null
+  console.log('◯◯◯◯◯◯')
+  console.log(req.body.tTohyoPk)
+  console.log(req.body.tZoyoPk)
+  console.log(req.body.title)
+  console.log(req.body.shimei)
+  console.log(req.body.coin)
   if (req.body.tTohyoPk != null) {
     datas = await selectTohyo(req)
   } else {
