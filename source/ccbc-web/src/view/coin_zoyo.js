@@ -16,6 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import Button from '@material-ui/core/Button'
+import Send from '@material-ui/icons/Send'
 import { Link } from 'react-router-dom'
 import ButtonBase from '@material-ui/core/ButtonBase'
 import {
@@ -52,6 +53,13 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -297,6 +305,24 @@ const styles = theme => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
+  },
+  addToPaper: {
+    marginTop: 10,
+    marginLeft: 650,
+    fontSize: 18
+  },
+  InputLabel: {
+    whiteSpace: 'nowrap'
+  },
+  select: {
+    width: 140
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120
+  },
+  coinInfoTable: {
+    width: 500
   }
 })
 
@@ -333,7 +359,10 @@ class CoinZoyoForm extends React.Component {
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    year_info: '',
+    target_manager: 0,
+    comment: ''
   }
 
   constructor(props) {
@@ -355,10 +384,14 @@ class CoinZoyoForm extends React.Component {
     }
   }
 
-  handleChange = (name, cnt) => event => {
+  handleChange = name => event => {
     this.setState({
-      [name[cnt]]: event.target.value
+      [name]: event.target.value
     })
+  }
+
+  handleChange2 = event => {
+    this.setState({ [event.target.name]: event.target.value })
   }
 
   handleDrawerOpen = () => {
@@ -514,7 +547,108 @@ class CoinZoyoForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div>
+              <Paper className={classes.coinInfo}>
+                <Typography variant="headline" component="h3">
+                  札幌　太郎　の所持コイン数
+                </Typography>
+                <Typography variant="headline" component="h3">
+                  1,000コイン
+                </Typography>
+              </Paper>
+            </div>
+            <h2>
+              <img
+                src="/images/yajirushi.png"
+                alt="サンプル"
+                align="bottom"
+                width="30"
+                height="20"
+              />
+              <strong>個別贈与情報</strong>
+            </h2>
+            <Table className={classes.coinInfoTable}>
+              <TableRow>
+                <th style={{ textAlign: 'left' }}>
+                  <form className={classes.root} autoComplete="off">
+                    <FormControl className={classes.formControl}>
+                      <InputLabel
+                        htmlFor="Target_manager"
+                        className={classes.InputLabel}
+                      >
+                        贈与相手
+                      </InputLabel>
+                      <Select
+                        value={this.state.target_manager}
+                        onChange={this.handleChange2}
+                        input={
+                          <Input name="target_manager" id="Target_Manager" />
+                        }
+                        className={classes.select}
+                      >
+                        <MenuItem value={0}>管理局</MenuItem>
+                        <MenuItem value={1}>札幌 太郎</MenuItem>
+                        <MenuItem value={2}>中央 花子</MenuItem>
+                        <MenuItem value={3}>網走 順子</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </form>
+                </th>
+              </TableRow>
+              <TableRow>
+                <th style={{ textAlign: 'left', padding: '10px' }}>
+                  <form className={classes.root} autoComplete="off">
+                    <TextField
+                      id="number"
+                      label="贈与コイン数"
+                      value={this.state.age}
+                      onChange={this.handleChange('age')}
+                      type="number"
+                      InputLabelProps={{
+                        shrink: true
+                      }}
+                      margin="normal"
+                    />
+                  </form>
+                </th>
+              </TableRow>
+              <TableRow>
+                <th>
+                  <form className={classes.root} autoComplete="off">
+                    <TextField
+                      id="comment"
+                      label="コメント"
+                      multiline
+                      rows="12"
+                      rowsMax="12"
+                      value={this.state.comment}
+                      onChange={this.handleChange('comment')}
+                      className={classes.textField}
+                      margin="normal"
+                      style={{ fontSize: '120%' }}
+                    />
+                  </form>
+                </th>
+              </TableRow>
+              <TableRow>
+                <th style={{ textAlign: 'left', padding: '10px' }}>
+                  <Button
+                    variant="raised"
+                    color="default"
+                    size="large"
+                    className={classes.button}
+                  >
+                    <Send
+                      className={classNames(
+                        classes.leftIcon,
+                        classes.iconSmall
+                      )}
+                    />
+                    コイン贈与
+                  </Button>
+                </th>
+              </TableRow>
+            </Table>
           </main>
           {after}
         </div>
