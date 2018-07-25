@@ -340,7 +340,6 @@ class TohyoTorokuForm extends React.Component {
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
-      alert(loginInfo['kengenCd'])
     }
 
     request
