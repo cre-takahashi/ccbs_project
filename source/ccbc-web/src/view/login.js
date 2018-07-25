@@ -136,9 +136,9 @@ class TextFields extends React.Component {
         // TODO ここでサーバ（BC）へリクエストを送ってログイン情報を取得し、セッションストレージに格納して持ち回る
         var loginInfo = [
           {
-            userid: resList.user_id, // ここはログイン画面で入力された値を設定
+            userid: resList.bc_account, // ここはログイン画面で入力された値を設定
             password: this.state.passwordInput, // ここはログイン画面で入力された値を設定
-            tShainPk: resList.bc_account, // ここはDBから読み込んだ値を設定
+            tShainPk: resList.t_shain_pk, // ここはDBから読み込んだ値を設定
             imageFileName: resList.image_file_nm, // ここはDBから読み込んだ値を設定
             shimei: resList.shimei, // ここはDBから読み込んだ値を設定
             kengenCd: resList.kengen_cd // ここはDBから読み込んだ値を設定
