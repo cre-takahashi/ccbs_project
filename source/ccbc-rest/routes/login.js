@@ -11,7 +11,7 @@ router.post('/find', (req, res) => {
   console.log('----------')
 
   var sql =
-    "select user_id, shimei, image_file_nm, kengen_cd, bc_account from t_shain where delete_flg = '0' and user_id = :mypk"
+    "select t_shain_pk, user_id, shimei, image_file_nm, kengen_cd, bc_account from t_shain where delete_flg = '0' and user_id = :mypk"
 
   db
     .query(sql, {
