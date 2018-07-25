@@ -52,14 +52,21 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import Search from '@material-ui/icons/Search'
+import Edit from '@material-ui/icons/Edit'
+import Web from '@material-ui/icons/Web'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
+    fontSize: 18
   },
   body: {
-    fontSize: 14
+    fontSize: 18
   }
 }))(TableCell)
 
@@ -283,7 +290,7 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 900
+    width: 300
   },
   paper: {
     width: '100%',
@@ -297,7 +304,16 @@ const styles = theme => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
-  }
+  },
+  rootForm: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120
+  },
+  button2:{margin: theme.spacing.unit}
 })
 
 const testData = [
@@ -333,7 +349,8 @@ class ShainKensakuForm extends React.Component {
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    kengen: ''
   }
 
   constructor(props) {
@@ -359,6 +376,10 @@ class ShainKensakuForm extends React.Component {
     this.setState({
       [name[cnt]]: event.target.value
     })
+  }
+
+  handleChange2 = event => {
+    this.setState({ [event.target.name]: event.target.value })
   }
 
   handleDrawerOpen = () => {
@@ -390,6 +411,7 @@ class ShainKensakuForm extends React.Component {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
+    const sampleLink = props => <Link to="/sample" {...props} />
 
     const drawer = (
       <Drawer
@@ -514,7 +536,127 @@ class ShainKensakuForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div>
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="bottom"
+                  width="30"
+                  height="20"
+                />
+                <strong>検索条件</strong>
+              </h2>
+              <form className={classes.root} autoComplete="off">
+                <TextField
+                  id="shimei"
+                  label="氏名"
+                  placeholder="氏名を入力"
+                  className={classes.textField}
+                  value={this.state.election}
+                  onChange={this.handleChange('election')}
+                  margin="normal"
+                />
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="kengen-simple">権限</InputLabel>
+                  <Select
+                    value={this.state.kengen}
+                    onChange={this.handleChange2}
+                    inputProps={{
+                      name: 'kengen',
+                      id: 'kengen-simple'
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em>指定なし</em>
+                    </MenuItem>
+                    <MenuItem value={1}>管理者</MenuItem>
+                    <MenuItem value={2}>一般</MenuItem>
+                    <MenuItem value={3}>新人</MenuItem>
+                  </Select>
+                </FormControl>
+              </form>
+              <Button
+                variant="raised"
+                color="default"
+                size="large"
+                className={classes.button2}
+              >
+                <Search
+                  className={classNames(classes.leftIcon, classes.iconSmall)}
+                />
+                検索
+              </Button>
+              <Button
+                variant="raised"
+                color="default"
+                size="large"
+                className={classes.button2}
+              >
+                <Edit
+                  className={classNames(classes.leftIcon, classes.iconSmall)}
+                />
+                新規登録
+              </Button>
+              <br/>
+              <br/>
+              <h2>
+                <img
+                  src="/images/yajirushi.png"
+                  alt="サンプル"
+                  align="bottom"
+                  width="30"
+                  height="20"
+                />
+                <strong>検索結果</strong>
+              </h2>
+              <Paper className={classes.root}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <CustomTableCell colSpan={2}>氏名</CustomTableCell>
+                      <CustomTableCell>権限</CustomTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow hover component={sampleLink}>
+                      <CustomTableCell style={{width: '5%'}}>
+                        <Avatar
+                          alt="Adelle Charles"
+                          src="/images/yamashita.png"
+                          className={classNames(classes.PnlAvatar)}
+                          component={sampleLink}
+                        />
+                      </CustomTableCell>
+                      <CustomTableCell style={{width: '45%'}}>札幌　花子</CustomTableCell>
+                      <CustomTableCell style={{width: '50%'}}>管理者</CustomTableCell>
+                    </TableRow>
+                    <TableRow hover component={sampleLink}>
+                      <CustomTableCell>
+                        <Avatar
+                          alt="Adelle Charles"
+                          src="/images/mikami.png"
+                          className={classNames(classes.PnlAvatar)}
+                        />
+                      </CustomTableCell>
+                      <CustomTableCell>札幌　太郎</CustomTableCell>
+                      <CustomTableCell>一般</CustomTableCell>
+                    </TableRow>
+                    <TableRow hover component={sampleLink}>
+                      <CustomTableCell>
+                        <Avatar
+                          alt="Adelle Charles"
+                          src="/images/ishigaki.jpg"
+                          className={classNames(classes.PnlAvatar)}
+                        />
+                      </CustomTableCell>
+                      <CustomTableCell>北海道　三郎</CustomTableCell>
+                      <CustomTableCell>新人</CustomTableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Paper>
+            </div>
           </main>
           {after}
         </div>

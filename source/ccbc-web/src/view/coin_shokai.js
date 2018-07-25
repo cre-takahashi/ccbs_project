@@ -317,7 +317,7 @@ const styles = theme => ({
   },
   addToPaper: {
     marginTop: 10,
-    marginLeft: 650,
+    width: 650,
     fontSize: 18
   },
   InputLabel: {
