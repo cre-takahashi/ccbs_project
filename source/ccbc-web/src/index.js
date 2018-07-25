@@ -1,11 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
-
+import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
-//import { Route } from 'react-router'
+import Auth from './view/auth';
 import {
   ConnectedRouter,
   routerReducer,
@@ -58,46 +57,51 @@ ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <div>
-        <Route exact path="/" component={LoginForm} />
-        <Route path="/sample" component={SampleForm} />
-
         <Route path="/check" component={HeaderForm} />
-        <Route path="/check" component={CheckForm} />
         <Route path="/check_success" component={HeaderForm} />
-        <Route path="/check_success" component={CheckSuccessForm} />
-
         <Route path="/redux" component={HeaderForm} />
-        <Route path="/redux" component={ReduxForm} />
         <Route path="/redux_count" component={HeaderForm} />
-        <Route path="/redux_count" component={ReduxCountForm} />
         <Route path="/redux_display" component={HeaderForm} />
-        <Route path="/redux_display" component={ReduxDisplayForm} />
-
         <Route path="/radar" component={HeaderForm} />
-        <Route path="/radar" component={RadarChartForm} />
         <Route path="/graph" component={HeaderForm} />
-        <Route path="/graph" component={GraphForm} />
         <Route path="/db" component={HeaderForm} />
-        <Route path="/db" component={DbForm} />
         <Route path="/image" component={HeaderForm} />
-        <Route path="/image" component={ImageForm} />
-        <Route path="/menu" component={MenuForm} />
-        <Route path="/senkyo_kanri" component={SenkyoKanriForm} />
-        <Route path="/senkyo_toroku" component={SenkyoTorokuForm} />
-        <Route path="/tohyo_toroku" component={TohyoTorokuForm} />
-        <Route path="/tohyo_ichiran" component={TohyoIchiranForm} />
-        <Route
-          path="/tohyo_shokai_kobetsu"
-          component={TohyoShokaiKobetsuForm}
-        />
-        <Route path="/tohyo_shokai_shosai" component={TohyoShokaiShosaiForm} />
-        <Route path="/comment_shokai" component={CommentShokaiForm} />
-        <Route path="/coin_shokai" component={CoinShokaiForm} />
-        <Route path="/tohyo_shokai_nendo" component={TohyoShokaiNendoForm} />
-        <Route path="/shain_kensaku" component={ShainKensakuForm} />
-        <Route path="/shain_toroku" component={ShainTorokuForm} />
-        <Route path="/coin_zoyo" component={CoinZoyoForm} />
-        <FooterForm />
+
+        <Switch>
+          <Route exact path="/" component={LoginForm} />
+
+          <Route path="/sample" component={SampleForm} />
+          <Route path="/check" component={CheckForm} />
+          <Route path="/check_success" component={CheckSuccessForm} />
+          <Route path="/redux" component={ReduxForm} />
+          <Route path="/redux_count" component={ReduxCountForm} />
+          <Route path="/redux_display" component={ReduxDisplayForm} />
+          <Route path="/radar" component={RadarChartForm} />
+          <Route path="/graph" component={GraphForm} />
+          <Route path="/db" component={DbForm} />
+          <Route path="/image" component={ImageForm} />
+          <Auth>
+            <Switch>
+            <Route path="/menu" component={MenuForm} />
+            <Route path="/senkyo_kanri" component={SenkyoKanriForm} />
+            <Route path="/senkyo_toroku" component={SenkyoTorokuForm} />
+            <Route path="/tohyo_toroku" component={TohyoTorokuForm} />
+            <Route path="/tohyo_ichiran" component={TohyoIchiranForm} />
+            <Route
+              path="/tohyo_shokai_kobetsu"
+              component={TohyoShokaiKobetsuForm}
+            />
+            <Route path="/tohyo_shokai_shosai" component={TohyoShokaiShosaiForm} />
+            <Route path="/comment_shokai" component={CommentShokaiForm} />
+            <Route path="/coin_shokai" component={CoinShokaiForm} />
+            <Route path="/tohyo_shokai_nendo" component={TohyoShokaiNendoForm} />
+            <Route path="/shain_kensaku" component={ShainKensakuForm} />
+            <Route path="/shain_toroku" component={ShainTorokuForm} />
+            <Route path="/coin_zoyo" component={CoinZoyoForm} />
+            </Switch>
+          </Auth>
+          <FooterForm />
+        </Switch>
       </div>
     </ConnectedRouter>
   </Provider>,
