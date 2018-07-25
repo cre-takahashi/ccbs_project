@@ -142,6 +142,8 @@ class PersistentDrawer extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+    // サンプル用に認証を許可
+    sessionStorage.setItem('sessionId', true)
   }
 
   handleDrawerOpen = () => {

@@ -152,6 +152,7 @@ class TextFields extends React.Component {
         // alert(loginInfo.kengenCd)
 
         sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
+        sessionStorage.setItem('sessionId', true)
 
         var loginInfo2 = JSON.parse(sessionStorage.getItem('loginInfo'))
 
