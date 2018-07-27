@@ -321,7 +321,8 @@ class TohyoTorokuForm extends React.Component {
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    configCoin: 0
   }
 
   constructor(props) {
@@ -366,9 +367,20 @@ class TohyoTorokuForm extends React.Component {
           this.state.activeStep3[i] = 4
           this.state.activeStep4[i] = 0
           this.state.activeStep5[i] = 0
+          this.state.config_coin = resList[i].config_coin
         }
         this.calculateCoin()
       })
+  }
+
+  calculatePointLine = index => {
+    var sum = 0
+    sum += this.state.activeStep1[index] + 1
+    sum += this.state.activeStep2[index] + 1
+    sum += this.state.activeStep3[index] + 1
+    sum += this.state.activeStep4[index] + 1
+    sum += this.state.activeStep5[index] + 1
+    return sum
   }
 
   calculateCoinLine = index => {
@@ -378,7 +390,7 @@ class TohyoTorokuForm extends React.Component {
     sum += this.state.activeStep3[index] + 1
     sum += this.state.activeStep4[index] + 1
     sum += this.state.activeStep5[index] + 1
-    return sum
+    return sum * this.state.config_coin
   }
 
   calculateCoin = () => {
@@ -555,10 +567,10 @@ class TohyoTorokuForm extends React.Component {
                 配布コイン数：{this.state.resultList[0].haifu_coin}
               </Typography>
               <Typography component="p" style={{ fontSize: '120%' }}>
-                1点辺りのコイン数：{this.state.resultList[0].haifu_coin}
+                1点辺りのコイン数：{this.state.resultList[0].config_coin}
               </Typography>
               <Typography component="p" style={{ fontSize: '120%' }}>
-                投票コイン数：{this.state.tohyoCoin}
+                投票コイン数：{this.state.tohyoCoin * this.state.config_coin}
               </Typography>
             </CardContent>
           </Card>
@@ -784,7 +796,7 @@ class TohyoTorokuForm extends React.Component {
                             variant="subheading"
                             style={{ fontSize: '140%' }}
                           >
-                            {this.calculateCoinLine(i)}点<label>　</label>
+                            {this.calculatePointLine(i)}点<label>　</label>
                             {this.calculateCoinLine(i)}coin
                           </Typography>
                         </td>

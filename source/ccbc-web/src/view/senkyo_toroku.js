@@ -483,7 +483,8 @@ class PersistentDrawer extends React.Component {
       resultList: [],
       happyotitle: [],
       bcaccount: null,
-      bccoin: '0'
+      bccoin: '0',
+      configCoin: '10'
     }
   }
 
@@ -546,16 +547,54 @@ class PersistentDrawer extends React.Component {
 
   handleSelectAllClick = (event, checked) => {
     var calCoin = 0
+    var selected = []
     if (checked) {
+      selected = this.state.resultList.map(n => n.id)
       this.setState({ selected: this.state.resultList.map(n => n.id) })
-      calCoin = this.state.resultList.length * this.state.selected2.length * 500
     } else {
       this.setState({ selected: [] })
+    }
+    var happyoshaCount = 0
+    for (var i in this.state.resultList) {
+      var resultdata = this.state.resultList[i]
+      for (var x in this.state.selected2) {
+        if (resultdata.id == this.state.selected2[x]) {
+          if (resultdata.kengen_cd != '03') {
+            happyoshaCount = happyoshaCount + 1
+          }
+        }
+      }
+    }
+    var shussekiFlg = Boolean('false')
+    var happyoFlg = Boolean('false')
+    for (var j in this.state.resultList) {
+      var resultdata = this.state.resultList[j]
+      for (var y in selected) {
+        if (resultdata.id == selected[y]) {
+          shussekiFlg = 'true'
+          for (var z in this.state.selected2) {
+            if (selected[y] == this.state.selected2[z]) {
+              happyoFlg = 'true'
+            }
+          }
+        }
+      }
+      if (shussekiFlg == 'true') {
+        if (happyoFlg == 'true') {
+          calCoin =
+            happyoshaCount * this.state.configCoin * 10 * 5 - 500 + calCoin
+        } else {
+          calCoin = happyoshaCount * this.state.configCoin * 10 * 5 + calCoin
+        }
+      }
+      shussekiFlg = 'false'
+      happyoFlg = 'false'
     }
     this.setState({ coin: calCoin })
   }
 
   handleClick = (event, id) => {
+    var calCoin = 0
     const { selected } = this.state
     const selectedIndex = selected.indexOf(id)
     let newSelected = []
@@ -572,9 +611,44 @@ class PersistentDrawer extends React.Component {
         selected.slice(selectedIndex + 1)
       )
     }
-
-    var calCoin = newSelected.length * this.state.selected2.length * 500
     this.setState({ selected: newSelected })
+
+    var happyoshaCount = 0
+    for (var i in this.state.resultList) {
+      var resultdata = this.state.resultList[i]
+      for (var x in this.state.selected2) {
+        if (resultdata.id == this.state.selected2[x]) {
+          if (resultdata.kengen_cd != '03') {
+            happyoshaCount = happyoshaCount + 1
+          }
+        }
+      }
+    }
+    var shussekiFlg = Boolean('false')
+    var happyoFlg = Boolean('false')
+    for (var j in this.state.resultList) {
+      var resultdata = this.state.resultList[j]
+      for (var y in newSelected) {
+        if (resultdata.id == newSelected[y]) {
+          shussekiFlg = 'true'
+          for (var z in this.state.selected2) {
+            if (newSelected[y] == this.state.selected2[z]) {
+              happyoFlg = 'true'
+            }
+          }
+        }
+      }
+      if (shussekiFlg == 'true') {
+        if (happyoFlg == 'true') {
+          calCoin =
+            happyoshaCount * this.state.configCoin * 10 * 5 - 500 + calCoin
+        } else {
+          calCoin = happyoshaCount * this.state.configCoin * 10 * 5 + calCoin
+        }
+      }
+      shussekiFlg = 'false'
+      happyoFlg = 'false'
+    }
     this.setState({ coin: calCoin })
   }
 
@@ -591,16 +665,58 @@ class PersistentDrawer extends React.Component {
   // 2つめ
   handleSelectAllClick2 = (event, checked) => {
     var calCoin = 0
+    var length = 0
+    var selected2 = []
     if (checked) {
+      selected2 = this.state.resultList.map(n => n.id)
       this.setState({ selected2: this.state.resultList.map(n => n.id) })
-      calCoin = this.state.resultList.length * this.state.selected.length * 500
+      if (this.state.selected.length > 0) {
+        length = this.state.resultList.length - this.state.selected.length
+      }
     } else {
       this.setState({ selected2: [] })
+    }
+    var happyoshaCount = 0
+    for (var i in this.state.resultList) {
+      var resultdata = this.state.resultList[i]
+      for (var x in selected2) {
+        if (resultdata.id == selected2[x]) {
+          if (resultdata.kengen_cd != '03') {
+            happyoshaCount = happyoshaCount + 1
+          }
+        }
+      }
+    }
+    var shussekiFlg = Boolean('false')
+    var happyoFlg = Boolean('false')
+    for (var j in this.state.resultList) {
+      var resultdata = this.state.resultList[j]
+      for (var y in this.state.selected) {
+        if (resultdata.id == this.state.selected[y]) {
+          shussekiFlg = 'true'
+          for (var z in selected2) {
+            if (this.state.selected[y] == selected2[z]) {
+              happyoFlg = 'true'
+            }
+          }
+        }
+      }
+      if (shussekiFlg == 'true') {
+        if (happyoFlg == 'true') {
+          calCoin =
+            happyoshaCount * this.state.configCoin * 10 * 5 - 500 + calCoin
+        } else {
+          calCoin = happyoshaCount * this.state.configCoin * 10 * 5 + calCoin
+        }
+      }
+      shussekiFlg = 'false'
+      happyoFlg = 'false'
     }
     this.setState({ coin: calCoin })
   }
 
   handleClick3 = (event, id) => {
+    var calCoin = 0
     const { selected2 } = this.state
     const selectedIndex2 = selected2.indexOf(id)
     let newSelected2 = []
@@ -617,9 +733,44 @@ class PersistentDrawer extends React.Component {
         selected2.slice(selectedIndex2 + 1)
       )
     }
-
-    var calCoin = newSelected2.length * this.state.selected.length * 500
     this.setState({ selected2: newSelected2 })
+
+    var happyoshaCount = 0
+    for (var i in this.state.resultList) {
+      var resultdata = this.state.resultList[i]
+      for (var x in newSelected2) {
+        if (resultdata.id == newSelected2[x]) {
+          if (resultdata.kengen_cd != '03') {
+            happyoshaCount = happyoshaCount + 1
+          }
+        }
+      }
+    }
+    var shussekiFlg = Boolean('false')
+    var happyoFlg = Boolean('false')
+    for (var j in this.state.resultList) {
+      var resultdata = this.state.resultList[j]
+      for (var y in this.state.selected) {
+        if (resultdata.id == this.state.selected[y]) {
+          shussekiFlg = 'true'
+          for (var z in newSelected2) {
+            if (this.state.selected[y] == newSelected2[z]) {
+              happyoFlg = 'true'
+            }
+          }
+        }
+      }
+      if (shussekiFlg == 'true') {
+        if (happyoFlg == 'true') {
+          calCoin =
+            happyoshaCount * this.state.configCoin * 10 * 5 - 500 + calCoin
+        } else {
+          calCoin = happyoshaCount * this.state.configCoin * 10 * 5 + calCoin
+        }
+      }
+      shussekiFlg = 'false'
+      happyoFlg = 'false'
+    }
     this.setState({ coin: calCoin })
   }
 
@@ -858,7 +1009,7 @@ class PersistentDrawer extends React.Component {
                 <img
                   src="/images/yajirushi.png"
                   alt="サンプル"
-                  align="top"
+                  align="bottom"
                   width="30"
                   height="20"
                 />
@@ -874,6 +1025,7 @@ class PersistentDrawer extends React.Component {
                   value={this.state.election}
                   onChange={this.handleChange('election')}
                   margin="normal"
+                  style={{ fontSize: '200%' }}
                 />
                 <br />
                 <TextField
@@ -906,6 +1058,16 @@ class PersistentDrawer extends React.Component {
                   className={classes.textField2}
                   margin="normal"
                   disabled
+                />
+                <TextField
+                  id="textarea"
+                  label="設定コイン（１点あたり）"
+                  value="10"
+                  placeholder=""
+                  multiline
+                  className={classes.textField2}
+                  margin="normal"
+                  onChange={this.handleChange('configCoin')}
                 />
                 <TextField
                   id="textarea"
