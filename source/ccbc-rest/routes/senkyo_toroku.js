@@ -34,7 +34,7 @@ async function finddata(req, res) {
 function tShainGet(req) {
   return new Promise((resolve, reject) => {
     var sql =
-      'select row_number() over () as id, *, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as bc_account, null as title, tsha2.bc_account as from_bc_account' +
+      'select row_number() over () as id, *, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as bc_account, null as title, tsha.kengen_cd as kengen_cd, tsha2.bc_account as from_bc_account' +
       ' from t_shain tsha, t_shain tsha2 ' +
       " where tsha.delete_flg = '0' and tsha2.delete_flg = '0' and tsha2.t_shain_pk = :mypk"
     db
@@ -97,9 +97,11 @@ router.post('/create', (req, res) => {
               t_senkyo_pk,
               resultdata
             )
-            await tZoyoInsert(tx, resdatas, req, resultdata)
-            var transaction_id = await bcrequest(req, resultdata, i)
-            await dbupdate(tx, transaction_id)
+            if (resultdata.kengen_cd != '03') {
+              await tZoyoInsert(tx, resdatas, req, resultdata)
+              var transaction_id = await bcrequest(req, resultdata, i)
+              await dbupdate(tx, transaction_id)
+            }
           }
         }
         for (var x in selected2) {
@@ -139,8 +141,8 @@ router.post('/create', (req, res) => {
 function tSenkyoInsert(tx, resdatas, req) {
   return new Promise((resolve, reject) => {
     var sql =
-      'insert into t_senkyo (senkyo_nm, tohyo_kaishi_dt, tohyo_shuryo_dt, haifu_coin, delete_flg, insert_user_id, insert_tm) ' +
-      'VALUES (?, ?, ?, ?, ?, ?, current_timestamp) RETURNING t_senkyo_pk'
+      'insert into t_senkyo (senkyo_nm, tohyo_kaishi_dt, tohyo_shuryo_dt, haifu_coin, config_coin, delete_flg, insert_user_id, insert_tm) ' +
+      'VALUES (?, ?, ?, ?, ?, ?, ?, current_timestamp) RETURNING t_senkyo_pk'
 
     db
       .query(sql, {
@@ -150,6 +152,7 @@ function tSenkyoInsert(tx, resdatas, req) {
           req.body.startDate,
           req.body.endDate,
           req.body.coin,
+          req.body.configCoin,
           '0',
           req.body.userid
         ]
@@ -234,10 +237,10 @@ function tZoyoInsert(tx, resdatas, req, resultdata) {
 function bcrequest(req, resultdata, i) {
   return new Promise((resolve, reject) => {
     var param = {
-      from_account: resultdata.from_bc_account,
-      to_account: resultdata.bc_account,
-      password: req.body.password,
-      coin: '500'
+      from_account: [resultdata.from_bc_account],
+      to_account: [resultdata.bc_account],
+      password: [req.body.password],
+      coin: ['500']
     }
     request
       .post(bcdomain + '/bc-api/send_coin')

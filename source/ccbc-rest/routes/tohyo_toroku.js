@@ -11,7 +11,7 @@ const bcdomain = require('./common/constans.js').bcdomain
 router.post('/find', (req, res) => {
   var sql =
     'select tsen.t_senkyo_pk as t_senkyo_pk, tsen.senkyo_nm as senkyo_nm, tsen.tohyo_kaishi_dt as tohyo_kaishi_dt,' +
-    ' tsen.tohyo_shuryo_dt as tohyo_shuryo_dt, tsen.haifu_coin as haifu_coin, tpre.t_presenter_pk as t_presenter_pk, ' +
+    ' tsen.tohyo_shuryo_dt as tohyo_shuryo_dt, tsen.haifu_coin as haifu_coin, tsen.config_coin as config_coin, tpre.t_presenter_pk as t_presenter_pk, ' +
     ' tpre.title as title, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as to_account, tsha.t_shain_pk as to_t_shain_pk, tshu.t_shussekisha_pk  as t_shussekisha_pk, tsha2.bc_account as from_account, tsha2.t_shain_pk as from_t_shain_pk' +
     ' from t_senkyo tsen' +
     ' inner join t_presenter tpre on tsen.t_senkyo_pk = tpre.t_senkyo_pk' +
