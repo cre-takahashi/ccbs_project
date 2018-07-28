@@ -15,6 +15,7 @@ const senkyoKanriRouter = require('./routes/senkyo_kanri')
 const senkyoTorokuRouter = require('./routes/senkyo_toroku')
 const commentShokaiRouter = require('./routes/comment_shokai')
 const loginRouter = require('./routes/login')
+const tohyoShokaiKobetsuRouter = require('./routes/tohyo_shokai_kobetsu')
 
 const app = express()
 
@@ -37,6 +38,7 @@ app.use('/senkyo_kanri', senkyoKanriRouter)
 app.use('/senkyo_toroku', senkyoTorokuRouter)
 app.use('/comment_shokai', commentShokaiRouter)
 app.use('/login', loginRouter)
+app.use('/tohyo_shokai_kobetsu', tohyoShokaiKobetsuRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
