@@ -54,6 +54,8 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Icon from '@material-ui/core/Icon'
 import ListItem from '@material-ui/core/ListItem'
+import moment from 'moment'
+import 'moment/locale/ja'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -320,7 +322,9 @@ const styles = theme => ({
     background: 'linear-gradient(90deg, #FF1493 20%, #f5f5f5 25%)'
   },
   coin: {
-    width: 300
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   rankAvatar: {
     paddingLeft: 0
@@ -466,6 +470,7 @@ class TohyoShokaiKobetsuForm extends React.Component {
     haifuCoin: 150,
     tohyoCoin: 0,
     resultList: [],
+    resultList2: [],
     userid: null,
     password: null,
     tShainPk: 0,
@@ -490,6 +495,16 @@ class TohyoShokaiKobetsuForm extends React.Component {
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
+
+      request
+        .post('/tohyo_shokai_kobetsu/find')
+        .send(this.state)
+        .end((err, res) => {
+          if (err) return
+          // 検索結果表示
+          this.setState({ resultList: res.body.data })
+          this.setState({ resultList2: res.body.data2 })
+        })
     }
   }
 
@@ -686,410 +701,273 @@ class TohyoShokaiKobetsuForm extends React.Component {
               <Paper className={classes.paper}>
                 <Table className={classes.table}>
                   <TableHead>
-                    <TableRow className={classes.background1}>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        className={classes.rankAvatar}
-                      >
-                        <Avatar
-                          alt="金メダル"
-                          src="/images/medal_g_n.png"
-                          className={classes.medalAvatar}
-                        />
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="札幌 太郎"
-                                  src="/images/mikami.png"
-                                  className={classes.bigAvatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.rank1Name}>
-                                  札幌 太郎
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                <span className={classes.rank1}>油彩画</span>
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableHead>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell className={classes.coin}>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          className={classes.coinAvater}
-                        />
-                        800
-                        <div className={classes.gurade}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        className={classes.rankAvatar}
-                      >
-                        <Avatar
-                          alt="銀メダル"
-                          src="/images/medal_s_n.png"
-                          className={classes.medalAvatar}
-                        />
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="Remy Sharp"
-                                  src="/images/yamashita.png"
-                                  className={classes.middleAvatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.rank2}>
-                                  中央 花子
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                配属後に始めた習慣
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableHead>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          className={classes.coinAvater}
-                        />
-                        780
-                        <div className={classes.gurade2}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        className={classes.rankAvatar}
-                      >
-                        <Avatar
-                          alt="銅メダル"
-                          src="/images/medal_c_n.png"
-                          className={classes.medalAvatar}
-                        />
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="Remy Sharp"
-                                  src="/images/ishigaki.jpg"
-                                  className={classes.smallAvatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.head_name}>
-                                  本 州男
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                概念だけでもわかる！p-進数
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableHead>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          className={classes.coinAvater}
-                        />
-                        600
-                        <div className={classes.gurade3}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
+                    {this.state.resultList.map(n => {
+                      return (
+                        <TableRow className={classes.background1}>
+                          <CustomTableCell
+                            component="th"
+                            scope="row"
+                            className={classes.rankAvatar}
+                          >
+                            {(() => {
+                              if (n.rank === '0') {
+                                return (
+                                  <Avatar
+                                    alt="金メダル"
+                                    src="/images/medal_g_n.png"
+                                    className={classes.medalAvatar}
+                                  />
+                                )
+                              } else if (n.rank === '1') {
+                                return (
+                                  <Avatar
+                                    alt="銀メダル"
+                                    src="/images/medal_s_n.png"
+                                    className={classes.medalAvatar}
+                                  />
+                                )
+                              } else if (n.rank === '2') {
+                                return (
+                                  <Avatar
+                                    alt="銅メダル"
+                                    src="/images/medal_c_n.png"
+                                    className={classes.medalAvatar}
+                                  />
+                                )
+                              }
+                              return (
+                                <CustomTableCell
+                                  component="th"
+                                  scope="row"
+                                  style={{ paddingLeft: 60, border: 0 }}
+                                >
+                                  {Number(n.rank) + 1}
+                                </CustomTableCell>
+                              )
+                            })()}
+                          </CustomTableCell>
+                          <CustomTableCell>
+                            <Table>
+                              <TableHead>
+                                {(() => {
+                                  if (n.rank === '0') {
+                                    return (
+                                      <TableRow>
+                                        <CustomTableCell>
+                                          <Avatar
+                                            alt="Remy Sharp"
+                                            src={n.image_file_nm}
+                                            className={classes.bigAvatar}
+                                          />
+                                        </CustomTableCell>
+                                        <CustomTableCell>
+                                          <a
+                                            href=""
+                                            className={classes.rank1Name}
+                                          >
+                                            {n.shimei}
+                                          </a>
+                                        </CustomTableCell>
+                                      </TableRow>
+                                    )
+                                  } else if (n.rank === '1') {
+                                    return (
+                                      <TableRow>
+                                        <CustomTableCell>
+                                          <Avatar
+                                            alt="Remy Sharp"
+                                            src={n.image_file_nm}
+                                            className={classes.middleAvatar}
+                                          />
+                                        </CustomTableCell>
+                                        <CustomTableCell>
+                                          <a href="" className={classes.rank2}>
+                                            {n.shimei}
+                                          </a>
+                                        </CustomTableCell>
+                                      </TableRow>
+                                    )
+                                  } else if (n.rank === '2') {
+                                    return (
+                                      <TableRow>
+                                        <CustomTableCell>
+                                          <Avatar
+                                            alt="Remy Sharp"
+                                            src={n.image_file_nm}
+                                            className={classes.smallAvatar}
+                                          />
+                                        </CustomTableCell>
+                                        <CustomTableCell>
+                                          <a
+                                            href=""
+                                            className={classes.head_name}
+                                          >
+                                            {n.shimei}
+                                          </a>
+                                        </CustomTableCell>
+                                      </TableRow>
+                                    )
+                                  }
+                                  return (
+                                    <TableRow>
+                                      <CustomTableCell>
+                                        <Avatar
+                                          alt="Remy Sharp"
+                                          src={n.image_file_nm}
+                                          className={classes.avatar}
+                                        />
+                                      </CustomTableCell>
+                                      <CustomTableCell>
+                                        <a
+                                          href=""
+                                          className={classes.body_name}
+                                        >
+                                          {n.shimei}
+                                        </a>
+                                      </CustomTableCell>
+                                    </TableRow>
+                                  )
+                                })()}
+                                <TableRow>
+                                  {(() => {
+                                    if (n.rank === '0') {
+                                      return (
+                                        <CustomTableCell
+                                          colspan="2"
+                                          className={classes.rankTitle}
+                                        >
+                                          <span className={classes.rank1}>
+                                            {n.title}
+                                          </span>
+                                        </CustomTableCell>
+                                      )
+                                    } else if (n.rank === '1') {
+                                      return (
+                                        <CustomTableCell
+                                          colspan="2"
+                                          className={classes.rankTitle}
+                                        >
+                                          <span className={classes.rankTitle}>
+                                            {n.title}
+                                          </span>
+                                        </CustomTableCell>
+                                      )
+                                    } else if (n.rank === '2') {
+                                      return (
+                                        <CustomTableCell
+                                          colspan="2"
+                                          className={classes.rankTitle}
+                                        >
+                                          <span className={classes.rankTitle}>
+                                            {n.title}
+                                          </span>
+                                        </CustomTableCell>
+                                      )
+                                    }
+                                    return (
+                                      <CustomTableCell
+                                        colspan="2"
+                                        className={classes.rankTitle}
+                                      >
+                                        <span className={classes.rankTitle}>
+                                          {n.title}
+                                        </span>
+                                      </CustomTableCell>
+                                    )
+                                  })()}
+                                  {(() => {
+                                    if (n.rank === '0') {
+                                      return (
+                                        <CustomTableCell
+                                          className={classes.coin}
+                                        >
+                                          <img
+                                            alt="コイン"
+                                            src="/images/coin.png"
+                                            className={classes.coinAvater}
+                                          />
+                                          {n.sumCoin}
+                                          <div className={classes.gurade}>
+                                            <br />
+                                          </div>
+                                        </CustomTableCell>
+                                      )
+                                    } else if (n.rank === '1') {
+                                      return (
+                                        <CustomTableCell
+                                          className={classes.coin}
+                                        >
+                                          <img
+                                            alt="コイン"
+                                            src="/images/coin.png"
+                                            className={classes.coinAvater}
+                                          />
+                                          {n.sumCoin}
+                                          <div className={classes.gurade2}>
+                                            <br />
+                                          </div>
+                                        </CustomTableCell>
+                                      )
+                                    } else if (n.rank === '2') {
+                                      return (
+                                        <CustomTableCell
+                                          className={classes.coin}
+                                        >
+                                          <img
+                                            alt="コイン"
+                                            src="/images/coin.png"
+                                            className={classes.coinAvater}
+                                          />
+                                          {n.sumCoin}
+                                          <div className={classes.gurade3}>
+                                            <br />
+                                          </div>
+                                        </CustomTableCell>
+                                      )
+                                    } else if (n.rank === '3') {
+                                      return (
+                                        <CustomTableCell
+                                          className={classes.coin}
+                                        >
+                                          <img
+                                            alt="コイン"
+                                            src="/images/coin.png"
+                                            className={classes.coinAvater}
+                                          />
+                                          {n.sumCoin}
+                                          <div className={classes.gurade4}>
+                                            <br />
+                                          </div>
+                                        </CustomTableCell>
+                                      )
+                                    }
+                                    return (
+                                      <CustomTableCell
+                                        component="th"
+                                        scope="row"
+                                        className={classes.coin}
+                                      >
+                                        <img
+                                          alt="コイン"
+                                          src="/images/coin.png"
+                                          width="30"
+                                          height="30"
+                                        />
+                                        {n.sumCoin}
+                                        <div className={classes.gurade5}>
+                                          <br />
+                                        </div>
+                                      </CustomTableCell>
+                                    )
+                                  })()}
+                                </TableRow>
+                              </TableHead>
+                            </Table>
+                          </CustomTableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        style={{ paddingLeft: 60 }}
-                      >
-                        4
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="Remy Sharp"
-                                  src="/images/mikami.png"
-                                  className={classes.avatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.body_name}>
-                                  中央 智子
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                プレゼンノウハウ
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          width="30"
-                          height="30"
-                        />
-                        500
-                        <div className={classes.gurade4}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        style={{ paddingLeft: 60 }}
-                      >
-                        5
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="Remy Sharp"
-                                  src="/images/yamashita.png"
-                                  className={classes.avatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.body_name}>
-                                  網走 順子
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                泣き叫ぶ声…事件証拠として流された10分間の殺害音声
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          width="30"
-                          height="30"
-                        />
-                        250
-                        <div className={classes.gurade5}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        style={{ paddingLeft: 60 }}
-                      >
-                        6
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="札幌 太郎"
-                                  src="/images/mikami.png"
-                                  className={classes.avatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.body_name}>
-                                  北見 圭吾
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                甘くて美味しいみかんの見分け方
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          width="30"
-                          height="30"
-                        />
-                        100
-                        <div className={classes.gurade5}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        style={{ paddingLeft: 60 }}
-                      >
-                        7
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="Remy Sharp"
-                                  src="/images/yamashita.png"
-                                  className={classes.avatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.body_name}>
-                                  函館 祥子
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                きのこvsたけのこ
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          width="30"
-                          height="30"
-                        />
-                        100
-                        <div className={classes.gurade5}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell
-                        component="th"
-                        scope="row"
-                        style={{ paddingLeft: 60 }}
-                      >
-                        8
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <CustomTableCell>
-                                <Avatar
-                                  alt="Remy Sharp"
-                                  src="/images/ishigaki.jpg"
-                                  className={classes.avatar}
-                                />
-                              </CustomTableCell>
-                              <CustomTableCell>
-                                <a href="" className={classes.body_name}>
-                                  十勝 和夫
-                                </a>
-                              </CustomTableCell>
-                            </TableRow>
-                            <TableRow>
-                              <CustomTableCell
-                                colspan="2"
-                                className={classes.rankTitle}
-                              >
-                                伝わるフォント
-                              </CustomTableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </CustomTableCell>
-                      <CustomTableCell>
-                        <img
-                          alt="コイン"
-                          src="/images/coin.png"
-                          width="30"
-                          height="30"
-                        />
-                        100
-                        <div className={classes.gurade5}>
-                          <br />
-                        </div>
-                      </CustomTableCell>
-                    </TableRow>
-                  </TableBody>
                 </Table>
               </Paper>
               <br />
@@ -1108,7 +986,9 @@ class TohyoShokaiKobetsuForm extends React.Component {
                 <Paper className={classes.nendo_senkyo_name}>
                   <Typography component="p">氏名（漢字）</Typography>
                   <Typography variant="headline" component="h3">
-                    北海 道子
+                    {this.state.resultList2.map(n => {
+                      return <div>{n.shimei}</div>
+                    })}
                   </Typography>
                 </Paper>
               </Table>
