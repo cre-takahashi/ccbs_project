@@ -52,6 +52,13 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import Search from '@material-ui/icons/Search'
+import Edit from '@material-ui/icons/Edit'
+import Web from '@material-ui/icons/Web'
+import AddAPhoto from '@material-ui/icons/AddAPhoto'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -297,6 +304,15 @@ const styles = theme => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.background.default
     }
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120
+  },
+  button2: { margin: theme.spacing.unit },
+
+  shainImgTable: {
+    width: 500
   }
 })
 
@@ -514,7 +530,139 @@ class ShainTorokuForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <h2>
+              <img
+                src="/images/yajirushi.png"
+                alt="サンプル"
+                align="bottom"
+                width="30"
+                height="20"
+              />
+              <strong>社員情報</strong>
+            </h2>
+            <Table className={classes.shainImgTable}>
+              <TableRow>
+                <CustomTableCell>顔写真</CustomTableCell>
+              </TableRow>
+              <TableRow>
+                <CustomTableCell rowSpan={2}>
+                  <div align="center">
+                    <Avatar
+                      alt="Adelle Charles"
+                      src="/images/yamashita.png"
+                      className={classNames(classes.avatar, classes.bigAvatar)}
+                    />
+                  </div>
+                </CustomTableCell>
+                <CustomTableCell style={{ border: 'none' }}>
+                  <Button
+                    className={classes.button}
+                    variant="raised"
+                    size="large"
+                    component={MyLink}
+                  >
+                    <AddAPhoto
+                      className={classNames(
+                        classes.leftIcon,
+                        classes.iconSmall
+                      )}
+                    />
+                    select photo
+                  </Button>
+                </CustomTableCell>
+              </TableRow>
+            </Table>
+
+            <Paper className={classes.root}>
+              <Table className={classes.table}>
+                <TableRow>
+                  <CustomTableCell style={{ width: '20%' }}>
+                    氏名（かな）
+                  </CustomTableCell>
+                  <CustomTableCell>
+                    <form className={classes.root} autoComplete="off">
+                      <TextField
+                        id="shimeiKana"
+                        label="氏名（かな）"
+                        placeholder="氏名（かな）を入力"
+                        className={classes.textField}
+                        value={this.state.election}
+                        onChange={this.handleChange('election')}
+                        margin="normal"
+                      />
+                    </form>
+                  </CustomTableCell>
+                </TableRow>
+                <TableRow>
+                  <CustomTableCell style={{ width: '20%' }}>
+                    氏名（漢字）
+                  </CustomTableCell>
+                  <CustomTableCell>
+                    <form className={classes.root} autoComplete="off">
+                      <TextField
+                        id="shimeiKanji"
+                        label="氏名（漢字）"
+                        placeholder="氏名（漢字）を入力"
+                        className={classes.textField}
+                        value={this.state.election}
+                        onChange={this.handleChange('election')}
+                        margin="normal"
+                      />
+                    </form>
+                  </CustomTableCell>
+                </TableRow>
+                <TableRow>
+                  <CustomTableCell>ユーザID</CustomTableCell>
+                  <CustomTableCell>
+                    <form className={classes.root} autoComplete="off">
+                      <TextField
+                        id="userId"
+                        label="ユーザID"
+                        placeholder="ユーザIDを入力"
+                        className={classes.textField}
+                        value={this.state.election}
+                        onChange={this.handleChange('election')}
+                        margin="normal"
+                      />
+                    </form>
+                  </CustomTableCell>
+                </TableRow>
+                <TableRow>
+                  <CustomTableCell>権限</CustomTableCell>
+                  <CustomTableCell>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel htmlFor="kengen-simple">権限</InputLabel>
+                      <Select
+                        value={this.state.kengen}
+                        onChange={this.handleChange2}
+                        inputProps={{
+                          name: 'kengen',
+                          id: 'kengen-simple'
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>指定なし</em>
+                        </MenuItem>
+                        <MenuItem value={1}>管理者</MenuItem>
+                        <MenuItem value={2}>一般</MenuItem>
+                        <MenuItem value={3}>新人</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </CustomTableCell>
+                </TableRow>
+              </Table>
+            </Paper>
+            <Button
+              className={classes.button}
+              variant="raised"
+              size="large"
+              component={MyLink}
+            >
+              <Save
+                className={classNames(classes.leftIcon, classes.iconSmall)}
+              />
+              SAVE
+            </Button>
           </main>
           {after}
         </div>
