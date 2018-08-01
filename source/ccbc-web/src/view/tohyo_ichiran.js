@@ -60,6 +60,8 @@ import NativeSelect from '@material-ui/core/NativeSelect'
 import Select from '@material-ui/core/Select'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import Input from '@material-ui/core/Input'
+import moment from 'moment'
+import 'moment/locale/ja'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -317,24 +319,6 @@ const styles = theme => ({
   }
 })
 
-const testData = [
-  {
-    url: '/images/yamashita.png',
-    title: '第５回EQトレーニング',
-    name: '剛田　武'
-  },
-  {
-    url: '/images/mikami.png',
-    title: '△△△案件プロジェクト報告',
-    name: '札幌　太郎'
-  },
-  {
-    url: '/images/ishigaki.jpg',
-    title: '◯◯◯案件プロジェクト報告',
-    name: '江別　野郎'
-  }
-]
-
 class TohyoIchiran extends React.Component {
   state = {
     open: false,
@@ -361,6 +345,8 @@ class TohyoIchiran extends React.Component {
 
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
+    this.setState({ Target_year: 1 })
+
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
     for (var i in loginInfos) {
       var loginInfo = loginInfos[i]
@@ -372,6 +358,12 @@ class TohyoIchiran extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+
+    request.get('/tohyo_ichiran/find').end((err, res) => {
+      if (err) return
+      // 検索結果表示
+      this.setState({ resultList: res.body.data })
+    })
   }
 
   handleChange = event => {
@@ -401,6 +393,10 @@ class TohyoIchiran extends React.Component {
     }
 
     this.setState({ open2: false })
+  }
+
+  handleClick = event => {
+    window.location.href = '/tohyo_shokai_kobetsu'
   }
 
   render() {
@@ -574,6 +570,7 @@ class TohyoIchiran extends React.Component {
                 />
                 <strong>選挙情報</strong>
               </h2>
+
               <Paper className={classes.root}>
                 <Table className={classes.table}>
                   <TableHead>
@@ -585,117 +582,49 @@ class TohyoIchiran extends React.Component {
                       <CustomTableCell>照会</CustomTableCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody>
-                    <TableRow>
-                      <CustomTableCell>1</CustomTableCell>
-                      <CustomTableCell>平成30年度9月部会</CustomTableCell>
-                      <CustomTableCell>2018/9/20</CustomTableCell>
-                      <CustomTableCell>2018/9/26</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
+                    {this.state.resultList.map(n => {
+                      return (
+                        <TableRow className={classes.row} key={n.id}>
+                          <CustomTableCell>{n.t_senkyo_pk}</CustomTableCell>
+                          <CustomTableCell
+                            component="th"
+                            scope="row"
+                            style={{ fontSize: '100%' }}
+                          >
+                            {n.senkyo_nm}
+                          </CustomTableCell>
+                          <CustomTableCell style={{ fontSize: '100%' }}>
+                            {moment(new Date(n.tohyo_kaishi_dt)).format(
+                              'YYYY/MM/DD'
                             )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2</CustomTableCell>
-                      <CustomTableCell>平成30年度8月部会</CustomTableCell>
-                      <CustomTableCell>2018/8/20</CustomTableCell>
-                      <CustomTableCell>2018/8/26</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
+                          </CustomTableCell>
+                          <CustomTableCell style={{ fontSize: '100%' }}>
+                            {moment(new Date(n.tohyo_shuryo_dt)).format(
+                              'YYYY/MM/DD'
                             )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>3</CustomTableCell>
-                      <CustomTableCell>平成30年度7月部会</CustomTableCell>
-                      <CustomTableCell>2018/7/20</CustomTableCell>
-                      <CustomTableCell>2018/7/26</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>4</CustomTableCell>
-                      <CustomTableCell>平成30年度6月部会</CustomTableCell>
-                      <CustomTableCell>2018/6/20</CustomTableCell>
-                      <CustomTableCell>2018/6/26</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>5</CustomTableCell>
-                      <CustomTableCell>平成30年度5月部会</CustomTableCell>
-                      <CustomTableCell>2018/5/20</CustomTableCell>
-                      <CustomTableCell>2018/5/26</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
+                          </CustomTableCell>
+                          <CustomTableCell>
+                            <Button
+                              variant="raised"
+                              color="default"
+                              size="large"
+                              onClick={this.handleClick}
+                              className={classes.button}
+                            >
+                              <Web
+                                className={classNames(
+                                  classes.leftIcon,
+                                  classes.iconSmall
+                                )}
+                              />
+                              照会
+                            </Button>
+                          </CustomTableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </Paper>

@@ -52,6 +52,19 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import {
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  Radar,
+  Tooltip as Tooltip2,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend
+} from 'recharts'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -427,6 +440,21 @@ class TohyoShokaiNendoForm extends React.Component {
 
     const MyLink = props => <Link to="/sample" {...props} />
 
+    const data = [
+      { name: '佐藤源生', 発表数: 10, 所持コイン数: 500, amt: 2400 },
+      { name: '川除映梨奈', 発表数: 8, 所持コイン数: 450, amt: 2210 },
+      { name: '中川大輔', 発表数: 7, 所持コイン数: 400, amt: 2290 },
+      { name: '佐藤充', 発表数: 6, 所持コイン数: 350, amt: 2000 },
+      { name: '髙橋卓馬', 発表数: 5, 所持コイン数: 200, amt: 2181 },
+      { name: '小澤佳奈江', 発表数: 4, 所持コイン数: 400, amt: 2500 },
+      { name: '吉田裕一', 発表数: 3, 所持コイン数: 600, amt: 2500 },
+      { name: '渡邉孝徳', 発表数: 2, 所持コイン数: 300, amt: 2500 },
+      { name: '石垣努', 発表数: 1, 所持コイン数: 0, amt: 2500 },
+      { name: '山下祐里枝', 発表数: 5, 所持コイン数: 800, amt: 2500 },
+      { name: '三上徹也', 発表数: 4, 所持コイン数: 1000, amt: 2500 },
+      { name: '角谷貴之', 発表数: 7, 所持コイン数: 600, amt: 2500 },
+      { name: '山城博紀', 発表数: 12, 所持コイン数: 900, amt: 2100 }
+    ]
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
@@ -514,7 +542,23 @@ class TohyoShokaiNendoForm extends React.Component {
             )}
           >
             <div className={classes.drawerHeader} />
-            <div>ここに実装すること</div>
+            <div>
+              <BarChart
+                width={1200}
+                height={500}
+                data={data}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                <Tooltip2 />
+                <Legend />
+                <Bar yAxisId="left" dataKey="所持コイン数" fill="#8884d8" />
+                <Bar yAxisId="right" dataKey="発表数" fill="#82ca9d" />
+              </BarChart>
+            </div>
           </main>
           {after}
         </div>

@@ -2,6 +2,8 @@ import React from 'react'
 import request from 'superagent'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
@@ -31,14 +33,12 @@ import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
-
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepButton from '@material-ui/core/StepButton'
 import Avatar from '@material-ui/core/Avatar'
 import Save from '@material-ui/icons/Save'
 import Menu from '@material-ui/core/Menu'
-
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
@@ -53,12 +53,10 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-
 import { Redirect } from 'react-router-dom'
 import {
   RadarChart,
@@ -348,12 +346,24 @@ class TohyoShokaiShosaiForm extends React.Component {
     haifuCoin: 150,
     tohyoCoin: 0,
     resultList: [],
+    tohyo_coin:[],
     userid: null,
     password: null,
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    tPresenterPk: 0,
+    tSenkyoPk: 0,
+    tRank: null,
+    tTotalCoin: null,
+    sum_document: 0,
+    sum_presentation: 0,
+    sum_expression: 0,
+    sum_influence_pt: 0,
+    sum_breakthrough_pt: 0,
+    senkyo_nm: '',
+    pnlnm: {}
   }
 
   constructor(props) {
@@ -362,6 +372,14 @@ class TohyoShokaiShosaiForm extends React.Component {
 
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
+    const { tohyo_shokai_shosai } = this.props
+    this.setState({ tPresenterPk: tohyo_shokai_shosai.t_presenter_pk })
+    this.state.tPresenterPk = Number(tohyo_shokai_shosai.t_presenter_pk)
+    this.setState({ tSenkyoPk: tohyo_shokai_shosai.t_senkyo_pk })
+    this.state.tSenkyoPk = Number(tohyo_shokai_shosai.t_presenter_pk)
+    this.setState({ tRank: tohyo_shokai_shosai.t_rank })
+    this.setState({ tTotalCoin: tohyo_shokai_shosai.t_totalcoin })
+
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
     for (var i in loginInfos) {
       var loginInfo = loginInfos[i]
@@ -373,6 +391,57 @@ class TohyoShokaiShosaiForm extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+
+    request
+      .post('/tohyo_shokai_shosai/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          return
+        }
+        var resList = res.body.data
+        var coin = res.body.tohyo_coin
+        this.setState({ tohyo_coin: coin })
+        if (resList.length != 0) {
+          this.state.senkyo_nm = resList[0].senkyo_nm
+        }
+        var head = []
+        if (resList.length === 0) {
+          head.push(false)
+        } else {
+          head.push(true)
+        }
+
+        // 検索結果表示
+        this.setState({ resultList: resList })
+        this.setState({ headList: head })
+
+        // 各評価ポイントの集計
+        var sum1 = 0,
+          sum2 = 0,
+          sum3 = 0,
+          sum4 = 0,
+          sum5 = 0
+        for (var i in this.state.resultList) {
+          sum1 += this.state.resultList[i].document_pt
+          sum2 += this.state.resultList[i].presentation_pt
+          sum3 += this.state.resultList[i].expression_pt
+          sum4 += this.state.resultList[i].influence_pt
+          sum5 += this.state.resultList[i].breakthrough_pt
+        }
+        this.setState({ sum_document: sum1 })
+        this.setState({ sum_presentation: sum2 })
+        this.setState({ sum_expression: sum3 })
+        this.setState({ sum_influence: sum4 })
+        this.setState({ sum_breakthrough: sum5 })
+
+        // コメントパネル名設定
+        var pnlno = 0
+        for (var i in this.state.resultList) {
+          pnlno += 1
+          this.state.pnlnm[i] = 'panel' + pnlno
+        }
+      })
   }
 
   handleChange = (name, cnt) => event => {
@@ -455,11 +524,11 @@ class TohyoShokaiShosaiForm extends React.Component {
     const MyLink = props => <Link to="/sample" {...props} />
 
     const dataRadar = [
-      { rank: '資料作成', value: 120 },
-      { rank: '発表力', value: 85 },
-      { rank: '表現力', value: 65 },
-      { rank: '影響力', value: 35 },
-      { rank: '限界突破', value: 35 }
+      { rank: '資料作成', value: this.state.sum_document },
+      { rank: '発表力', value: this.state.sum_presentation },
+      { rank: '表現力', value: this.state.sum_expression },
+      { rank: '影響力', value: this.state.sum_influence },
+      { rank: '限界突破', value: this.state.sum_breakthrough }
     ]
 
     return (
@@ -550,194 +619,113 @@ class TohyoShokaiShosaiForm extends React.Component {
           >
             <div className={classes.drawerHeader} />
             <div>
-              <Paper className={classes.root} elevation={4}>
-                <Typography variant="headline" component="p">
-                  平成３０年度６月部会
-                </Typography>
-                <br />
-                <Typography variant="headline" component="h3">
-                  全体順位：１位　獲得コイン：340coin
-                </Typography>
-                <Typography variant="headline" component="h3">
-                  『新しい価値を創造する為に・・・』
-                </Typography>
-                <table>
-                  <tr>
-                    <td>
-                      <Avatar
-                        alt="Adelle Charles"
-                        src="/images/mikami.png"
-                        className={classNames(classes.PnlAvatar)}
-                      />
-                    </td>
-                    <td>
-                      <Typography
-                        component="p"
-                        variant="title"
-                        color="textSecondary"
+              {(() => {
+                if (this.state.resultList.length != 0) {
+                  return (
+                    <div>
+                      <Paper className={classes.root} elevation={4}>
+                        <Typography variant="subhead" component="p">
+                          {this.state.resultList[0].senkyo_nm}
+                        </Typography>
+                        <br />
+                        <Typography variant="headline" component="h3">
+                          全体順位：{this.state.tRank}位　獲得コイン：{
+                            this.state.tTotalCoin
+                          }coin
+                        </Typography>
+                        <Typography variant="headline" component="h3">
+                          『{this.state.resultList[0].presen_title}』
+                        </Typography>
+                        <table>
+                          <tr>
+                            <td>
+                              <Avatar
+                                alt="Adelle Charles"
+                                src={
+                                  restUrl +
+                                  `uploads/${
+                                    this.state.resultList[0].presen_image
+                                  }`
+                                }
+                                className={classNames(classes.PnlAvatar)}
+                              />
+                            </td>
+                            <td>
+                              <Typography
+                                component="p"
+                                variant="title"
+                                color="textSecondary"
+                              >
+                                {this.state.resultList[0].presen_shimei}
+                              </Typography>
+                            </td>
+                          </tr>
+                        </table>
+                      </Paper>
+
+                      <RadarChart // レーダーチャートのサイズや位置、データを指定
+                        height={400} // レーダーチャートの全体の高さを指定
+                        width={500} // レーダーチャートの全体の幅を指定
+                        cx="50%" // 要素の左を基準に全体の50%移動
+                        cy="50%" // 要素の上を基準に全体の50%移動
+                        data={dataRadar} // ここにArray型のデータを指定
                       >
-                        北海道　一郎
-                      </Typography>
-                    </td>
-                  </tr>
-                </table>
-              </Paper>
+                        <PolarGrid /> // レーダーのグリッド線を表示
+                        <PolarAngleAxis
+                          dataKey="rank" // Array型のデータの、数値を表示したい値のキーを指定
+                        />
+                        <Radar // レーダーの色や各パラメーターのタイトルを指定
+                          name="点数" // hoverした時に表示される名前を指定
+                          dataKey="value" // Array型のデータのパラメータータイトルを指定
+                          stroke="#8884d8" // レーダーの線の色を指定
+                          fill="#8884d8" // レーダーの中身の色を指定
+                          fillOpacity={0.6} // レーダーの中身の色の薄さを指定
+                        />
+                        <Tooltip2 /> //hoverすると各パラメーターの値が表示される
+                      </RadarChart>
 
-              <RadarChart // レーダーチャートのサイズや位置、データを指定
-                height={400} // レーダーチャートの全体の高さを指定
-                width={500} // レーダーチャートの全体の幅を指定
-                cx="50%" // 要素の左を基準に全体の50%移動
-                cy="50%" // 要素の上を基準に全体の50%移動
-                data={dataRadar} // ここにArray型のデータを指定
-              >
-                <PolarGrid /> // レーダーのグリッド線を表示
-                <PolarAngleAxis
-                  dataKey="rank" // Array型のデータの、数値を表示したい値のキーを指定
-                />
-                <Radar // レーダーの色や各パラメーターのタイトルを指定
-                  name="点数" // hoverした時に表示される名前を指定
-                  dataKey="value" // Array型のデータのパラメータータイトルを指定
-                  stroke="#8884d8" // レーダーの線の色を指定
-                  fill="#8884d8" // レーダーの中身の色を指定
-                  fillOpacity={0.6} // レーダーの中身の色の薄さを指定
-                />
-                <Tooltip2 /> //hoverすると各パラメーターの値が表示される
-              </RadarChart>
-
-              <ExpansionPanel
-                expanded={expanded === 'panel1'}
-                onChange={this.handleChangePnl('panel1')}
-              >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography
-                    className={classes.heading}
-                    style={{ fontSize: '18px' }}
-                  >
-                    <Avatar
-                      alt="Adelle Charles"
-                      src="/images/yamashita.png"
-                      className={classNames(classes.PnlAvatar)}
-                    />
-                    札幌　一郎
-                  </Typography>
-                  <Typography style={{ fontSize: '18px' }}>
-                    投票：500coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography style={{ fontSize: '18px' }}>
-                    すごく良かった。 感動した。
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-
-              <ExpansionPanel
-                expanded={expanded === 'panel2'}
-                onChange={this.handleChangePnl('panel2')}
-              >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography
-                    className={classes.heading}
-                    style={{ fontSize: '18px' }}
-                  >
-                    <Avatar
-                      alt="Adelle Charles"
-                      src="/images/yamashita.png"
-                      className={classNames(classes.PnlAvatar)}
-                    />
-                    札幌　二郎
-                  </Typography>
-                  <Typography style={{ fontSize: '18px' }}>
-                    投票：400coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography style={{ fontSize: '18px' }}>
-                    すごく良かった。 感動した。もっと聞きたい！！！
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-
-              <ExpansionPanel
-                expanded={expanded === 'panel3'}
-                onChange={this.handleChangePnl('panel3')}
-              >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography
-                    className={classes.heading}
-                    style={{ fontSize: '18px' }}
-                  >
-                    <Avatar
-                      alt="Adelle Charles"
-                      src="/images/yamashita.png"
-                      className={classNames(classes.PnlAvatar)}
-                    />
-                    札幌　三郎
-                  </Typography>
-                  <Typography style={{ fontSize: '18px' }}>
-                    投票：300coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography style={{ fontSize: '18px' }}>
-                    すごく良かった。 感動した。もっと聞きたい！！！
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-
-              <ExpansionPanel
-                expanded={expanded === 'panel4'}
-                onChange={this.handleChangePnl('panel4')}
-              >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography
-                    className={classes.heading}
-                    style={{ fontSize: '18px' }}
-                  >
-                    <Avatar
-                      alt="Adelle Charles"
-                      src="/images/yamashita.png"
-                      className={classNames(classes.PnlAvatar)}
-                    />
-                    札幌　四郎
-                  </Typography>
-                  <Typography style={{ fontSize: '18px' }}>
-                    投票：200coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography style={{ fontSize: '18px' }}>
-                    すごく良かった。 感動した。もっと聞きたい！！！
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-
-              <ExpansionPanel
-                expanded={expanded === 'panel5'}
-                onChange={this.handleChangePnl('panel5')}
-              >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography
-                    className={classes.heading}
-                    style={{ fontSize: '18px' }}
-                  >
-                    <Avatar
-                      alt="Adelle Charles"
-                      src="/images/yamashita.png"
-                      className={classNames(classes.PnlAvatar)}
-                    />
-                    札幌　五郎
-                  </Typography>
-                  <Typography style={{ fontSize: '18px' }}>
-                    投票：100coin　資料作成：10点　発表力：10点　表現力：10点　影響力：10点　限界突破：10点　コメントを読む
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography style={{ fontSize: '18px' }}>
-                    すごく良かった。 感動した。もっと聞きたい！！！
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+                      {this.state.resultList.map((data, i) => {
+                        return (
+                          <div>
+                            <ExpansionPanel
+                              expanded={expanded === i}
+                              onChange={this.handleChangePnl(
+                                i
+                              )}
+                            >
+                              <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                              >
+                                <Typography
+                                  className={classes.heading}
+                                  style={{ fontSize: '18px' }}
+                                >
+                                  <Avatar
+                                    alt="Adelle Charles"
+                                    src={
+                                      restUrl + `uploads/${data.tohyo_image}`
+                                    }
+                                    className={classNames(classes.PnlAvatar)}
+                                  />
+                                  {data.tohyo_shimei}
+                                </Typography>
+                                <Typography style={{ fontSize: '18px' }}>
+                                  投票：{this.state.tohyo_coin[i]}coin　資料作成：{data.document_pt}点　発表力：{data.presentation_pt}点　表現力：{data.expression_pt}点　影響力：{data.influence_pt}点　限界突破：{data.breakthrough_pt}点　コメントを読む
+                                </Typography>
+                              </ExpansionPanelSummary>
+                              <ExpansionPanelDetails>
+                                <Typography style={{ fontSize: '18px' }}>
+                                  {data.tohyo_comment}
+                                </Typography>
+                              </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                }
+              })()}
             </div>
           </main>
           {after}
@@ -752,4 +740,10 @@ TohyoShokaiShosaiForm.propTypes = {
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(TohyoShokaiShosaiForm)
+const mapState = state => ({
+  tohyo_shokai_shosai: state.tohyo_shokai_shosai
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState)(TohyoShokaiShosaiForm)
+)
