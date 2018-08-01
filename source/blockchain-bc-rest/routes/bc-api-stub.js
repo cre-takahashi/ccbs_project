@@ -131,4 +131,37 @@ router.post("/get_rank", function(req, res, err) {
   //res.json({ coin: 0, result: false, message: "エラーです。" })
 });
 
+/**
+ * ------------------------------------------------------------
+ * 取引照会
+ * ------------------------------------------------------------
+ * Param  : [ transaction ] - トランザクションID
+ * Return : [ sender ]      - 送金元アカウント
+ *          [ receiver ]    - 送金先アカウント
+ *          [ coin ]        - 送金コイン数
+ *          [ result ]      - 結果(true/false)
+ *          [ message ]     - エラーメッセージ(エラー時のみ)
+ * ------------------------------------------------------------
+ */
+router.post("/get_transaction", function(req, res, err) {
+  console.log("get_transaction:param:" + JSON.stringify(req.body));
+
+  // 正常時
+  res.json({
+    sender: "0xtest000000000000000000000000000000000000",
+    receiver: "0xtest000000000000000000000000000000000001",
+    coin: 2000,
+    result: true
+  });
+  // エラー時
+  /*
+  res.json({
+    sender: "",
+    receiver: "",
+    coin: 0,
+    result: false,
+    message: "エラーです。"
+  });
+  */
+});
 module.exports = router;
