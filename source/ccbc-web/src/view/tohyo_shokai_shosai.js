@@ -346,7 +346,7 @@ class TohyoShokaiShosaiForm extends React.Component {
     haifuCoin: 150,
     tohyoCoin: 0,
     resultList: [],
-    tohyo_coin:[],
+    tohyo_coin: [],
     userid: null,
     password: null,
     tShainPk: 0,
@@ -689,9 +689,7 @@ class TohyoShokaiShosaiForm extends React.Component {
                           <div>
                             <ExpansionPanel
                               expanded={expanded === i}
-                              onChange={this.handleChangePnl(
-                                i
-                              )}
+                              onChange={this.handleChangePnl(i)}
                             >
                               <ExpansionPanelSummary
                                 expandIcon={<ExpandMoreIcon />}
@@ -710,7 +708,13 @@ class TohyoShokaiShosaiForm extends React.Component {
                                   {data.tohyo_shimei}
                                 </Typography>
                                 <Typography style={{ fontSize: '18px' }}>
-                                  投票：{this.state.tohyo_coin[i]}coin　資料作成：{data.document_pt}点　発表力：{data.presentation_pt}点　表現力：{data.expression_pt}点　影響力：{data.influence_pt}点　限界突破：{data.breakthrough_pt}点　コメントを読む
+                                  投票：{this.state.tohyo_coin[i]}coin　資料作成：{
+                                    data.document_pt
+                                  }点　発表力：{data.presentation_pt}点　表現力：{
+                                    data.expression_pt
+                                  }点　影響力：{data.influence_pt}点　限界突破：{
+                                    data.breakthrough_pt
+                                  }点　コメントを読む
                                 </Typography>
                               </ExpansionPanelSummary>
                               <ExpansionPanelDetails>

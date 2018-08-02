@@ -62,6 +62,9 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import Input from '@material-ui/core/Input'
 import moment from 'moment'
 import 'moment/locale/ja'
+import * as myActions from '../actions/tohyo_shokai_kobetsu'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -345,29 +348,59 @@ class TohyoIchiran extends React.Component {
 
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
-    this.setState({ Target_year: 1 })
+    // 現在年の取得。取得した年を初期表示する
+    var yyyy = new Date().getFullYear()
+    this.setState({ Target_year: yyyy })
 
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
-    for (var i in loginInfos) {
-      var loginInfo = loginInfos[i]
-      this.setState({ userid: loginInfo['userid'] })
-      this.setState({ password: loginInfo['password'] })
-      this.setState({ tShainPk: loginInfo['tShainPk'] })
-      this.state.tShainPk = Number(loginInfo['tShainPk'])
-      this.setState({ imageFileName: loginInfo['imageFileName'] })
-      this.setState({ shimei: loginInfo['shimei'] })
-      this.setState({ kengenCd: loginInfo['kengenCd'] })
-    }
+    this.setState({ userid: loginInfos.userid })
+    this.setState({ password: loginInfos.password })
+    this.setState({ tShainPk: loginInfos.tShainPk })
+    this.state.tShainPk = Number(loginInfos.tShainPk)
+    this.setState({ imageFileName: loginInfos.imageFileName })
+    this.setState({ shimei: loginInfos.shimei })
+    this.setState({ kengenCd: loginInfos.kengenCd })
 
-    request.get('/tohyo_ichiran/find').end((err, res) => {
-      if (err) return
-      // 検索結果表示
-      this.setState({ resultList: res.body.data })
-    })
+    this.state.targetYear = yyyy
+    request
+      //    .get('/tohyo_ichiran/find')
+      .post('/tohyo_ichiran/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) return
+        // 検索結果表示
+        this.setState({ resultList: res.body.data })
+      })
   }
+
+  // function postdata(yyyy) {
+  //   alert('yyyy:[' + yyyy + ']')
+
+  //   this.state.targetYear = yyyy
+  //   request
+  //     //    .get('/tohyo_ichiran/find')
+  //     .post('/tohyo_ichiran/find')
+  //     .send(this.state)
+  //     .end((err, res) => {
+  //       if (err) return
+  //       // 検索結果表示
+  //       this.setState({ resultList: res.body.data })
+  //     })
+  // }
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value })
+    //postdata(event.target.value)
+    this.state.targetYear = event.target.value
+    request
+      //    .get('/tohyo_ichiran/find')
+      .post('/tohyo_ichiran/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) return
+        // 検索結果表示
+        this.setState({ resultList: res.body.data })
+      })
   }
 
   handleDrawerOpen = () => {
@@ -396,7 +429,14 @@ class TohyoIchiran extends React.Component {
   }
 
   handleClick = event => {
-    window.location.href = '/tohyo_shokai_kobetsu'
+    const { tohyoShokaiKobetsu, actions } = this.props
+
+    var pSenkyoPk = event.currentTarget.getAttribute('data-num')
+    var pSenkyoNm = event.currentTarget.getAttribute('data-name')
+    var pNendo = this.state.Target_year
+
+    actions.setTohyoShokaiKobetsuData(pSenkyoPk, pSenkyoNm, pNendo)
+    this.props.history.push('/tohyo_shokai_kobetsu')
   }
 
   render() {
@@ -542,6 +582,7 @@ class TohyoIchiran extends React.Component {
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="Target_year-simple">対象年度</InputLabel>
                   <Select
+                    id="Target_year-simple"
                     value={this.state.Target_year}
                     onChange={this.handleChange}
                     inputProps={{
@@ -549,12 +590,9 @@ class TohyoIchiran extends React.Component {
                       id: 'Target_year-simple'
                     }}
                   >
-                    <MenuItem value="">
-                      <em>指定なし</em>
-                    </MenuItem>
-                    <MenuItem value={1}>2018年</MenuItem>
-                    <MenuItem value={2}>2019年</MenuItem>
-                    <MenuItem value={3}>2020年</MenuItem>
+                    <MenuItem value={2018}>2018年</MenuItem>
+                    <MenuItem value={2019}>2019年</MenuItem>
+                    <MenuItem value={2020}>2020年</MenuItem>
                   </Select>
                 </FormControl>
               </form>
@@ -611,6 +649,8 @@ class TohyoIchiran extends React.Component {
                               color="default"
                               size="large"
                               onClick={this.handleClick}
+                              data-num={n.t_senkyo_pk}
+                              data-name={n.senkyo_nm}
                               className={classes.button}
                             >
                               <Web
@@ -664,4 +704,14 @@ TohyoIchiran.propTypes = {
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(TohyoIchiran)
+const mapState = state => ({
+  tohyoShokaiKobetsu: state.tohyoShokaiKobetsu
+})
+
+const mapDispatch = dispatch => ({
+  actions: bindActionCreators(myActions, dispatch)
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState, mapDispatch)(TohyoIchiran)
+)
