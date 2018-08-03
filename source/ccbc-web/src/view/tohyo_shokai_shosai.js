@@ -376,7 +376,7 @@ class TohyoShokaiShosaiForm extends React.Component {
     this.setState({ tPresenterPk: tohyo_shokai_shosai.t_presenter_pk })
     this.state.tPresenterPk = Number(tohyo_shokai_shosai.t_presenter_pk)
     this.setState({ tSenkyoPk: tohyo_shokai_shosai.t_senkyo_pk })
-    this.state.tSenkyoPk = Number(tohyo_shokai_shosai.t_presenter_pk)
+    this.state.tSenkyoPk = Number(tohyo_shokai_shosai.t_senkyo_pk)
     this.setState({ tRank: tohyo_shokai_shosai.t_rank })
     this.setState({ tTotalCoin: tohyo_shokai_shosai.t_totalcoin })
 
