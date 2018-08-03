@@ -9,7 +9,7 @@ const styles = theme => ({
 
 class ReduxDisplayForm extends Component {
   handleClick = event => {
-    this.props.history.push('/redux_display2')
+    this.props.history.push('/redux_display')
   }
   render() {
     const { count } = this.props

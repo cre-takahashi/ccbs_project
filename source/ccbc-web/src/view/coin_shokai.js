@@ -59,6 +59,9 @@ import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
+import { bindActionCreators } from 'redux'
+import * as myActions from '../actions/coin_shokai'
+import { connect } from 'react-redux'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -328,42 +331,32 @@ const styles = theme => ({
   }
 })
 
-const testData = [
-  {
-    url: '/images/yamashita.png',
-    title: '第５回EQトレーニング',
-    name: '剛田　武'
-  },
-  {
-    url: '/images/mikami.png',
-    title: '△△△案件プロジェクト報告',
-    name: '札幌　太郎'
-  },
-  {
-    url: '/images/ishigaki.jpg',
-    title: '◯◯◯案件プロジェクト報告',
-    name: '江別　野郎'
-  }
-]
-
 class CoinShokaiForm extends React.Component {
   state = {
     open: false,
     open2: false,
     anchor: 'left',
     completed: {},
-    comment: {},
-    haifuCoin: 150,
-    tohyoCoin: 0,
-    resultList: [],
+    shainList: [],
+    yearList: [],
+    getCoinAllList: [],
+    getCoinList: [],
+    takeCoinAllList: [],
+    takeCoinList: [],
     userid: null,
     password: null,
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null,
     year_info: '',
-    target_manager: ''
+    target_manager: '',
+    kengenCd: null,
+    checked: false,
+    allGetCoin: 0,
+    getCoin: 0,
+    allTakeCoin: 0,
+    takeCoin: 0,
+    happyoSu: ''
   }
 
   constructor(props) {
@@ -382,13 +375,91 @@ class CoinShokaiForm extends React.Component {
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
+      this.state.kengenCd = loginInfo['kengenCd']
     }
+
+    request
+      .post('/coin_shokai/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          alert(err)
+          return
+        }
+        var resList = res.body.getCoinDatasAll
+        var resList2 = res.body.takeCoinDatasAll
+        var resList3 = res.body.shainDatas
+        var resList4 = res.body.nendoDatas
+        // 検索結果表示
+        this.setState({ shainList: resList3 })
+        this.setState({ yearList: resList4 })
+        this.setState({ getCoinAllList: resList })
+        this.setState({ getCoinList: res.body.getCoinDatas })
+        this.setState({ takeCoinAllList: resList2 })
+        this.setState({ takeCoinList: res.body.takeCoinDatas })
+        this.setState({
+          allGetCoin: '受領コイン計（事務局含む）：' + res.body.allGetCoinSu
+        })
+        this.setState({
+          getCoin: '受領コイン計：' + res.body.getCoinSu
+        })
+        this.setState({
+          allTakeCoin: '授与コイン計（事務局含む）：' + res.body.allTakeCoinSu
+        })
+        this.setState({
+          takeCoin: '授与コイン計：' + res.body.takeCoinSu
+        })
+        this.setState({ takeCoinList: res.body.takeCoinDatas })
+        this.setState({ happyoSu: res.body.happyoSu })
+      })
   }
 
   handleChange = event => {
+    if (event.target.name == 'year_info') {
+      this.state.year_info = event.target.value
+    } else {
+      this.state.target_manager = event.target.value
+    }
+    request
+      .post('/coin_shokai/findChange')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          alert(err)
+          return
+        }
+        var resList = res.body.getCoinDatasAll
+        var resList2 = res.body.takeCoinDatasAll
+        // 検索結果表示
+        this.setState({ getCoinAllList: resList })
+        this.setState({ getCoinList: res.body.getCoinDatas })
+        this.setState({ takeCoinAllList: resList2 })
+        this.setState({ takeCoinList: res.body.takeCoinDatas })
+        this.setState({
+          allGetCoin: '受領コイン計（事務局含む）' + res.body.allGetCoinSu
+        })
+        this.setState({
+          getCoin: '受領コイン計' + res.body.getCoinSu
+        })
+        this.setState({
+          allTakeCoin: '授与コイン計（事務局含む）' + res.body.allTakeCoinSu
+        })
+        this.setState({
+          takeCoin: '授与コイン計' + res.body.takeCoinSu
+        })
+      })
     this.setState({ [event.target.name]: event.target.value })
   }
 
+  selectChange = event => {
+    var checked = this.state.checked
+    // 初期表示はFalse
+    if (checked) {
+      this.setState({ checked: false })
+    } else {
+      this.setState({ checked: true })
+    }
+  }
   handleDrawerOpen = () => {
     this.setState({ open: true })
   }
@@ -415,10 +486,10 @@ class CoinShokaiForm extends React.Component {
   }
 
   render() {
-    const { classes, theme } = this.props
+    const { classes, theme, actions } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
-
+    const commentShokaiLink = props => <Link to="/comment_shokai" {...props} />
     const drawer = (
       <Drawer
         variant="persistent"
@@ -438,9 +509,9 @@ class CoinShokaiForm extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
-        <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kanriListItems}</List>
       </Drawer>
     )
 
@@ -454,7 +525,257 @@ class CoinShokaiForm extends React.Component {
     }
 
     const MyLink = props => <Link to="/sample" {...props} />
-
+    if (this.state.checked == false) {
+      var getData = (
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <CustomTableCell>日付</CustomTableCell>
+              <CustomTableCell>投票・コイン贈与</CustomTableCell>
+              <CustomTableCell>投票（授与）者</CustomTableCell>
+              <CustomTableCell>受領コイン</CustomTableCell>
+              <CustomTableCell>コメント</CustomTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.getCoinList.map(n => {
+              return (
+                <TableRow className={classes.row} key={n.id}>
+                  <CustomTableCell> {n.insert_tm}</CustomTableCell>
+                  <CustomTableCell>{n.title}</CustomTableCell>
+                  <CustomTableCell>{n.shimei}</CustomTableCell>
+                  <CustomTableCell>{n.coin}</CustomTableCell>
+                  <CustomTableCell>
+                    <Button
+                      variant="raised"
+                      color="default"
+                      size="large"
+                      className={classes.button}
+                      onClick={() =>
+                        actions.setData(
+                          n.t_tohyo_pk,
+                          n.t_zoyo_pk,
+                          n.title,
+                          n.shimei,
+                          n.coin
+                        )
+                      }
+                      component={commentShokaiLink}
+                    >
+                      <Web
+                        className={classNames(
+                          classes.leftIcon,
+                          classes.iconSmall
+                        )}
+                      />
+                      照会
+                    </Button>
+                  </CustomTableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      )
+      var takeData = (
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <CustomTableCell>日付</CustomTableCell>
+              <CustomTableCell>投票・コイン贈与</CustomTableCell>
+              <CustomTableCell>投票（受領）相手</CustomTableCell>
+              <CustomTableCell>授与コイン</CustomTableCell>
+              <CustomTableCell>コメント</CustomTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.takeCoinList.map(y => {
+              return (
+                <TableRow className={classes.row} key={y.id}>
+                  <CustomTableCell> {y.insert_tm}</CustomTableCell>
+                  <CustomTableCell>{y.title}</CustomTableCell>
+                  <CustomTableCell>{y.shimei}</CustomTableCell>
+                  <CustomTableCell>{y.coin}</CustomTableCell>
+                  <CustomTableCell>
+                    <Button
+                      variant="raised"
+                      color="default"
+                      size="large"
+                      className={classes.button}
+                      onClick={() =>
+                        actions.setData(
+                          y.t_tohyo_pk,
+                          y.t_zoyo_pk,
+                          y.title,
+                          y.shimei,
+                          y.coin
+                        )
+                      }
+                      component={commentShokaiLink}
+                    >
+                      <Web
+                        className={classNames(
+                          classes.leftIcon,
+                          classes.iconSmall
+                        )}
+                      />
+                      照会
+                    </Button>
+                  </CustomTableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      )
+    } else {
+      var getData = (
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <CustomTableCell>日付</CustomTableCell>
+              <CustomTableCell>投票・コイン贈与</CustomTableCell>
+              <CustomTableCell>投票（授与）者</CustomTableCell>
+              <CustomTableCell>受領コイン</CustomTableCell>
+              <CustomTableCell>コメント</CustomTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.getCoinAllList.map(n => {
+              return (
+                <TableRow className={classes.row} key={n.id}>
+                  <CustomTableCell> {n.insert_tm}</CustomTableCell>
+                  <CustomTableCell>{n.title}</CustomTableCell>
+                  <CustomTableCell>{n.shimei}</CustomTableCell>
+                  <CustomTableCell>{n.coin}</CustomTableCell>
+                  <CustomTableCell>
+                    <Button
+                      variant="raised"
+                      color="default"
+                      size="large"
+                      className={classes.button}
+                      onClick={() =>
+                        actions.setData(
+                          n.t_tohyo_pk,
+                          n.t_zoyo_pk,
+                          n.title,
+                          n.shimei,
+                          n.coin
+                        )
+                      }
+                      component={commentShokaiLink}
+                    >
+                      <Web
+                        className={classNames(
+                          classes.leftIcon,
+                          classes.iconSmall
+                        )}
+                      />
+                      照会
+                    </Button>
+                  </CustomTableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      )
+      var takeData = (
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <CustomTableCell>日付</CustomTableCell>
+              <CustomTableCell>投票・コイン贈与</CustomTableCell>
+              <CustomTableCell>投票（受領）相手</CustomTableCell>
+              <CustomTableCell>授与コイン</CustomTableCell>
+              <CustomTableCell>コメント</CustomTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.takeCoinAllList.map(y => {
+              return (
+                <TableRow className={classes.row} key={y.id}>
+                  <CustomTableCell> {y.insert_tm}</CustomTableCell>
+                  <CustomTableCell>{y.title}</CustomTableCell>
+                  <CustomTableCell>{y.shimei}</CustomTableCell>
+                  <CustomTableCell>{y.coin}</CustomTableCell>
+                  <CustomTableCell>
+                    <Button
+                      variant="raised"
+                      color="default"
+                      size="large"
+                      className={classes.button}
+                      onClick={() =>
+                        actions.setData(
+                          y.t_tohyo_pk,
+                          y.t_zoyo_pk,
+                          y.title,
+                          y.shimei,
+                          y.coin
+                        )
+                      }
+                      component={commentShokaiLink}
+                    >
+                      <Web
+                        className={classNames(
+                          classes.leftIcon,
+                          classes.iconSmall
+                        )}
+                      />
+                      照会
+                    </Button>
+                  </CustomTableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      )
+    }
+    if (this.state.kengenCd == '1') {
+      var targetSelect = (
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="Target_manager" className={classes.InputLabel}>
+            対象（管理者用）
+          </InputLabel>
+          <Select
+            value={this.state.target_manager}
+            onChange={this.handleChange}
+            input={<Input name="target_manager" id="Target_Manager" />}
+            className={classes.select}
+          >
+            <MenuItem value="">
+              <em>指定なし</em>
+            </MenuItem>
+            {this.state.shainList.map(n => {
+              return <MenuItem value={n.shimei}>{n.shimei}</MenuItem>
+            })}
+          </Select>
+        </FormControl>
+      )
+    } else {
+      var targetSelect = (
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="Target_manager" className={classes.InputLabel}>
+            対象（管理者用）
+          </InputLabel>
+          <Select
+            value={this.state.target_manager}
+            onChange={this.handleChange}
+            input={<Input name="target_manager" id="Target_Manager" />}
+            className={classes.select}
+            disabled
+          >
+            <MenuItem value="">
+              <em>指定なし</em>
+            </MenuItem>
+            {this.state.shainList.map(n => {
+              return <MenuItem value={n.shimei}>{n.shimei}</MenuItem>
+            })}
+          </Select>
+        </FormControl>
+      )
+    }
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
@@ -560,48 +881,29 @@ class CoinShokaiForm extends React.Component {
                             <MenuItem value="">
                               <em>指定なし</em>
                             </MenuItem>
-                            <MenuItem value={1}>2018年</MenuItem>
-                            <MenuItem value={2}>2017年</MenuItem>
-                            <MenuItem value={3}>2016年</MenuItem>
+                            {this.state.yearList.map(n => {
+                              return (
+                                <MenuItem value={n.year}>{n.year}</MenuItem>
+                              )
+                            })}
                           </Select>
                         </FormControl>
                       </form>
                     </th>
                     <th>
                       <form className={classes.root} autoComplete="off">
-                        <FormControl className={classes.formControl}>
-                          <InputLabel
-                            htmlFor="Target_manager"
-                            className={classes.InputLabel}
-                          >
-                            対象（管理者用）
-                          </InputLabel>
-                          <Select
-                            value={this.state.target_manager}
-                            onChange={this.handleChange}
-                            input={
-                              <Input
-                                name="target_manager"
-                                id="Target_Manager"
-                              />
-                            }
-                            className={classes.select}
-                          >
-                            <MenuItem value="">
-                              <em>指定なし</em>
-                            </MenuItem>
-                            <MenuItem value={1}>札幌 太郎</MenuItem>
-                            <MenuItem value={2}>中央 花子</MenuItem>
-                            <MenuItem value={3}>網走 順子</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <div>{targetSelect}</div>
                       </form>
                     </th>
                     <th>
                       <Typography style={{ marginTop: 15 }}>
                         <FormControlLabel
                           control={
-                            <Checkbox color="default" value="checkedG" />
+                            <Checkbox
+                              color="default"
+                              value={this.state.checked}
+                              onClick={event => this.selectChange(event)}
+                            />
                           }
                           label="事務局表示"
                         />
@@ -610,7 +912,7 @@ class CoinShokaiForm extends React.Component {
                     <th>
                       <Typography component="p">発表数</Typography>
                       <Typography variant="headline" component="h3">
-                        3
+                        {this.state.happyoSu}
                       </Typography>
                     </th>
                   </TableRow>
@@ -630,159 +932,13 @@ class CoinShokaiForm extends React.Component {
                     <strong>獲得コイン情報</strong>
                   </h2>
                   <Paper className={classes.addToPaper}>
-                    <CustomTableCell>受領コイン計：1,500</CustomTableCell>
-                    <CustomTableCell>
-                      受領コイン計（事務局含む）：2,500
-                    </CustomTableCell>
+                    <CustomTableCell>{this.state.getCoin}</CustomTableCell>
+                    <CustomTableCell>{this.state.allGetCoin}</CustomTableCell>
                   </Paper>
                 </TableRow>
               </Table>
               <Paper className={classes.root}>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <CustomTableCell>日付</CustomTableCell>
-                      <CustomTableCell>投票・コイン贈与</CustomTableCell>
-                      <CustomTableCell>投票（授与）者</CustomTableCell>
-                      <CustomTableCell>受領コイン</CustomTableCell>
-                      <CustomTableCell>コメント</CustomTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <CustomTableCell>2018/10/26</CustomTableCell>
-                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
-                      <CustomTableCell>札幌 花子</CustomTableCell>
-                      <CustomTableCell>500</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2018/10/20</CustomTableCell>
-                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
-                      <CustomTableCell>札幌 三郎</CustomTableCell>
-                      <CustomTableCell>300</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2018/10/16</CustomTableCell>
-                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
-                      <CustomTableCell>苫小牧 次郎</CustomTableCell>
-                      <CustomTableCell>200</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2018/07/21</CustomTableCell>
-                      <CustomTableCell>平成30年度7月部会</CustomTableCell>
-                      <CustomTableCell>札幌 花子</CustomTableCell>
-                      <CustomTableCell>1,500</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2018/03/28</CustomTableCell>
-                      <CustomTableCell>コイン贈与（受領）</CustomTableCell>
-                      <CustomTableCell>札幌 三郎</CustomTableCell>
-                      <CustomTableCell>500</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2018/03/20</CustomTableCell>
-                      <CustomTableCell>コイン贈与（受領）</CustomTableCell>
-                      <CustomTableCell>北海道 四郎</CustomTableCell>
-                      <CustomTableCell>2,000</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                <div>{getData}</div>
               </Paper>
               <br />
               <Table className={classes.table}>
@@ -798,93 +954,13 @@ class CoinShokaiForm extends React.Component {
                     <strong>投票コイン情報</strong>
                   </h2>
                   <Paper className={classes.addToPaper}>
-                    <CustomTableCell>授与コイン計：1,500</CustomTableCell>
-                    <CustomTableCell>
-                      授与コイン計（事務局含む）：2,500
-                    </CustomTableCell>
+                    <CustomTableCell>{this.state.takeCoin}</CustomTableCell>
+                    <CustomTableCell>{this.state.allTakeCoin}</CustomTableCell>
                   </Paper>
                 </TableRow>
               </Table>
               <Paper className={classes.root}>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <CustomTableCell>日付</CustomTableCell>
-                      <CustomTableCell>投票・コイン贈与</CustomTableCell>
-                      <CustomTableCell>投票（受領）相手</CustomTableCell>
-                      <CustomTableCell>授与コイン</CustomTableCell>
-                      <CustomTableCell>コメント</CustomTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <CustomTableCell>2018/10/30</CustomTableCell>
-                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
-                      <CustomTableCell>札幌 花子</CustomTableCell>
-                      <CustomTableCell>500</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2018/10/26</CustomTableCell>
-                      <CustomTableCell>平成30年度10月部会</CustomTableCell>
-                      <CustomTableCell>札幌 三郎</CustomTableCell>
-                      <CustomTableCell>700</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>2018/03/31</CustomTableCell>
-                      <CustomTableCell>コイン贈与（授与）</CustomTableCell>
-                      <CustomTableCell>札幌 四郎</CustomTableCell>
-                      <CustomTableCell>300</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button}
-                        >
-                          <Web
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          照会
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                <div>{takeData}</div>
               </Paper>
             </div>
           </main>
@@ -899,5 +975,14 @@ CoinShokaiForm.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired
 }
+const mapState = state => ({
+  count: state.count
+})
 
-export default withStyles(styles, { withTheme: true })(CoinShokaiForm)
+const mapDispatch = dispatch => ({
+  actions: bindActionCreators(myActions, dispatch)
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState, mapDispatch)(CoinShokaiForm)
+)

@@ -635,9 +635,9 @@ class CommentShokaiForm extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
-        <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kanriListItems}</List>
       </Drawer>
     )
 

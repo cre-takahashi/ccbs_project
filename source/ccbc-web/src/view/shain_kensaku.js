@@ -313,7 +313,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     minWidth: 120
   },
-  button2:{margin: theme.spacing.unit}
+  button2: { margin: theme.spacing.unit }
 })
 
 const testData = [
@@ -432,9 +432,9 @@ class ShainKensakuForm extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
-        <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kanriListItems}</List>
       </Drawer>
     )
 
@@ -598,8 +598,8 @@ class ShainKensakuForm extends React.Component {
                 />
                 新規登録
               </Button>
-              <br/>
-              <br/>
+              <br />
+              <br />
               <h2>
                 <img
                   src="/images/yajirushi.png"
@@ -620,7 +620,7 @@ class ShainKensakuForm extends React.Component {
                   </TableHead>
                   <TableBody>
                     <TableRow hover component={sampleLink}>
-                      <CustomTableCell style={{width: '5%'}}>
+                      <CustomTableCell style={{ width: '5%' }}>
                         <Avatar
                           alt="Adelle Charles"
                           src="/images/yamashita.png"
@@ -628,8 +628,12 @@ class ShainKensakuForm extends React.Component {
                           component={sampleLink}
                         />
                       </CustomTableCell>
-                      <CustomTableCell style={{width: '45%'}}>札幌　花子</CustomTableCell>
-                      <CustomTableCell style={{width: '50%'}}>管理者</CustomTableCell>
+                      <CustomTableCell style={{ width: '45%' }}>
+                        札幌　花子
+                      </CustomTableCell>
+                      <CustomTableCell style={{ width: '50%' }}>
+                        管理者
+                      </CustomTableCell>
                     </TableRow>
                     <TableRow hover component={sampleLink}>
                       <CustomTableCell>

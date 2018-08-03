@@ -436,13 +436,15 @@ class TohyoIchiran extends React.Component {
     var pNendo = this.state.Target_year
 
     actions.setTohyoShokaiKobetsuData(pSenkyoPk, pSenkyoNm, pNendo)
-    this.props.history.push('/tohyo_shokai_kobetsu')
   }
 
   render() {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
+    const tohyoShokaiKobetsuLink = props => (
+      <Link to="/tohyo_shokai_kobetsu" {...props} />
+    )
 
     const drawer = (
       <Drawer
@@ -463,9 +465,9 @@ class TohyoIchiran extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
-        <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kanriListItems}</List>
       </Drawer>
     )
 
@@ -649,6 +651,7 @@ class TohyoIchiran extends React.Component {
                               color="default"
                               size="large"
                               onClick={this.handleClick}
+                              component={tohyoShokaiKobetsuLink}
                               data-num={n.t_senkyo_pk}
                               data-name={n.senkyo_nm}
                               className={classes.button}

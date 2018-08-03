@@ -373,12 +373,42 @@ class TohyoShokaiShosaiForm extends React.Component {
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
     const { tohyo_shokai_shosai } = this.props
-    this.setState({ tPresenterPk: tohyo_shokai_shosai.t_presenter_pk })
-    this.state.tPresenterPk = Number(tohyo_shokai_shosai.t_presenter_pk)
-    this.setState({ tSenkyoPk: tohyo_shokai_shosai.t_senkyo_pk })
-    this.state.tSenkyoPk = Number(tohyo_shokai_shosai.t_senkyo_pk)
-    this.setState({ tRank: tohyo_shokai_shosai.t_rank })
-    this.setState({ tTotalCoin: tohyo_shokai_shosai.t_totalcoin })
+    if (tohyo_shokai_shosai.t_senkyo_pk === 0) {
+      var tohyoShosaiShosaiParamInfo = JSON.parse(
+        sessionStorage.getItem('tohyoShosaiShosaiParamInfo')
+      )[0]
+      this.setState({
+        tPresenterPk: tohyoShosaiShosaiParamInfo['t_presenter_pk']
+      })
+      this.state.tPresenterPk = Number(
+        tohyoShosaiShosaiParamInfo['t_presenter_pk']
+      )
+      this.setState({ tSenkyoPk: tohyoShosaiShosaiParamInfo['t_senkyo_pk'] })
+      this.state.tSenkyoPk = Number(tohyoShosaiShosaiParamInfo['t_senkyo_pk'])
+      this.setState({ tRank: tohyoShosaiShosaiParamInfo['t_rank'] })
+      this.setState({ tTotalCoin: tohyoShosaiShosaiParamInfo['t_totalcoin'] })
+    } else {
+      this.setState({ tPresenterPk: tohyo_shokai_shosai.t_presenter_pk })
+      this.state.tPresenterPk = Number(tohyo_shokai_shosai.t_presenter_pk)
+      this.setState({ tSenkyoPk: tohyo_shokai_shosai.t_senkyo_pk })
+      this.state.tSenkyoPk = Number(tohyo_shokai_shosai.t_senkyo_pk)
+      this.setState({ tRank: tohyo_shokai_shosai.t_rank })
+      this.setState({ tTotalCoin: tohyo_shokai_shosai.t_totalcoin })
+
+      var tohyoShosaiShosaiParamInfo = [
+        {
+          t_presenter_pk: tohyo_shokai_shosai.t_presenter_pk,
+          t_senkyo_pk: tohyo_shokai_shosai.t_senkyo_pk,
+          t_rank: tohyo_shokai_shosai.t_rank,
+          t_totalcoin: tohyo_shokai_shosai.t_totalcoin
+        }
+      ]
+
+      sessionStorage.setItem(
+        'tohyoShosaiShosaiParamInfo',
+        JSON.stringify(tohyoShosaiShosaiParamInfo)
+      )
+    }
 
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
     for (var i in loginInfos) {
@@ -506,9 +536,9 @@ class TohyoShokaiShosaiForm extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
-        <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kanriListItems}</List>
       </Drawer>
     )
 
@@ -718,7 +748,12 @@ class TohyoShokaiShosaiForm extends React.Component {
                                 </Typography>
                               </ExpansionPanelSummary>
                               <ExpansionPanelDetails>
-                                <Typography style={{ fontSize: '18px' }}>
+                                <Typography
+                                  style={{
+                                    fontSize: '18px',
+                                    whiteSpace: 'pre-wrap'
+                                  }}
+                                >
                                   {data.tohyo_comment}
                                 </Typography>
                               </ExpansionPanelDetails>

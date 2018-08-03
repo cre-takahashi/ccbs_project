@@ -195,30 +195,39 @@ const styles = theme => ({
   }
 })
 
-// 管理者のみ表示するメニューのため、コンポーネントのマウント時処理で判定
-var images = []
-
 // 権限による表示制御のないメニューのため、constとして定義
-const images2 = [
+const images1 = [
   {
     url: '/images/senkyo.png',
     title: '投票',
-    width: '33%',
+    width: '50%',
     path: '/tohyo_toroku'
   },
   {
     url: '/images/tohyo_kekka.png',
     title: '投票結果',
-    width: '34%',
+    width: '50%',
     path: '/tohyo_ichiran'
-  },
+  }
+]
+
+const images2 = [
   {
     url: '/images/zoyo.png',
     title: 'コイン贈与',
-    width: '33%',
+    width: '50%',
     path: '/coin_zoyo'
+  },
+  {
+    url: '/images/coin_shokai.png',
+    title: 'コイン照会',
+    width: '50%',
+    path: '/coin_shokai'
   }
 ]
+
+// 管理者のみ表示するメニューのため、コンポーネントのマウント時処理で判定
+var images3 = []
 
 class PersistentDrawer extends React.Component {
   state = {
@@ -242,24 +251,18 @@ class PersistentDrawer extends React.Component {
 
       // 管理者のみ表示
       if (loginInfo.kengenCd === '1') {
-        images = [
+        images3 = [
           {
             url: '/images/shain_kanri.png',
             title: '社員管理',
-            width: '33%',
+            width: '50%',
             path: '/shain_kensaku'
           },
           {
             url: '/images/senkyo_kanri.png',
             title: '選挙管理',
-            width: '34%',
+            width: '50%',
             path: '/senkyo_kanri'
-          },
-          {
-            url: '/images/coin_shokai.png',
-            title: 'コイン照会',
-            width: '33%',
-            path: '/coin_shokai'
           }
         ]
       }
@@ -315,9 +318,9 @@ class PersistentDrawer extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        {kanriListItems}
-        <Divider />
         {ippanListItems}
+        <Divider />
+        {kanriListItems}
       </Drawer>
     )
 
@@ -418,7 +421,7 @@ class PersistentDrawer extends React.Component {
             <div className={classes.drawerHeader} />
             <Typography noWrap>
               <div className={classes.root}>
-                {images.map(image => (
+                {images1.map(image => (
                   <ButtonBase
                     focusRipple
                     key={image.title}
@@ -454,6 +457,41 @@ class PersistentDrawer extends React.Component {
             <Typography noWrap>
               <div className={classes.root}>
                 {images2.map(image => (
+                  <ButtonBase
+                    focusRipple
+                    key={image.title}
+                    className={classes.image}
+                    focusVisibleClassName={classes.focusVisible}
+                    style={{
+                      width: image.width
+                    }}
+                    component={Link}
+                    to={image.path}
+                  >
+                    <span
+                      className={classes.imageSrc}
+                      style={{
+                        backgroundImage: `url(${image.url})`
+                      }}
+                    />
+                    <span className={classes.imageBackdrop} />
+                    <span className={classes.imageButton}>
+                      <Typography
+                        component="span"
+                        variant="subheading"
+                        color="inherit"
+                        className={classes.imageTitle}
+                      >
+                        {image.title}
+                      </Typography>
+                    </span>
+                  </ButtonBase>
+                ))}
+              </div>
+            </Typography>
+            <Typography noWrap>
+              <div className={classes.root}>
+                {images3.map(image => (
                   <ButtonBase
                     focusRipple
                     key={image.title}

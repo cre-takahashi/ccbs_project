@@ -72,10 +72,6 @@ if (loginInfos !== null) {
           <Avatar alt="shain_kanri" src="/images/senkyo_kanri.png" />
           <ListItemText primary="選挙管理" />
         </ListItem>
-        <ListItem button component={Link} to="/coin_shokai">
-          <Avatar alt="shain_kanri" src="/images/coin_shokai.png" />
-          <ListItemText primary="コイン照会" />
-        </ListItem>
       </div>
     )
   }
@@ -96,6 +92,10 @@ export const ippanListItems = (
     <ListItem button component={Link} to="/coin_zoyo">
       <Avatar alt="shain_kanri" src="/images/zoyo.png" />
       <ListItemText primary="コイン贈与" />
+    </ListItem>
+    <ListItem button component={Link} to="/coin_shokai">
+      <Avatar alt="shain_kanri" src="/images/coin_shokai.png" />
+      <ListItemText primary="コイン照会" />
     </ListItem>
   </div>
 )

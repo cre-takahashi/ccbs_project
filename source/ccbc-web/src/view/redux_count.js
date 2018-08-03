@@ -10,6 +10,9 @@ const styles = theme => ({
 })
 
 class ReduxCountForm extends Component {
+  handleClick = event => {
+    this.props.history.push('/redux_display')
+  }
   render() {
     const { count, actions } = this.props
     return (
@@ -22,6 +25,8 @@ class ReduxCountForm extends Component {
         </div>
         <div>
           <Link to="/redux_display">submit</Link>
+          <br />
+          <button onClick={this.handleClick}>遷移</button>
         </div>
       </div>
     )

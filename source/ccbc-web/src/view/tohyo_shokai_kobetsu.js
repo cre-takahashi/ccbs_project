@@ -58,8 +58,7 @@ import moment from 'moment'
 import 'moment/locale/ja'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import * as myActions from '../actions/tohyo_shokai_kobetsu'
-import * as myActions2 from '../actions/tohyo_shokai_shosai'
+import * as myActions from '../actions/tohyo_shokai_shosai'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -505,9 +504,30 @@ class TohyoShokaiKobetsuForm extends React.Component {
 
       // 遷移元画面からの引き渡しパラメータ
       const { tohyoShokaiKobetsu } = this.props
-      this.state.tSenkyoPk = tohyoShokaiKobetsu.pSenkyoPk
-      this.state.pName = tohyoShokaiKobetsu.pName
-      this.state.pNendo = tohyoShokaiKobetsu.pNendo
+      if (tohyoShokaiKobetsu.pSenkyoPk === 0) {
+        var tohyoShosaiKobetsuParamInfo = JSON.parse(
+          sessionStorage.getItem('tohyoShosaiKobetsuParamInfo')
+        )[0]
+        this.state.tSenkyoPk = tohyoShosaiKobetsuParamInfo['tSenkyoPk']
+        this.state.pName = tohyoShosaiKobetsuParamInfo['pName']
+        this.state.pNendo = tohyoShosaiKobetsuParamInfo['pNendo']
+      } else {
+        this.state.tSenkyoPk = tohyoShokaiKobetsu.pSenkyoPk
+        this.state.pName = tohyoShokaiKobetsu.pName
+        this.state.pNendo = tohyoShokaiKobetsu.pNendo
+
+        var tohyoShosaiKobetsuParamInfo = [
+          {
+            tSenkyoPk: tohyoShokaiKobetsu.pSenkyoPk,
+            pName: tohyoShokaiKobetsu.pName,
+            pNendo: tohyoShokaiKobetsu.pNendo
+          }
+        ]
+        sessionStorage.setItem(
+          'tohyoShosaiKobetsuParamInfo',
+          JSON.stringify(tohyoShosaiKobetsuParamInfo)
+        )
+      }
 
       request
         .post('/tohyo_shokai_kobetsu/find')
@@ -553,26 +573,23 @@ class TohyoShokaiKobetsuForm extends React.Component {
   }
 
   handleClick = event => {
-    const { tohyo_shokai_shosai, actions2 } = this.props
+    const { tohyo_shokai_shosai, actions } = this.props
 
     var tSenkyoPk = event.currentTarget.getAttribute('data-tSenkyoPk')
     var tPresenterPk = event.currentTarget.getAttribute('data-tPresenterPk')
     var tRank = Number(event.currentTarget.getAttribute('data-rank')) + 1
     var tTotalCoin = event.currentTarget.getAttribute('data-sumCoin')
 
-    actions2.setTohyoShokaiShosaiData(
-      tSenkyoPk,
-      tPresenterPk,
-      tRank,
-      tTotalCoin
-    )
-    this.props.history.push('/tohyo_shokai_shosai')
+    actions.setTohyoShokaiShosaiData(tPresenterPk, tSenkyoPk, tRank, tTotalCoin)
   }
 
   render() {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
+    const tohyoShokaiShosaiLink = props => (
+      <Link to="/tohyo_shokai_shosai" {...props} />
+    )
 
     const drawer = (
       <Drawer
@@ -593,9 +610,9 @@ class TohyoShokaiKobetsuForm extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
-        <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kanriListItems}</List>
       </Drawer>
     )
 
@@ -786,15 +803,19 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         <CustomTableCell>
                                           <Avatar
                                             alt="Remy Sharp"
-                                            src={n.image_file_nm}
+                                            src={
+                                              restUrl +
+                                              `uploads/${n.image_file_nm}`
+                                            }
                                             className={classes.bigAvatar}
                                           />
                                         </CustomTableCell>
                                         <CustomTableCell>
-                                          <a
+                                          <Typography
                                             href="#"
                                             className={classes.rank1Name}
                                             onClick={this.handleClick}
+                                            component={tohyoShokaiShosaiLink}
                                             data-tSenkyoPk={
                                               this.state.tSenkyoPk
                                             }
@@ -803,7 +824,7 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                             data-sumCoin={n.sumCoin}
                                           >
                                             {n.shimei}
-                                          </a>
+                                          </Typography>
                                         </CustomTableCell>
                                       </TableRow>
                                     )
@@ -813,15 +834,19 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         <CustomTableCell>
                                           <Avatar
                                             alt="Remy Sharp"
-                                            src={n.image_file_nm}
+                                            src={
+                                              restUrl +
+                                              `uploads/${n.image_file_nm}`
+                                            }
                                             className={classes.middleAvatar}
                                           />
                                         </CustomTableCell>
                                         <CustomTableCell>
-                                          <a
+                                          <Typography
                                             href="#"
                                             className={classes.rank1Name}
                                             onClick={this.handleClick}
+                                            component={tohyoShokaiShosaiLink}
                                             data-tSenkyoPk={
                                               this.state.tSenkyoPk
                                             }
@@ -830,7 +855,7 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                             data-sumCoin={n.sumCoin}
                                           >
                                             {n.shimei}
-                                          </a>
+                                          </Typography>
                                         </CustomTableCell>
                                       </TableRow>
                                     )
@@ -840,15 +865,19 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         <CustomTableCell>
                                           <Avatar
                                             alt="Remy Sharp"
-                                            src={n.image_file_nm}
+                                            src={
+                                              restUrl +
+                                              `uploads/${n.image_file_nm}`
+                                            }
                                             className={classes.smallAvatar}
                                           />
                                         </CustomTableCell>
                                         <CustomTableCell>
-                                          <a
+                                          <Typography
                                             href="#"
                                             className={classes.rank1Name}
                                             onClick={this.handleClick}
+                                            component={tohyoShokaiShosaiLink}
                                             data-tSenkyoPk={
                                               this.state.tSenkyoPk
                                             }
@@ -857,7 +886,7 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                             data-sumCoin={n.sumCoin}
                                           >
                                             {n.shimei}
-                                          </a>
+                                          </Typography>
                                         </CustomTableCell>
                                       </TableRow>
                                     )
@@ -867,22 +896,26 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                       <CustomTableCell>
                                         <Avatar
                                           alt="Remy Sharp"
-                                          src={n.image_file_nm}
+                                          src={
+                                            restUrl +
+                                            `uploads/${n.image_file_nm}`
+                                          }
                                           className={classes.avatar}
                                         />
                                       </CustomTableCell>
                                       <CustomTableCell>
-                                        <a
+                                        <Typography
                                           href="#"
                                           className={classes.rank1Name}
                                           onClick={this.handleClick}
+                                          component={tohyoShokaiShosaiLink}
                                           data-tSenkyoPk={this.state.tSenkyoPk}
                                           data-tPresenterPk={n.t_presenter_pk}
                                           data-rank={n.rank}
                                           data-sumCoin={n.sumCoin}
                                         >
                                           {n.shimei}
-                                        </a>
+                                        </Typography>
                                       </CustomTableCell>
                                     </TableRow>
                                   )
@@ -1071,8 +1104,7 @@ const mapState = state => ({
 })
 
 const mapDispatch = dispatch => ({
-  actions: bindActionCreators(myActions, dispatch),
-  actions2: bindActionCreators(myActions2, dispatch)
+  actions: bindActionCreators(myActions, dispatch)
 })
 
 export default withStyles(styles, { withTheme: true })(

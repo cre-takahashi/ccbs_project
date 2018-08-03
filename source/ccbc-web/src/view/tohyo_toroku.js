@@ -407,9 +407,10 @@ class TohyoTorokuForm extends React.Component {
   }
 
   handleChange = (name, cnt) => event => {
-    this.setState({
-      [name[cnt]]: event.target.value
-    })
+    // テキストフィールドのonChangeイベントでsetStateすると劇遅になる
+    // this.setState({
+    //   [name[cnt]]: event.target.value
+    // })
     this.state.comment[cnt] = event.target.value
   }
 
@@ -514,9 +515,9 @@ class TohyoTorokuForm extends React.Component {
           </IconButton>
         </div>
         <Divider />
-        <List>{kanriListItems}</List>
-        <Divider />
         <List>{ippanListItems}</List>
+        <Divider />
+        <List>{kanriListItems}</List>
       </Drawer>
     )
 
