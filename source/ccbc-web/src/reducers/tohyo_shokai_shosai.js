@@ -1,8 +1,8 @@
 const initialState = {
-  t_senkyo_pk: 1,
-  t_presenter_pk: 1,
-  t_rank: 1,
-  t_totalcoin: 500
+  t_senkyo_pk: 0,
+  t_presenter_pk: 0,
+  t_rank: 0,
+  t_totalcoin: 0
 }
 
 // export function tohyo_shokai_shosaiReducer(state = initialState, action) {

@@ -16,11 +16,12 @@ export function coinShokaiReducer(state = initialState, action) {
       coin: action.coin
     }
   } else if (action.type === 'SETZOYODATA') {
+    console.log('SETZOYODATA')
     return {
       tTohyoPk: action.tTohyoPk,
       tZoyoPk: action.tZoyoPk,
       title: action.title,
-      shimei: action.shimei,
+      tohyosha: action.tohyosha,
       coin: action.coin
     }
   }
