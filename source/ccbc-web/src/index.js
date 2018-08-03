@@ -13,6 +13,7 @@ import {
 import { countReducer } from './reducers/count'
 import { coinShokaiReducer } from './reducers/coin_shokai'
 import { tohyo_shokai_shosaiReducer } from './reducers/tohyo_shokai_shosai'
+import { tohyoShokaiKobetsuReducer } from './reducers/tohyo_shokai_kobetsu'
 
 import HeaderForm from './view/header'
 import FooterForm from './view/footer'
@@ -50,6 +51,7 @@ const store = createStore(
     count: countReducer,
     coinShokai: coinShokaiReducer,
     tohyo_shokai_shosai: tohyo_shokai_shosaiReducer,
+    tohyoShokaiKobetsu: tohyoShokaiKobetsuReducer,
     routing: routerReducer
   }),
   applyMiddleware(middleware)

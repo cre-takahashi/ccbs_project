@@ -17,12 +17,27 @@ const query = (sql, params, res) => {
   })
 }
 
-router.get('/find', (req, res) => {
+router.get('/find', async (req, res) => {
   console.log('OK')
-  console.log(req.params)
+  console.log('req.params:' + req.params)
+  console.log('req.body.Target_year:' + req.body.Target_year)
   const params = []
   const sql =
     "select t_senkyo_pk, senkyo_nm, tohyo_kaishi_dt, tohyo_shuryo_dt, haifu_coin from t_senkyo where delete_flg = '0'"
+  query(sql, params, res)
+})
+
+router.post('/find', (req, res) => {
+  console.log('---- POST ----')
+  console.log('OK')
+  console.log('req.body.targetYear:' + req.body.targetYear)
+  const params = []
+  const sql =
+    "select t_senkyo_pk, senkyo_nm, tohyo_kaishi_dt, tohyo_shuryo_dt, haifu_coin from t_senkyo where delete_flg = '0' and tohyo_kaishi_dt between '" +
+    req.body.targetYear +
+    "0101' and '" +
+    req.body.targetYear +
+    "1231'"
   query(sql, params, res)
 })
 

@@ -56,6 +56,10 @@ import Icon from '@material-ui/core/Icon'
 import ListItem from '@material-ui/core/ListItem'
 import moment from 'moment'
 import 'moment/locale/ja'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as myActions from '../actions/tohyo_shokai_kobetsu'
+import * as myActions2 from '../actions/tohyo_shokai_shosai'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -476,7 +480,10 @@ class TohyoShokaiKobetsuForm extends React.Component {
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    tSenkyoPk: 0,
+    pName: '',
+    pNendo: ''
   }
 
   constructor(props) {
@@ -495,6 +502,12 @@ class TohyoShokaiKobetsuForm extends React.Component {
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
+
+      // 遷移元画面からの引き渡しパラメータ
+      const { tohyoShokaiKobetsu } = this.props
+      this.state.tSenkyoPk = tohyoShokaiKobetsu.pSenkyoPk
+      this.state.pName = tohyoShokaiKobetsu.pName
+      this.state.pNendo = tohyoShokaiKobetsu.pNendo
 
       request
         .post('/tohyo_shokai_kobetsu/find')
@@ -537,6 +550,23 @@ class TohyoShokaiKobetsuForm extends React.Component {
     }
 
     this.setState({ open2: false })
+  }
+
+  handleClick = event => {
+    const { tohyo_shokai_shosai, actions2 } = this.props
+
+    var tSenkyoPk = event.currentTarget.getAttribute('data-tSenkyoPk')
+    var tPresenterPk = event.currentTarget.getAttribute('data-tPresenterPk')
+    var tRank = Number(event.currentTarget.getAttribute('data-rank')) + 1
+    var tTotalCoin = event.currentTarget.getAttribute('data-sumCoin')
+
+    actions2.setTohyoShokaiShosaiData(
+      tSenkyoPk,
+      tPresenterPk,
+      tRank,
+      tTotalCoin
+    )
+    this.props.history.push('/tohyo_shokai_shosai')
   }
 
   render() {
@@ -674,13 +704,13 @@ class TohyoShokaiKobetsuForm extends React.Component {
                     <th>
                       <Typography component="p">年度</Typography>
                       <Typography variant="headline" component="h3">
-                        2018年
+                        {this.state.pNendo}年
                       </Typography>
                     </th>
                     <th>
                       <Typography component="p">選挙名</Typography>
                       <Typography variant="headline" component="h3">
-                        平成30年度9月部会
+                        {this.state.pName}
                       </Typography>
                     </th>
                   </TableRow>
@@ -762,8 +792,15 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         </CustomTableCell>
                                         <CustomTableCell>
                                           <a
-                                            href=""
+                                            href="#"
                                             className={classes.rank1Name}
+                                            onClick={this.handleClick}
+                                            data-tSenkyoPk={
+                                              this.state.tSenkyoPk
+                                            }
+                                            data-tPresenterPk={n.t_presenter_pk}
+                                            data-rank={n.rank}
+                                            data-sumCoin={n.sumCoin}
                                           >
                                             {n.shimei}
                                           </a>
@@ -781,7 +818,17 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                           />
                                         </CustomTableCell>
                                         <CustomTableCell>
-                                          <a href="" className={classes.rank2}>
+                                          <a
+                                            href="#"
+                                            className={classes.rank1Name}
+                                            onClick={this.handleClick}
+                                            data-tSenkyoPk={
+                                              this.state.tSenkyoPk
+                                            }
+                                            data-tPresenterPk={n.t_presenter_pk}
+                                            data-rank={n.rank}
+                                            data-sumCoin={n.sumCoin}
+                                          >
                                             {n.shimei}
                                           </a>
                                         </CustomTableCell>
@@ -799,8 +846,15 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         </CustomTableCell>
                                         <CustomTableCell>
                                           <a
-                                            href=""
-                                            className={classes.head_name}
+                                            href="#"
+                                            className={classes.rank1Name}
+                                            onClick={this.handleClick}
+                                            data-tSenkyoPk={
+                                              this.state.tSenkyoPk
+                                            }
+                                            data-tPresenterPk={n.t_presenter_pk}
+                                            data-rank={n.rank}
+                                            data-sumCoin={n.sumCoin}
                                           >
                                             {n.shimei}
                                           </a>
@@ -819,8 +873,13 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                       </CustomTableCell>
                                       <CustomTableCell>
                                         <a
-                                          href=""
-                                          className={classes.body_name}
+                                          href="#"
+                                          className={classes.rank1Name}
+                                          onClick={this.handleClick}
+                                          data-tSenkyoPk={this.state.tSenkyoPk}
+                                          data-tPresenterPk={n.t_presenter_pk}
+                                          data-rank={n.rank}
+                                          data-sumCoin={n.sumCoin}
                                         >
                                           {n.shimei}
                                         </a>
@@ -1006,4 +1065,16 @@ TohyoShokaiKobetsuForm.propTypes = {
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(TohyoShokaiKobetsuForm)
+const mapState = state => ({
+  tohyoShokaiKobetsu: state.tohyoShokaiKobetsu,
+  tohyo_shokai_shosai: state.tohyoShokaiShosai
+})
+
+const mapDispatch = dispatch => ({
+  actions: bindActionCreators(myActions, dispatch),
+  actions2: bindActionCreators(myActions2, dispatch)
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState, mapDispatch)(TohyoShokaiKobetsuForm)
+)

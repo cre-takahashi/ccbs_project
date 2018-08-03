@@ -43,7 +43,7 @@ async function findData(req, res) {
   var miTohyosha = []
 
   // 発表者情報を取得
-  tPresenter = await tPresenterGet(req)
+  tPresenter = await tPresenterGet(req, 1)
   for (var i in tPresenter) {
     // 発表者に紐づく投票情報から、獲得コイン数を取得
     if (tPresenter[i].t_presenter_pk == 'undifined') {
@@ -71,6 +71,9 @@ async function findData(req, res) {
   miTohyosha = await miTohohyoshaGet(req)
   console.log(miTohyosha)
   res.json({ status: true, data: tPresenter, data2: miTohyosha })
+  
+  console.log('★★★★★★★★★★★★★★★★')
+  console.log(req.params)
 
   // if (result == true) {
   //   console.log('----------')
@@ -96,10 +99,11 @@ async function tPresenterGet(req) {
     console.log('★★★tPresenterGet★★★')
     // 選挙PKはパラメータで前画面より取得する
     var sql =
-      "select t1.t_senkyo_pk, t2.t_presenter_pk, t2.title, t3.shimei, t3.image_file_nm from t_senkyo t1 inner join t_presenter t2 on  t1.t_senkyo_pk = t2.t_senkyo_pk inner join t_shain t3 on  t2.t_shain_pk = t3.t_shain_pk where t1.t_senkyo_pk = '1' and t1.delete_flg = '0' and t2.delete_flg = '0' and t3.delete_flg = '0' order by t_presenter_pk"
+      "select t1.t_senkyo_pk, t2.t_presenter_pk, t2.title, t3.shimei, t3.image_file_nm from t_senkyo t1 inner join t_presenter t2 on  t1.t_senkyo_pk = t2.t_senkyo_pk inner join t_shain t3 on  t2.t_shain_pk = t3.t_shain_pk where t1.t_senkyo_pk = :tSenkyoPk and t1.delete_flg = '0' and t2.delete_flg = '0' and t3.delete_flg = '0' order by t_presenter_pk"
 
     db
       .query(sql, {
+        replacements: { tSenkyoPk: req.body.tSenkyoPk },
         type: db.QueryTypes.RAW
       })
       .spread(async (datas, metadata) => {
@@ -129,7 +133,7 @@ async function tTohyoJohoGet(req, paramTPresenterPk) {
         // DBからの取得結果分loopしてBCサーバから情報を取得。コイン数をサマる
         for (var i in datas) {
           var result = await bcrequest(req, datas[i])
-          console.log(result)
+          // console.log(result)
           sumCoin += result.body.coin
         }
 
@@ -184,15 +188,15 @@ function bcrequest(req, data) {
       .post(bcdomain + '/bc-api/get_rank')
       .send(param)
       .end((err, res) => {
-        console.log('◆３')
-        console.log('★★★')
+        // console.log('◆３')
+        // console.log('★★★')
 
         if (err) {
-          console.log('★' + err)
+          // console.log('★' + err)
           return
         }
         // 検索結果表示
-        console.log('★★★res:' + res.body.coin)
+        // console.log('★★★res:' + res.body.coin)
         return resolve(res)
       })
   })
