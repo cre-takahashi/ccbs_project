@@ -71,7 +71,7 @@ async function findData(req, res) {
   miTohyosha = await miTohohyoshaGet(req)
   console.log(miTohyosha)
   res.json({ status: true, data: tPresenter, data2: miTohyosha })
-  
+
   console.log('★★★★★★★★★★★★★★★★')
   console.log(req.params)
 
@@ -158,11 +158,12 @@ async function miTohohyoshaGet(req) {
     var sql =
       'select shimei from t_shain where t_shain_pk in( select t1.t_shain_pk from ' +
       '( select t1.t_senkyo_pk, t2.t_shussekisha_pk, t2.t_shain_pk, t3.t_shussekisha_pk from t_senkyo t1 inner join t_shussekisha t2 on  t1.t_senkyo_pk = t2.t_senkyo_pk left join ' +
-      "( select t_shussekisha_pk from t_tohyo where delete_flg = '0' ) t3 on  t2.t_shussekisha_pk = t3.t_shussekisha_pk where t1.t_senkyo_pk = '1'" +
+      "( select t_shussekisha_pk from t_tohyo where delete_flg = '0' ) t3 on  t2.t_shussekisha_pk = t3.t_shussekisha_pk where t1.t_senkyo_pk = :tSenkyoPk " +
       "and t3.t_shussekisha_pk is null and t1.delete_flg = '0' and t2.delete_flg = '0' ) t1 )"
 
     db
       .query(sql, {
+        replacements: { tSenkyoPk: req.body.tSenkyoPk },
         type: db.QueryTypes.RAW
       })
       .spread(async (datas, metadata) => {

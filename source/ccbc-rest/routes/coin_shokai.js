@@ -5,29 +5,33 @@ const async = require('async')
 const db = require('./common/sequelize_helper.js').sequelize
 const bcdomain = require('./common/constans.js').bcdomain
 const findGetCoinAllSql =
-  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_saki_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
+  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha2.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_saki_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
   ' from t_shain tsha inner join t_zoyo tzo on tsha.t_shain_pk = tzo.zoyo_saki_shain_pk' +
+  ' inner join t_shain tsha2 on tzo.zoyo_moto_shain_pk = tsha2.t_shain_pk' +
   " left join t_tohyo tto on tzo.transaction_id = tto.transaction_id and tto.delete_flg = '0'" +
   " left join t_presenter tpr on tto.t_presenter_pk = tpr.t_presenter_pk and tpr.delete_flg = '0'" +
   " where tsha.delete_flg = '0' and tzo.delete_flg = '0' "
 const findGetCoinSql =
-  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_saki_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
-  ' from t_shain tsha inner join t_zoyo tzo on tsha.t_shain_pk = tzo.zoyo_saki_shain_pk' +
+  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha2.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_saki_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
+  " from t_shain tsha inner join (select a.* from t_zoyo a inner join t_shain b on a.zoyo_moto_shain_pk = b.t_shain_pk  where kengen_cd <> '0') tzo on tsha.t_shain_pk = tzo.zoyo_saki_shain_pk" +
+  ' inner join t_shain tsha2 on tzo.zoyo_moto_shain_pk = tsha2.t_shain_pk' +
   " left join t_tohyo tto on tzo.transaction_id = tto.transaction_id and tto.delete_flg = '0'" +
   " left join t_presenter tpr on tto.t_presenter_pk = tpr.t_presenter_pk and tpr.delete_flg = '0'" +
-  " where tsha.delete_flg = '0' and tzo.delete_flg = '0' and tsha.kengen_cd <> '1' "
+  " where tsha.delete_flg = '0' and tzo.delete_flg = '0' and tsha.kengen_cd <> '0' "
 const findTakeCoinAllSql =
-  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_moto_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
+  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha2.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_moto_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
   ' from t_shain tsha inner join t_zoyo tzo on tsha.t_shain_pk = tzo.zoyo_moto_shain_pk ' +
+  ' inner join t_shain tsha2 on tzo.zoyo_saki_shain_pk = tsha2.t_shain_pk' +
   " left join t_tohyo tto on tzo.transaction_id = tto.transaction_id and tto.delete_flg = '0'" +
   " left join t_presenter tpr on tto.t_presenter_pk = tpr.t_presenter_pk and tpr.delete_flg = '0'" +
   " where tsha.delete_flg = '0' and tzo.delete_flg = '0' "
 const findTakeCoinSql =
-  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_moto_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
-  ' from t_shain tsha inner join t_zoyo tzo on tsha.t_shain_pk = tzo.zoyo_moto_shain_pk ' +
+  "select row_number() over () as id, tsha.t_shain_pk as t_shain_pk, tsha2.shimei as shimei, tsha.bc_account as bc_account, tzo.zoyo_moto_shain_pk as zoyo_saki_shain_pk, to_char(tzo.insert_tm,'yyyy/mm/dd') as insert_tm, tzo.transaction_id as transaction_id, tzo.t_zoyo_pk as t_zoyo_pk, tto.t_tohyo_pk as t_tohyo_pk, (case when tto.t_tohyo_pk is null then '贈与' else tpr.title end) as title" +
+  " from t_shain tsha inner join (select a.* from t_zoyo a inner join t_shain b on a.zoyo_saki_shain_pk = b.t_shain_pk  where kengen_cd <> '0') tzo on tsha.t_shain_pk = tzo.zoyo_moto_shain_pk " +
+  ' inner join t_shain tsha2 on tzo.zoyo_saki_shain_pk = tsha2.t_shain_pk' +
   " left join t_tohyo tto on tzo.transaction_id = tto.transaction_id and tto.delete_flg = '0'" +
   " left join t_presenter tpr on tto.t_presenter_pk = tpr.t_presenter_pk and tpr.delete_flg = '0'" +
-  " where tsha.delete_flg = '0' and tzo.delete_flg = '0' and tsha.kengen_cd <> '1'"
+  " where tsha.delete_flg = '0' and tzo.delete_flg = '0' and tsha.kengen_cd <> '0'"
 const countHappyoSuSql =
   'select count(*) as happyoSu' +
   ' from t_presenter tpre' +

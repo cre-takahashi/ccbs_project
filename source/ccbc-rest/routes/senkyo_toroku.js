@@ -36,7 +36,7 @@ function tShainGet(req) {
     var sql =
       'select row_number() over () as id, *, tsha.t_shain_pk as t_shain_pk, tsha.shimei as shimei, tsha.image_file_nm as image_file_nm, tsha.bc_account as bc_account, null as title, tsha.kengen_cd as kengen_cd, tsha2.bc_account as from_bc_account' +
       ' from t_shain tsha, t_shain tsha2 ' +
-      " where tsha.delete_flg = '0' and tsha2.delete_flg = '0' and tsha2.t_shain_pk = :mypk"
+      " where tsha.delete_flg = '0' and tsha2.delete_flg = '0' and tsha2.t_shain_pk = :mypk and tsha.kengen_cd <> '0' "
     db
       .query(sql, {
         replacements: { mypk: req.body.tShainPk },
@@ -97,7 +97,7 @@ router.post('/create', (req, res) => {
               t_senkyo_pk,
               resultdata
             )
-            if (resultdata.kengen_cd != '03') {
+            if (resultdata.kengen_cd != '3') {
               await tZoyoInsert(tx, resdatas, req, resultdata)
               var transaction_id = await bcrequest(req, resultdata, i)
               await dbupdate(tx, transaction_id)

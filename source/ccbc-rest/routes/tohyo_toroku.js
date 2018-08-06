@@ -238,9 +238,9 @@ function insertZoyo(
 
 function selectKanrisha(tx) {
   return new Promise((resolve, reject) => {
-    // 管理者権限コードは1の前提
+    // 管理者権限コードは0の前提
     var sql =
-      "select t_shain_pk, bc_account from t_shain where delete_flg = '0' and kengen_cd = '1'"
+      "select t_shain_pk, bc_account from t_shain where delete_flg = '0' and kengen_cd = '0'"
     db
       .query(sql, {
         transaction: tx
