@@ -250,7 +250,7 @@ class PersistentDrawer extends React.Component {
       this.setState({ kengenCd: loginInfo['kengenCd'] })
 
       // 管理者のみ表示
-      if (loginInfo.kengenCd === '1') {
+      if (loginInfo.kengenCd === '0' || loginInfo.kengenCd === '1') {
         images3 = [
           {
             url: '/images/shain_kanri.png',

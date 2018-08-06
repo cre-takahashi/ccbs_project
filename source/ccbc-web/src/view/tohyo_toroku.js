@@ -565,7 +565,9 @@ class TohyoTorokuForm extends React.Component {
                 発表者に対して評価とコメントをつけて下さい。（配布しきれなかったコインは自動で回収されます）
               </Typography>
               <Typography component="p" style={{ fontSize: '120%' }}>
-                配布コイン数：{this.state.resultList[0].haifu_coin}
+                配布コイン数：{this.state.resultList[0].config_coin *
+                  50 *
+                  this.state.resultList.length}
               </Typography>
               <Typography component="p" style={{ fontSize: '120%' }}>
                 1点辺りのコイン数：{this.state.resultList[0].config_coin}

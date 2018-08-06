@@ -62,6 +62,7 @@ import {
   RadarChart,
   PolarGrid,
   PolarAngleAxis,
+  PolarRadiusAxis,
   Radar,
   Tooltip as Tooltip2
 } from 'recharts'
@@ -703,6 +704,10 @@ class TohyoShokaiShosaiForm extends React.Component {
                         <PolarGrid /> // レーダーのグリッド線を表示
                         <PolarAngleAxis
                           dataKey="rank" // Array型のデータの、数値を表示したい値のキーを指定
+                        />
+                        <PolarRadiusAxis
+                          angle={90}
+                          domain={[0, this.state.resultList.length * 10]}
                         />
                         <Radar // レーダーの色や各パラメーターのタイトルを指定
                           name="点数" // hoverした時に表示される名前を指定

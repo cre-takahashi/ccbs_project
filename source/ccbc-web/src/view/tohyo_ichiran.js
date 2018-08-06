@@ -353,13 +353,13 @@ class TohyoIchiran extends React.Component {
     this.setState({ Target_year: yyyy })
 
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
-    this.setState({ userid: loginInfos.userid })
-    this.setState({ password: loginInfos.password })
-    this.setState({ tShainPk: loginInfos.tShainPk })
-    this.state.tShainPk = Number(loginInfos.tShainPk)
-    this.setState({ imageFileName: loginInfos.imageFileName })
-    this.setState({ shimei: loginInfos.shimei })
-    this.setState({ kengenCd: loginInfos.kengenCd })
+    this.setState({ userid: loginInfos[0].userid })
+    this.setState({ password: loginInfos[0].password })
+    this.setState({ tShainPk: loginInfos[0].tShainPk })
+    this.state.tShainPk = Number(loginInfos[0].tShainPk)
+    this.setState({ imageFileName: loginInfos[0].imageFileName })
+    this.setState({ shimei: loginInfos[0].shimei })
+    this.setState({ kengenCd: loginInfos[0].kengenCd })
 
     this.state.targetYear = yyyy
     request

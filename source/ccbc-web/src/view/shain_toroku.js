@@ -628,6 +628,22 @@ class ShainTorokuForm extends React.Component {
                   </CustomTableCell>
                 </TableRow>
                 <TableRow>
+                  <CustomTableCell>パスワード</CustomTableCell>
+                  <CustomTableCell>
+                    <form className={classes.root} autoComplete="off">
+                      <TextField
+                        id="password"
+                        label="パスワード"
+                        placeholder="パスワードを入力"
+                        className={classes.textField}
+                        value={this.state.election}
+                        onChange={this.handleChange('election')}
+                        margin="normal"
+                      />
+                    </form>
+                  </CustomTableCell>
+                </TableRow>
+                <TableRow>
                   <CustomTableCell>権限</CustomTableCell>
                   <CustomTableCell>
                     <FormControl className={classes.formControl}>

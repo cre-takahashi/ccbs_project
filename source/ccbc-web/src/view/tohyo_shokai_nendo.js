@@ -399,6 +399,10 @@ class TohyoShokaiNendoForm extends React.Component {
     this.setState({ open2: false })
   }
 
+  handleClick = event => {
+    alert(event.activePayload)
+  }
+
   render() {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
@@ -548,6 +552,15 @@ class TohyoShokaiNendoForm extends React.Component {
                 height={500}
                 data={data}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                // onClick={data => {
+                //   if (
+                //     data &&
+                //     data.activePayload &&
+                //     data.activePayload.length > 0
+                //   ) {
+                //     alert(data.activePayload[0].name)
+                //   }
+                // }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />

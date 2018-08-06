@@ -61,7 +61,7 @@ var setKanriListItems = null
 var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
 if (loginInfos !== null) {
   var loginInfo = loginInfos[0]
-  if (loginInfo.kengenCd === '1') {
+  if (loginInfo.kengenCd === '0' || loginInfo.kengenCd === '1') {
     setKanriListItems = (
       <div>
         <ListItem button component={Link} to="/shain_kensaku">
