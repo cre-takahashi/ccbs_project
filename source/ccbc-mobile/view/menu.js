@@ -1,0 +1,161 @@
+import React, { Component } from 'react'
+import { StyleSheet, View, Image, AsyncStorage } from 'react-native'
+import { Header, Button, Icon } from 'react-native-elements'
+
+export default class Menu extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+  /** コンポーネントのマウント時処理 */
+  componentWillMount() {
+    var loginInfo = this.getLoginInfo()
+
+    this.setState({ userid: loginInfo['userid'] })
+    this.setState({ password: loginInfo['password'] })
+    this.setState({ tShainPk: loginInfo['tShainPk'] })
+    this.setState({ imageFileName: loginInfo['imageFileName'] })
+    this.setState({ shimei: loginInfo['shimei'] })
+    this.setState({ kengenCd: loginInfo['kengenCd'] })
+  }
+
+  getLoginInfo = async () => {
+    try {
+      return JSON.parse(await AsyncStorage.getItem('loginInfo'))
+    } catch (error) {
+      return
+    }
+  }
+
+  onPressLogoutButton = () => {
+    this.props.navigation.navigate('Login')
+  }
+  onPressMenuButton = () => {
+    this.props.navigation.navigate('Menu')
+  }
+  onPressTohyoButton = () => {
+    this.props.navigation.navigate('TohyoToroku')
+  }
+  onPressTohyoKekkaButton = () => {
+    this.props.navigation.navigate('TohyoIchiran')
+  }
+  onPressCoinShokaiButton = () => {
+    this.props.navigation.navigate('CoinShokai')
+  }
+  onPressCoinZoyoButton = () => {
+    this.props.navigation.navigate('CoinZoyo')
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Header
+          leftComponent={
+            <Icon
+              name={'home'}
+              type={'font-awesome'}
+              color="#fff"
+              onPress={this.onPressMenuButton}
+            />
+          }
+          centerComponent={{
+            text: 'MVP Vote System',
+            style: { color: '#fff' }
+          }}
+          rightComponent={
+            <Icon
+              name={'sign-out'}
+              type={'font-awesome'}
+              color="#fff"
+              onPress={this.onPressLogoutButton}
+            />
+          }
+          style={styles.header}
+        />
+        <View style={styles.menu_item}>
+          <View style={styles.menu_icon_view}>
+            <Image
+              source={require('./../images/senkyo.png')}
+              style={styles.menu_icon}
+            />
+          </View>
+          <View style={styles.menu_button_view}>
+            <Button
+              title="投票"
+              style={styles.menu_button}
+              onPress={this.onPressTohyoButton}
+            />
+          </View>
+        </View>
+        <View style={styles.menu_item}>
+          <View style={styles.menu_icon_view}>
+            <Image
+              source={require('./../images/tohyo_kekka.png')}
+              style={styles.menu_icon}
+            />
+          </View>
+          <View style={styles.menu_button_view}>
+            <Button
+              title="投票結果"
+              style={styles.menu_button}
+              onPress={this.onPressTohyoKekkaButton}
+            />
+          </View>
+        </View>
+        <View style={styles.menu_item}>
+          <View style={styles.menu_icon_view}>
+            <Image
+              source={require('./../images/coin_shokai.png')}
+              style={styles.menu_icon}
+            />
+          </View>
+          <View style={styles.menu_button_view}>
+            <Button
+              title="コイン照会"
+              style={styles.menu_button}
+              onPress={this.onPressCoinShokaiButton}
+            />
+          </View>
+        </View>
+        <View style={styles.menu_item}>
+          <View style={styles.menu_icon_view}>
+            <Image
+              source={require('./../images/zoyo.png')}
+              style={styles.menu_icon}
+            />
+          </View>
+          <View style={styles.menu_button_view}>
+            <Button
+              title="コイン贈与"
+              style={styles.menu_button}
+              onPress={this.onPressCoinZoyoButton}
+            />
+          </View>
+        </View>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#F5FCFF'
+  },
+  header: {},
+  menu_item: {
+    flexDirection: 'row',
+    marginTop: 30,
+    marginLeft: 30,
+    marginRight: 30
+  },
+  menu_icon: {
+    width: 50,
+    height: 50
+  },
+  menu_button: {},
+  menu_icon_view: {},
+  menu_button_view: {
+    flex: 1,
+    flexDirection: 'column',
+    marginLeft: 10
+  }
+})
