@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  Image,
+  AsyncStorage
+} from 'react-native'
 import {
   Header,
   Button,
@@ -10,15 +17,42 @@ import {
   Card
 } from 'react-native-elements'
 
+const restdomain = require('./common/constans.js').restdomain
+
 export default class TohyoToroku extends Component {
+  state = {
+    open: false,
+    open2: false,
+    anchor: 'left',
+    activeStep1: {},
+    activeStep2: {},
+    activeStep3: {},
+    activeStep4: {},
+    activeStep5: {},
+    completed: {},
+    comment: {},
+    coin: 0,
+    tohyoCoin: 0,
+    headList: [],
+    resultList: [],
+    userid: null,
+    password: null,
+    tShainPk: 0,
+    imageFileName: null,
+    shimei: null,
+    kengenCd: null,
+    configCoin: 0
+  }
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      resultList: []
+    }
   }
 
   /** コンポーネントのマウント時処理 */
-  componentWillMount() {
-    var loginInfo = this.getLoginInfo()
+  async componentWillMount() {
+    var loginInfo = await this.getLoginInfo()
 
     this.setState({ userid: loginInfo['userid'] })
     this.setState({ password: loginInfo['password'] })
@@ -26,6 +60,29 @@ export default class TohyoToroku extends Component {
     this.setState({ imageFileName: loginInfo['imageFileName'] })
     this.setState({ shimei: loginInfo['shimei'] })
     this.setState({ kengenCd: loginInfo['kengenCd'] })
+
+    // 初期表示情報取得
+    var resList = this.findTohyoToroku()
+    this.setState({ resultList: resList })
+  }
+
+  findTohyoToroku = async () => {
+    await fetch(restdomain + '/tohyo_toroku/find', {
+      method: 'POST',
+      body: JSON.stringify(this.state),
+      headers: new Headers({ 'Content-type': 'application/json' })
+    })
+      .then(function(response) {
+        return response.json()
+      })
+      .then(function(json) {
+        // 結果が取得できない場合は終了
+        if (typeof json.data === 'undefined') {
+          return
+        }
+        return json
+      })
+      .catch(error => console.error(error))
   }
 
   getLoginInfo = async () => {
@@ -35,6 +92,7 @@ export default class TohyoToroku extends Component {
       return
     }
   }
+
   onPressLogoutButton = () => {
     this.props.navigation.navigate('Login')
   }
@@ -44,7 +102,7 @@ export default class TohyoToroku extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Header
           leftComponent={
             <Icon
@@ -193,7 +251,7 @@ export default class TohyoToroku extends Component {
           </Text>
         </View>
         <Button title="save" icon={{ name: 'sign-in', type: 'font-awesome' }} />
-      </View>
+      </ScrollView>
     )
   }
 }

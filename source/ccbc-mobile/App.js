@@ -33,7 +33,10 @@ const HomeNavigator = createStackNavigator(
     CommentShokai: { screen: CommentShokaiForm }
   },
   {
-    initialRouteName: 'Login'
+    initialRouteName: 'Login',
+    navigationOptions: () => ({
+      header: null
+    })
   }
 )
 

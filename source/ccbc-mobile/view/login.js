@@ -39,7 +39,7 @@ export default class Login extends Component {
 
   setLoginInfo = async loginInfo => {
     try {
-      await AsyncStorage.setItem('loginInfo', JSON.stringify(loginInfo))
+      await AsyncStorage.setItem('loginInfo', loginInfo)
     } catch (error) {
       alert(error)
       return
@@ -71,7 +71,7 @@ export default class Login extends Component {
               shimei: resList.shimei,
               kengenCd: resList.kengen_cd
             }
-            this.setLoginInfo(loginInfo)
+            this.setLoginInfo(JSON.stringify(loginInfo))
 
             this.props.navigation.navigate('Menu')
           } else {
