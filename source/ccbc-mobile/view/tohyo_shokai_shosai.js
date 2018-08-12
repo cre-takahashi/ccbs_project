@@ -7,7 +7,8 @@ import {
   Text,
   Image,
   Picker,
-  FlatList
+  FlatList,
+  AsyncStorage
 } from 'react-native'
 import {
   Header,
@@ -62,8 +63,8 @@ const html = `<html>
 
 export default class TohyoShokaiShosai extends Component {
   /** コンポーネントのマウント時処理 */
-  componentWillMount() {
-    var loginInfo = this.getLoginInfo()
+  async componentWillMount() {
+    var loginInfo = await this.getLoginInfo()
 
     this.setState({ userid: loginInfo['userid'] })
     this.setState({ password: loginInfo['password'] })

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { StyleSheet, View, Text, Image, AsyncStorage } from 'react-native'
 import {
   Header,
   Button,
@@ -17,8 +17,8 @@ export default class TohyoIchiran extends Component {
   }
 
   /** コンポーネントのマウント時処理 */
-  componentWillMount() {
-    var loginInfo = this.getLoginInfo()
+  async componentWillMount() {
+    var loginInfo = await this.getLoginInfo()
 
     this.setState({ userid: loginInfo['userid'] })
     this.setState({ password: loginInfo['password'] })

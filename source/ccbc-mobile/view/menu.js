@@ -3,13 +3,36 @@ import { StyleSheet, View, Image, AsyncStorage } from 'react-native'
 import { Header, Button, Icon } from 'react-native-elements'
 
 export default class Menu extends Component {
+  state = {
+    open: false,
+    open2: false,
+    anchor: 'left',
+    activeStep1: {},
+    activeStep2: {},
+    activeStep3: {},
+    activeStep4: {},
+    activeStep5: {},
+    completed: {},
+    comment: {},
+    coin: 0,
+    tohyoCoin: 0,
+    headList: [],
+    resultList: [],
+    userid: null,
+    password: null,
+    tShainPk: 0,
+    imageFileName: null,
+    shimei: null,
+    kengenCd: null,
+    configCoin: 0
+  }
   constructor(props) {
     super(props)
     this.state = {}
   }
   /** コンポーネントのマウント時処理 */
-  componentWillMount() {
-    var loginInfo = this.getLoginInfo()
+  async componentWillMount() {
+    var loginInfo = await this.getLoginInfo()
 
     this.setState({ userid: loginInfo['userid'] })
     this.setState({ password: loginInfo['password'] })
