@@ -6,6 +6,7 @@ import { createStackNavigator } from 'react-navigation' // 1.0.0-beta.21
 import { sampleReducer } from './reducers/sampleReducer'
 import HomeForm from './view/Home'
 import NextForm from './view/Next'
+import CarouselForm from './view/carousel'
 import LoginForm from './view/login'
 import MenuForm from './view/menu'
 import TohyoTorokuForm from './view/tohyo_toroku'
@@ -22,6 +23,7 @@ const HomeNavigator = createStackNavigator(
   {
     Home: { screen: HomeForm },
     NextScreen: { screen: NextForm },
+    CarouselScreen: { screen: CarouselForm },
     Login: { screen: LoginForm },
     Menu: { screen: MenuForm },
     TohyoToroku: { screen: TohyoTorokuForm },
