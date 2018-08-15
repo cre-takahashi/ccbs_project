@@ -7,6 +7,7 @@ import { sampleReducer } from './reducers/sampleReducer'
 import HomeForm from './view/Home'
 import NextForm from './view/Next'
 import CarouselForm from './view/carousel'
+import KeyboardForm from './view/Keyboard'
 import LoginForm from './view/login'
 import MenuForm from './view/menu'
 import TohyoTorokuForm from './view/tohyo_toroku'
@@ -24,6 +25,7 @@ const HomeNavigator = createStackNavigator(
     Home: { screen: HomeForm },
     NextScreen: { screen: NextForm },
     CarouselScreen: { screen: CarouselForm },
+    KeyboardScreen: { screen: KeyboardForm },
     Login: { screen: LoginForm },
     Menu: { screen: MenuForm },
     TohyoToroku: { screen: TohyoTorokuForm },
