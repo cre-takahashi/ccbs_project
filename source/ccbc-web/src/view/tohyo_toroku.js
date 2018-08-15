@@ -602,7 +602,7 @@ class TohyoTorokuForm extends React.Component {
                           />
                         </td>
 
-                        <td width="5%" className={classes.tdSize}>
+                        <td width="7%" className={classes.tdSize}>
                           <Tooltip
                             id="tooltip-right"
                             title={documentHelp}
