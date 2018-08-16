@@ -585,7 +585,7 @@ class ShainKensakuForm extends React.Component {
                 <Search
                   className={classNames(classes.leftIcon, classes.iconSmall)}
                 />
-                検索
+                SEARCH
               </Button>
               <Button
                 variant="raised"
@@ -596,7 +596,7 @@ class ShainKensakuForm extends React.Component {
                 <Edit
                   className={classNames(classes.leftIcon, classes.iconSmall)}
                 />
-                新規登録
+                NEW REGIST
               </Button>
               <br />
               <br />
@@ -616,26 +616,43 @@ class ShainKensakuForm extends React.Component {
                     <TableRow>
                       <CustomTableCell colSpan={2}>氏名</CustomTableCell>
                       <CustomTableCell>権限</CustomTableCell>
+                      <CustomTableCell>編集</CustomTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow hover component={sampleLink}>
+                    <TableRow>
                       <CustomTableCell style={{ width: '5%' }}>
                         <Avatar
                           alt="Adelle Charles"
                           src="/images/yamashita.png"
                           className={classNames(classes.PnlAvatar)}
-                          component={sampleLink}
                         />
                       </CustomTableCell>
                       <CustomTableCell style={{ width: '45%' }}>
                         札幌　花子
                       </CustomTableCell>
-                      <CustomTableCell style={{ width: '50%' }}>
+                      <CustomTableCell style={{ width: '30%' }}>
                         管理者
                       </CustomTableCell>
+                      <CustomTableCell style={{ width: '20%' }}>
+                        <Button
+                          variant="raised"
+                          color="default"
+                          size="large"
+                          className={classes.button2}
+                          component={sampleLink}
+                        >
+                          <Edit
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          EDIT
+                        </Button>
+                      </CustomTableCell>
                     </TableRow>
-                    <TableRow hover component={sampleLink}>
+                    <TableRow>
                       <CustomTableCell>
                         <Avatar
                           alt="Adelle Charles"
@@ -645,8 +662,25 @@ class ShainKensakuForm extends React.Component {
                       </CustomTableCell>
                       <CustomTableCell>札幌　太郎</CustomTableCell>
                       <CustomTableCell>一般</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="default"
+                          size="large"
+                          className={classes.button2}
+                          component={sampleLink}
+                        >
+                          <Edit
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          EDIT
+                        </Button>
+                      </CustomTableCell>
                     </TableRow>
-                    <TableRow hover component={sampleLink}>
+                    <TableRow>
                       <CustomTableCell>
                         <Avatar
                           alt="Adelle Charles"
@@ -656,6 +690,23 @@ class ShainKensakuForm extends React.Component {
                       </CustomTableCell>
                       <CustomTableCell>北海道　三郎</CustomTableCell>
                       <CustomTableCell>新人</CustomTableCell>
+                      <CustomTableCell>
+                        <Button
+                          variant="raised"
+                          color="default"
+                          size="large"
+                          className={classes.button2}
+                          component={sampleLink}
+                        >
+                          <Edit
+                            className={classNames(
+                              classes.leftIcon,
+                              classes.iconSmall
+                            )}
+                          />
+                          EDIT
+                        </Button>
+                      </CustomTableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

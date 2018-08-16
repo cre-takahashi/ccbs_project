@@ -568,7 +568,7 @@ class CoinShokaiForm extends React.Component {
                           classes.iconSmall
                         )}
                       />
-                      照会
+                      REFER
                     </Button>
                   </CustomTableCell>
                 </TableRow>
@@ -619,7 +619,7 @@ class CoinShokaiForm extends React.Component {
                           classes.iconSmall
                         )}
                       />
-                      照会
+                      REFER
                     </Button>
                   </CustomTableCell>
                 </TableRow>
@@ -671,7 +671,7 @@ class CoinShokaiForm extends React.Component {
                           classes.iconSmall
                         )}
                       />
-                      照会
+                      REFER
                     </Button>
                   </CustomTableCell>
                 </TableRow>
@@ -722,7 +722,7 @@ class CoinShokaiForm extends React.Component {
                           classes.iconSmall
                         )}
                       />
-                      照会
+                      REFER
                     </Button>
                   </CustomTableCell>
                 </TableRow>

@@ -973,12 +973,16 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         <CustomTableCell
                                           className={classes.coin}
                                         >
-                                          <img
-                                            alt="コイン"
-                                            src="/images/coin.png"
-                                            className={classes.coinAvater}
-                                          />
-                                          {n.sumCoin}
+                                          <Typography
+                                            style={{ fontSize: '180%' }}
+                                          >
+                                            <img
+                                              alt="コイン"
+                                              src="/images/coin.png"
+                                              className={classes.coinAvater}
+                                            />
+                                            {n.sumCoin}
+                                          </Typography>
                                           <div className={classes.gurade}>
                                             <br />
                                           </div>
@@ -989,12 +993,16 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         <CustomTableCell
                                           className={classes.coin}
                                         >
-                                          <img
-                                            alt="コイン"
-                                            src="/images/coin.png"
-                                            className={classes.coinAvater}
-                                          />
-                                          {n.sumCoin}
+                                          <Typography
+                                            style={{ fontSize: '180%' }}
+                                          >
+                                            <img
+                                              alt="コイン"
+                                              src="/images/coin.png"
+                                              className={classes.coinAvater}
+                                            />
+                                            {n.sumCoin}
+                                          </Typography>
                                           <div className={classes.gurade2}>
                                             <br />
                                           </div>
@@ -1005,12 +1013,16 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         <CustomTableCell
                                           className={classes.coin}
                                         >
-                                          <img
-                                            alt="コイン"
-                                            src="/images/coin.png"
-                                            className={classes.coinAvater}
-                                          />
-                                          {n.sumCoin}
+                                          <Typography
+                                            style={{ fontSize: '180%' }}
+                                          >
+                                            <img
+                                              alt="コイン"
+                                              src="/images/coin.png"
+                                              className={classes.coinAvater}
+                                            />
+                                            {n.sumCoin}
+                                          </Typography>
                                           <div className={classes.gurade3}>
                                             <br />
                                           </div>
@@ -1021,12 +1033,16 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         <CustomTableCell
                                           className={classes.coin}
                                         >
-                                          <img
-                                            alt="コイン"
-                                            src="/images/coin.png"
-                                            className={classes.coinAvater}
-                                          />
-                                          {n.sumCoin}
+                                          <Typography
+                                            style={{ fontSize: '180%' }}
+                                          >
+                                            <img
+                                              alt="コイン"
+                                              src="/images/coin.png"
+                                              className={classes.coinAvater}
+                                            />
+                                            {n.sumCoin}
+                                          </Typography>
                                           <div className={classes.gurade4}>
                                             <br />
                                           </div>
@@ -1039,13 +1055,17 @@ class TohyoShokaiKobetsuForm extends React.Component {
                                         scope="row"
                                         className={classes.coin}
                                       >
-                                        <img
-                                          alt="コイン"
-                                          src="/images/coin.png"
-                                          width="30"
-                                          height="30"
-                                        />
-                                        {n.sumCoin}
+                                        <Typography
+                                          style={{ fontSize: '180%' }}
+                                        >
+                                          <img
+                                            alt="コイン"
+                                            src="/images/coin.png"
+                                            width="30"
+                                            height="30"
+                                          />
+                                          {n.sumCoin}
+                                        </Typography>
                                         <div className={classes.gurade5}>
                                           <br />
                                         </div>

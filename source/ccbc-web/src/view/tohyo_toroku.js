@@ -480,14 +480,19 @@ class TohyoTorokuForm extends React.Component {
   }
 
   handleSubmit() {
-    request
-      .post('/tohyo_toroku/create')
-      .send(this.state)
-      .end((err, res) => {
-        if (err) {
-          return
-        }
-      })
+    if (window.confirm('入力情報を登録しますか？')) {
+      request
+        .post('/tohyo_toroku/create')
+        .send(this.state)
+        .end((err, res) => {
+          if (err) {
+            return
+          }
+        })
+      this.props.history.push('/menu')
+    } else {
+      return
+    }
   }
 
   render() {
@@ -591,7 +596,7 @@ class TohyoTorokuForm extends React.Component {
                   <div>
                     <table>
                       <tr>
-                        <td rowspan="3" width="30%">
+                        <td rowspan="3" width="28%">
                           <Avatar
                             alt="Adelle Charles"
                             src={restUrl + `uploads/${data.image_file_nm}`}
@@ -820,7 +825,6 @@ class TohyoTorokuForm extends React.Component {
                     variant="raised"
                     size="large"
                     onClick={this.handleSubmit.bind(this)}
-                    component={MenuLink}
                   >
                     <Save
                       className={classNames(

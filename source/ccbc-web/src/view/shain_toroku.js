@@ -644,6 +644,22 @@ class ShainTorokuForm extends React.Component {
                   </CustomTableCell>
                 </TableRow>
                 <TableRow>
+                  <CustomTableCell>パスワード（再入力用）</CustomTableCell>
+                  <CustomTableCell>
+                    <form className={classes.root} autoComplete="off">
+                      <TextField
+                        id="password"
+                        label="パスワード（再入力用）"
+                        placeholder="パスワード（再入力用）を入力"
+                        className={classes.textField}
+                        value={this.state.election}
+                        onChange={this.handleChange('election')}
+                        margin="normal"
+                      />
+                    </form>
+                  </CustomTableCell>
+                </TableRow>
+                <TableRow>
                   <CustomTableCell>権限</CustomTableCell>
                   <CustomTableCell>
                     <FormControl className={classes.formControl}>
@@ -656,9 +672,6 @@ class ShainTorokuForm extends React.Component {
                           id: 'kengen-simple'
                         }}
                       >
-                        <MenuItem value="">
-                          <em>指定なし</em>
-                        </MenuItem>
                         <MenuItem value={1}>管理者</MenuItem>
                         <MenuItem value={2}>一般</MenuItem>
                         <MenuItem value={3}>新人</MenuItem>

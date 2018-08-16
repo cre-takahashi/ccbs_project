@@ -615,7 +615,6 @@ class TohyoIchiran extends React.Component {
                 <Table className={classes.table}>
                   <TableHead>
                     <TableRow>
-                      <CustomTableCell>No</CustomTableCell>
                       <CustomTableCell>選挙名</CustomTableCell>
                       <CustomTableCell>投票開始日</CustomTableCell>
                       <CustomTableCell>投票終了日</CustomTableCell>
@@ -627,7 +626,6 @@ class TohyoIchiran extends React.Component {
                     {this.state.resultList.map(n => {
                       return (
                         <TableRow className={classes.row} key={n.id}>
-                          <CustomTableCell>{n.t_senkyo_pk}</CustomTableCell>
                           <CustomTableCell
                             component="th"
                             scope="row"
@@ -662,7 +660,7 @@ class TohyoIchiran extends React.Component {
                                   classes.iconSmall
                                 )}
                               />
-                              照会
+                              REFER
                             </Button>
                           </CustomTableCell>
                         </TableRow>
@@ -691,7 +689,7 @@ class TohyoIchiran extends React.Component {
                 <Assessment
                   className={classNames(classes.leftIcon, classes.iconSmall)}
                 />
-                グラフ
+                GRAPH
               </Button>
             </div>
           </main>

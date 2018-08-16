@@ -240,7 +240,8 @@ class PersistentDrawer extends React.Component {
       resultList: [],
       open: false,
       anchor: 'left',
-      anchorEl: null
+      anchorEl: null,
+      addFlg: true
     }
   }
 
@@ -255,6 +256,9 @@ class PersistentDrawer extends React.Component {
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
+      if (loginInfo['kengenCd'] === '0') {
+        this.setState({ addFlg: false })
+      }
     }
 
     request.get('/senkyo_kanri/find').end((err, res) => {
@@ -468,6 +472,7 @@ class PersistentDrawer extends React.Component {
                   size="large"
                   color="default"
                   className={classes.button}
+                  disabled={this.state.addFlg}
                 >
                   <AddCircle
                     className={classNames(classes.leftIcon, classes.iconSmall)}
