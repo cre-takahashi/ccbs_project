@@ -326,33 +326,12 @@ const styles = theme => ({
   }
 })
 
-const testData = [
-  {
-    url: '/images/yamashita.png',
-    title: '第５回EQトレーニング',
-    name: '剛田　武'
-  },
-  {
-    url: '/images/mikami.png',
-    title: '△△△案件プロジェクト報告',
-    name: '札幌　太郎'
-  },
-  {
-    url: '/images/ishigaki.jpg',
-    title: '◯◯◯案件プロジェクト報告',
-    name: '江別　野郎'
-  }
-]
-
 class CoinZoyoForm extends React.Component {
   state = {
     open: false,
     open2: false,
     anchor: 'left',
     completed: {},
-    comment: {},
-    haifuCoin: 150,
-    tohyoCoin: 0,
     resultList: [],
     userid: null,
     password: null,
@@ -360,9 +339,14 @@ class CoinZoyoForm extends React.Component {
     imageFileName: null,
     shimei: null,
     kengenCd: null,
-    year_info: '',
     target_manager: 0,
-    comment: ''
+    comment: '',
+    checked: false,
+    zoyoCoin: 0,
+    from_bcaccount: '',
+    to_bcaccount: '',
+    to_tShainPk: '',
+    nenjiFlg: '0'
   }
 
   constructor(props) {
@@ -382,6 +366,39 @@ class CoinZoyoForm extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+
+    request
+      .post('/coin_zoyo/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          alert(err)
+          return
+        }
+        var resList = res.body.data
+        var bccoin = String(res.body.bccoin)
+        // 検索結果表示
+        this.setState({ resultList: resList })
+        this.setState({ bccoin: bccoin })
+        this.setState({ shimei: res.body.shimei })
+        this.setState({ from_bcaccount: res.body.from_bcaccount })
+      })
+  }
+
+  selectChange = event => {
+    var checked = this.state.checked
+    // 初期表示はFalse
+    if (checked) {
+      this.setState({ checked: false })
+      this.setState({ zoyoCoin: 0 })
+      this.setState({ comment: '' })
+      this.setState({ nenjiFlg: '0' })
+    } else {
+      this.setState({ checked: true })
+      this.setState({ zoyoCoin: this.state.bccoin })
+      this.setState({ comment: '年度末コイン返却' })
+      this.setState({ nenjiFlg: '1' })
+    }
   }
 
   handleChange = name => event => {
@@ -391,7 +408,12 @@ class CoinZoyoForm extends React.Component {
   }
 
   handleChange2 = event => {
-    this.setState({ [event.target.name]: event.target.value })
+    var zIndex = event.target.value
+    this.setState({ target_manager: zIndex })
+    zIndex = zIndex - 1
+    var resultList = this.state.resultList
+    this.setState({ to_bcaccount: resultList[zIndex].bc_account })
+    this.setState({ to_tShainPk: resultList[zIndex].t_shain_pk })
   }
 
   handleDrawerOpen = () => {
@@ -418,11 +440,26 @@ class CoinZoyoForm extends React.Component {
 
     this.setState({ open2: false })
   }
-
+  handleSubmit() {
+    if (window.confirm('入力情報を登録しますか？')) {
+      request
+        .post('/coin_zoyo/create')
+        .send(this.state)
+        .end((err, res) => {
+          if (err) {
+            return
+          }
+        })
+      this.props.history.push('/menu') //これで遷移させる
+    } else {
+      return
+    }
+  }
   render() {
     const { classes, theme } = this.props
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
+    const MenuLink = props => <Link to="/menu" {...props} />
 
     const drawer = (
       <Drawer
@@ -459,6 +496,73 @@ class CoinZoyoForm extends React.Component {
     }
 
     const MyLink = props => <Link to="/sample" {...props} />
+    if (this.state.checked == false) {
+      var zoyoCoinField = (
+        <form className={classes.root} autoComplete="off">
+          <TextField
+            id="number"
+            label="贈与コイン数"
+            value={this.state.zoyoCoin}
+            onChange={this.handleChange('zoyoCoin')}
+            type="number"
+            InputLabelProps={{
+              shrink: true
+            }}
+            margin="normal"
+          />
+        </form>
+      )
+      var commentField = (
+        <form className={classes.root} autoComplete="off">
+          <TextField
+            id="comment"
+            label="コメント"
+            multiline
+            rows="12"
+            rowsMax="12"
+            value={this.state.comment}
+            onChange={this.handleChange('comment')}
+            className={classes.textField}
+            margin="normal"
+            style={{ fontSize: '120%' }}
+          />
+        </form>
+      )
+    } else {
+      var zoyoCoinField = (
+        <form className={classes.root} autoComplete="off">
+          <TextField
+            id="number"
+            label="贈与コイン数"
+            value={this.state.zoyoCoin}
+            onChange={this.handleChange('zoyoCoin')}
+            type="number"
+            InputLabelProps={{
+              shrink: true
+            }}
+            margin="normal"
+            disabled
+          />
+        </form>
+      )
+      var commentField = (
+        <form className={classes.root} autoComplete="off">
+          <TextField
+            id="comment"
+            label="コメント"
+            multiline
+            rows="12"
+            rowsMax="12"
+            value={this.state.comment}
+            onChange={this.handleChange('comment')}
+            className={classes.textField}
+            margin="normal"
+            style={{ fontSize: '120%' }}
+            disabled
+          />
+        </form>
+      )
+    }
 
     return (
       <div className={classes.root}>
@@ -550,10 +654,10 @@ class CoinZoyoForm extends React.Component {
             <div>
               <Paper className={classes.coinInfo}>
                 <Typography variant="headline" component="h3">
-                  札幌　太郎　の所持コイン数
+                  {this.state.shimei}　の所持コイン数
                 </Typography>
                 <Typography variant="headline" component="h3">
-                  1,000コイン
+                  {this.state.bccoin} コイン
                 </Typography>
               </Paper>
             </div>
@@ -586,48 +690,32 @@ class CoinZoyoForm extends React.Component {
                         }
                         className={classes.select}
                       >
-                        <MenuItem value={0}>管理局</MenuItem>
-                        <MenuItem value={1}>札幌 太郎</MenuItem>
-                        <MenuItem value={2}>中央 花子</MenuItem>
-                        <MenuItem value={3}>網走 順子</MenuItem>
+                        {this.state.resultList.map(n => {
+                          return <MenuItem value={n.id}>{n.shimei}</MenuItem>
+                        })}
                       </Select>
                     </FormControl>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          color="default"
+                          value={this.state.checked}
+                          onClick={event => this.selectChange(event)}
+                        />
+                      }
+                      label="年度末処理"
+                    />
                   </form>
                 </th>
               </TableRow>
               <TableRow>
                 <th style={{ textAlign: 'left', padding: '10px' }}>
-                  <form className={classes.root} autoComplete="off">
-                    <TextField
-                      id="number"
-                      label="贈与コイン数"
-                      value={this.state.age}
-                      onChange={this.handleChange('age')}
-                      type="number"
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      margin="normal"
-                    />
-                  </form>
+                  <div>{zoyoCoinField}</div>
                 </th>
               </TableRow>
               <TableRow>
                 <th>
-                  <form className={classes.root} autoComplete="off">
-                    <TextField
-                      id="comment"
-                      label="コメント"
-                      multiline
-                      rows="12"
-                      rowsMax="12"
-                      value={this.state.comment}
-                      onChange={this.handleChange('comment')}
-                      className={classes.textField}
-                      margin="normal"
-                      style={{ fontSize: '120%' }}
-                    />
-                  </form>
+                  <div>{commentField}</div>
                 </th>
               </TableRow>
               <TableRow>
@@ -636,6 +724,7 @@ class CoinZoyoForm extends React.Component {
                     variant="raised"
                     color="default"
                     size="large"
+                    onClick={this.handleSubmit.bind(this)}
                     className={classes.button}
                   >
                     <Send
@@ -644,7 +733,7 @@ class CoinZoyoForm extends React.Component {
                         classes.iconSmall
                       )}
                     />
-                    コイン贈与
+                    COIN SEND
                   </Button>
                 </th>
               </TableRow>
