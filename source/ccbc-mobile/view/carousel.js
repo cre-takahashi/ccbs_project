@@ -9,8 +9,7 @@ import ReactNative, {
   Dimensions,
   KeyboardAvoidingView,
   Modal,
-  Keyboard,
-  TextInput
+  Keyboard
 } from 'react-native'
 import styled from 'styled-components/native' // Version can be specified in package.json
 import Carousel, { Pagination } from 'react-native-snap-carousel' // Version can be specified in package.json
@@ -27,6 +26,9 @@ import { Rating, AirbnbRating } from 'react-native-ratings'
 import KeyboardAwareScrollView from 'react-native-keyboard-aware-view'
 import StarRating from 'react-native-star-rating'
 import InputScrollView from 'react-native-input-scroll-view'
+import TextInput from './common/TextInput'
+
+const restdomain = require('./common/constans.js').restdomain
 
 export default class ThumbnailCarousel extends Component {
   constructor(props) {
@@ -42,38 +44,31 @@ export default class ThumbnailCarousel extends Component {
       modalVisible2: false,
       value: '',
       text: '',
-      height: 0
+      height: 0,
+      resultList: [],
+      tohyoCoin: 0,
+      activeStep1: {},
+      activeStep2: {},
+      activeStep3: {},
+      activeStep4: {},
+      activeStep5: {},
+      comment: {}
     }
     this.props = props
     this._carousel = {}
-    this.init()
   }
 
-  init() {
-    this.state = {
-      videos: [
-        {
-          id: 'WpIAc9by5iU',
-          thumbnail: 'https://img.youtube.com/vi/D9ioyEvdggk/hqdefault.jpg',
-          title: 'Led Zeppelin - Stairway To Heaven'
-        },
-        {
-          id: 'sNPnbI1arSE',
-          thumbnail: 'https://img.youtube.com/vi/sNPnbI1arSE/hqdefault.jpg',
-          title: 'Eminem - My Name Is'
-        },
-        {
-          id: 'VOgFZfRVaww',
-          thumbnail: 'https://img.youtube.com/vi/VOgFZfRVaww/hqdefault.jpg',
-          title: ''
-        }
-      ]
-    }
+  async componentWillMount() {
+    var loginInfo = await this.getLoginInfo()
 
-    console.log('ThumbnailCarousel Props: ', this.props)
-  }
+    this.setState({ userid: loginInfo['userid'] })
+    this.setState({ password: loginInfo['password'] })
+    this.setState({ tShainPk: loginInfo['tShainPk'] })
+    this.state.tShainPk = Number(loginInfo['tShainPk'])
+    this.setState({ imageFileName: loginInfo['imageFileName'] })
+    this.setState({ shimei: loginInfo['shimei'] })
+    this.setState({ kengenCd: loginInfo['kengenCd'] })
 
-  componentWillMount() {
     this.setState({ starCount1: 1 })
     this.setState({ starCount2: 1 })
     this.setState({ starCount3: 1 })
@@ -81,73 +76,160 @@ export default class ThumbnailCarousel extends Component {
     this.setState({ starCount5: 1 })
     this.setState({ modalVisible: false })
     this.setState({ modalVisible2: false })
-    this.setState({
-      text:
-        '言いたいことが伝わってきて、私も興味を持つことが出来ました。\n' +
-        '資料について、起承転結がしっかりしており言いたいことが伝わりました。また、レイアウトも綺麗で惹きつけられました。\n' +
-        '発表力について、落ち着いて話していましたが、ここぞという場面でしっかりとメリハリがあり、良かったです。\n' +
-        '表現力について、身振り、手振りなど全身を使って表現していて、すこし大げさかな？という場面もありましたが、良かったです。\n' +
-        '影響力について、資料の構成はお手本にしたいなと思いました。特に最初に◯◯を持ってくるところはぜひ活用していきたいと思います。\n' +
-        '限界突破について、前回に比べて格段によくなっていたと思います。練習もしっかりされて、前回の課題も克服されていたようですので、次回はもっと期待したいです。'
-    })
     this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow',
       this._handleKeyboardWillShow.bind(this)
     )
+
+    // 初期表示情報取得
+    var resList = this.findTohyoToroku()
+  }
+
+  getLoginInfo = async () => {
+    try {
+      return JSON.parse(await AsyncStorage.getItem('loginInfo'))
+    } catch (error) {
+      return
+    }
+  }
+
+  findTohyoToroku = async () => {
+    await fetch(restdomain + '/tohyo_toroku/find', {
+      method: 'POST',
+      body: JSON.stringify(this.state),
+      headers: new Headers({ 'Content-type': 'application/json' })
+    })
+      .then(function(response) {
+        return response.json()
+      })
+      .then(
+        function(json) {
+          // 結果が取得できない場合は終了
+          if (typeof json.data === 'undefined') {
+            return
+          }
+          var dataList = json.data
+          for (var i in dataList) {
+            var data = dataList[i]
+            data.starCount1 = 5
+            data.starCount2 = 5
+            data.starCount3 = 5
+            data.starCount4 = 1
+            data.starCount5 = 1
+            data.comment = ''
+          }
+          this.setState({ resultList: dataList })
+          this.calculateCoin()
+        }.bind(this)
+      )
+      .catch(error => console.error(error))
+  }
+
+  handleSubmit = async () => {
+    for (var i in this.state.resultList) {
+      var res = this.state.resultList[i]
+      this.state.activeStep1[i] = res.starCount1
+      this.state.activeStep2[i] = res.starCount2
+      this.state.activeStep3[i] = res.starCount3
+      this.state.activeStep4[i] = res.starCount4
+      this.state.activeStep5[i] = res.starCount5
+      this.state.comment[i] = res.comment
+    }
+    await fetch(restdomain + '/tohyo_toroku/create', {
+      method: 'POST',
+      body: JSON.stringify(this.state),
+      headers: new Headers({ 'Content-type': 'application/json' })
+    })
+      .then(
+        function(response) {
+          this.closeModal()
+          this.props.navigation.navigate('Menu')
+        }.bind(this)
+      )
+      .catch(error => console.error(error))
   }
 
   componentWillUnmount() {
     this.keyboardWillShowListener.remove()
   }
 
-  // handleSnapToItem(index) {
-  //   console.log('snapped to ', index)
-  // }
-
-  // _renderItem = ({ item, index }) => {
-  //   return (
-  //     <ThumbnailBackgroundView>
-  //       <CurrentVideoTO
-  //         onPress={() => {
-  //           console.log('clicked to index', index)
-  //           this._carousel.snapToItem(index)
-  //         }}
-  //       >
-  //         <CurrentVideoImage source={{ uri: item.thumbnail }} />
-  //       </CurrentVideoTO>
-  //       {/*<NextVideoImage source={{ uri: this.state.currentVideo.nextVideoId }}/>*/}
-  //       <VideoTitleText>{item.title}</VideoTitleText>
-  //     </ThumbnailBackgroundView>
-  //   )
-  // }
-
-  onStarRatingPress1(rating) {
-    this.setState({
-      starCount1: rating
-    })
+  onStarRatingPress1(rating, index) {
+    const starCount1_copy = this.state.resultList.slice()
+    starCount1_copy[index].starCount1 = rating
+    this.setState({ resultList: starCount1_copy })
+    this.calculateCoin()
   }
-  onStarRatingPress2(rating) {
-    this.setState({
-      starCount2: rating
-    })
+  onStarRatingPress2(rating, index) {
+    const starCount2_copy = this.state.resultList.slice()
+    starCount2_copy[index].starCount2 = rating
+    this.setState({ resultList: starCount2_copy })
+    this.calculateCoin()
   }
-  onStarRatingPress3(rating) {
-    this.setState({
-      starCount3: rating
-    })
+  onStarRatingPress3(rating, index) {
+    const starCount3_copy = this.state.resultList.slice()
+    starCount3_copy[index].starCount3 = rating
+    this.setState({ resultList: starCount3_copy })
+    this.calculateCoin()
   }
-  onStarRatingPress4(rating) {
-    this.setState({
-      starCount4: rating
-    })
+  onStarRatingPress4(rating, index) {
+    const starCount4_copy = this.state.resultList.slice()
+    starCount4_copy[index].starCount4 = rating
+    this.setState({ resultList: starCount4_copy })
+    this.calculateCoin()
   }
-  onStarRatingPress5(rating) {
-    this.setState({
-      starCount5: rating
-    })
+  onStarRatingPress5(rating, index) {
+    const starCount5_copy = this.state.resultList.slice()
+    starCount5_copy[index].starCount5 = rating
+    this.setState({ resultList: starCount5_copy })
+    this.calculateCoin()
   }
 
-  _renderItem = ({ item, index }) => {
+  calculatePointLine = index => {
+    var sum = 0
+    sum += this.state.resultList[index].starCount1
+    sum += this.state.resultList[index].starCount2
+    sum += this.state.resultList[index].starCount3
+    sum += this.state.resultList[index].starCount4
+    sum += this.state.resultList[index].starCount5
+    return sum
+  }
+
+  calculateCoinLine = index => {
+    var sum = 0
+    sum += this.state.resultList[index].starCount1
+    sum += this.state.resultList[index].starCount2
+    sum += this.state.resultList[index].starCount3
+    sum += this.state.resultList[index].starCount4
+    sum += this.state.resultList[index].starCount5
+    return sum * this.state.resultList[index].config_coin
+  }
+
+  calculateCoin = () => {
+    var sum = 0
+    for (var i in this.state.resultList) {
+      sum += this.state.resultList[i].starCount1
+      sum += this.state.resultList[i].starCount2
+      sum += this.state.resultList[i].starCount3
+      sum += this.state.resultList[i].starCount4
+      sum += this.state.resultList[i].starCount5
+    }
+    this.setState({ tohyoCoin: sum })
+    this.state.tohyoCoin = sum
+  }
+
+  getCalculateCoin = () => {
+    var sum = 0
+    for (var i in this.state.resultList) {
+      sum += this.state.resultList[i].starCount1
+      sum += this.state.resultList[i].starCount2
+      sum += this.state.resultList[i].starCount3
+      sum += this.state.resultList[i].starCount4
+      sum += this.state.resultList[i].starCount5
+    }
+    return sum * this.state.resultList[0].config_coin
+  }
+
+  _renderItem = ({ index }) => {
     return (
       <Card style={{ flex: 1, height: 400 + Math.max(35, this.state.height) }}>
         <View style={styles.targe_item}>
@@ -155,21 +237,33 @@ export default class ThumbnailCarousel extends Component {
             <Avatar
               large
               rounded
-              source={require('./../images/person11.png')}
+              source={{
+                uri:
+                  restdomain +
+                  `/uploads/${this.state.resultList[index].image_file_nm}`
+              }}
+              //source={require('./../images/person11.png')}
               activeOpacity={0.7}
             />
           </View>
           <View style={styles.target_name_view}>
-            <Text style={{ fontSize: 20 }}>札幌　太郎</Text>
+            <Text style={{ fontSize: 20 }}>
+              {this.state.resultList[index].shimei}
+            </Text>
           </View>
         </View>
         <View style={styles.target_title_view}>
           <Text style={{ fontSize: 18 }}>
-            『新しい価値を創造するために・・・』
+            {this.state.resultList[index].title}
           </Text>
         </View>
         <View style={styles.target_coin_view}>
-          <Text style={{ fontSize: 14 }}>25 点、250 coin</Text>
+          <Text style={{ fontSize: 14 }}>
+            {this.calculatePointLine(index)}
+            点、
+            {this.calculateCoinLine(index)}
+            coin
+          </Text>
         </View>
         <View style={styles.target_coin_view}>
           <Icon name="live-help" onPress={() => this.openModal2()} />
@@ -264,14 +358,16 @@ export default class ThumbnailCarousel extends Component {
             <Text style={{ fontSize: 12 }}>資料作成：</Text>
           </View>
           <View style={styles.rating_point_view}>
-            <Text style={{ fontSize: 14 }}>{this.state.starCount1}点</Text>
+            <Text style={{ fontSize: 14 }}>
+              {this.state.resultList[index].starCount1}点
+            </Text>
           </View>
           <View style={styles.airbngrating_value_view}>
             <StarRating
               disabled={false}
               maxStars={10}
-              rating={this.state.starCount1}
-              selectedStar={rating => this.onStarRatingPress1(rating)}
+              rating={this.state.resultList[index].starCount1}
+              selectedStar={rating => this.onStarRatingPress1(rating, index)}
               starSize={25}
               emptyStarColor={'orange'}
               fullStarColor={'orange'}
@@ -283,14 +379,16 @@ export default class ThumbnailCarousel extends Component {
             <Text style={{ fontSize: 12 }}>発表力　：</Text>
           </View>
           <View style={styles.rating_point_view}>
-            <Text style={{ fontSize: 14 }}>{this.state.starCount2}点</Text>
+            <Text style={{ fontSize: 14 }}>
+              {this.state.resultList[index].starCount2}点
+            </Text>
           </View>
           <View style={styles.airbngrating_value_view}>
             <StarRating
               disabled={false}
               maxStars={10}
-              rating={this.state.starCount2}
-              selectedStar={rating => this.onStarRatingPress2(rating)}
+              rating={this.state.resultList[index].starCount2}
+              selectedStar={rating => this.onStarRatingPress2(rating, index)}
               starSize={25}
               emptyStarColor={'orange'}
               fullStarColor={'orange'}
@@ -302,14 +400,16 @@ export default class ThumbnailCarousel extends Component {
             <Text style={{ fontSize: 12 }}>表現力　：</Text>
           </View>
           <View style={styles.rating_point_view}>
-            <Text style={{ fontSize: 14 }}>{this.state.starCount3}点</Text>
+            <Text style={{ fontSize: 14 }}>
+              {this.state.resultList[index].starCount3}点
+            </Text>
           </View>
           <View style={styles.airbngrating_value_view}>
             <StarRating
               disabled={false}
               maxStars={10}
-              rating={this.state.starCount3}
-              selectedStar={rating => this.onStarRatingPress3(rating)}
+              rating={this.state.resultList[index].starCount3}
+              selectedStar={rating => this.onStarRatingPress3(rating, index)}
               starSize={25}
               emptyStarColor={'orange'}
               fullStarColor={'orange'}
@@ -321,14 +421,16 @@ export default class ThumbnailCarousel extends Component {
             <Text style={{ fontSize: 12 }}>影響力　：</Text>
           </View>
           <View style={styles.rating_point_view}>
-            <Text style={{ fontSize: 14 }}>{this.state.starCount4}点</Text>
+            <Text style={{ fontSize: 14 }}>
+              {this.state.resultList[index].starCount4}点
+            </Text>
           </View>
           <View style={styles.airbngrating_value_view}>
             <StarRating
               disabled={false}
               maxStars={10}
-              rating={this.state.starCount4}
-              selectedStar={rating => this.onStarRatingPress4(rating)}
+              rating={this.state.resultList[index].starCount4}
+              selectedStar={rating => this.onStarRatingPress4(rating, index)}
               starSize={25}
               emptyStarColor={'orange'}
               fullStarColor={'orange'}
@@ -340,14 +442,16 @@ export default class ThumbnailCarousel extends Component {
             <Text style={{ fontSize: 12 }}>限界突破：</Text>
           </View>
           <View style={styles.rating_point_view}>
-            <Text style={{ fontSize: 14 }}>{this.state.starCount5}点</Text>
+            <Text style={{ fontSize: 14 }}>
+              {this.state.resultList[index].starCount5}点
+            </Text>
           </View>
           <View style={styles.airbngrating_value_view}>
             <StarRating
               disabled={false}
               maxStars={10}
-              rating={this.state.starCount5}
-              selectedStar={rating => this.onStarRatingPress5(rating)}
+              rating={this.state.resultList[index].starCount5}
+              selectedStar={rating => this.onStarRatingPress5(rating, index)}
               starSize={25}
               emptyStarColor={'orange'}
               fullStarColor={'orange'}
@@ -355,38 +459,25 @@ export default class ThumbnailCarousel extends Component {
           </View>
         </View>
         <Text style={{ fontSize: 12 }}>【コメント】</Text>
-        {/* <FormInput
-            multiline
-            style={{ fontSize: 12, height: 200 }}
-            ref={component => (this._textinput = component)}
-          /> */}
-        {/* <TextInput
-          //style={styles.paragraph}
-          autoCapitalize={'none'}
-          autoCorrect={false}
-          value={this.state.value}
-          multiline={true}
-          onChangeText={value => {
-            this.setState({ value: value })
-          }}
-          underlineColorAndroid={'transparent'}
-          ref={component => (this._textinput = component)}
-        /> */}
         <TextInput
           {...this.props}
           multiline={true}
           onChangeText={text => {
-            this.setState({ text })
+            this.state.resultList[index].comment = text
           }}
           onContentSizeChange={event => {
             this.setState({ height: event.nativeEvent.contentSize.height })
           }}
           style={[styles.default, { height: Math.max(35, this.state.height) }]}
-          value={this.state.text}
+          value={this.state.resultList[index].comment}
           ref={component => (this._textinput = component)}
         />
       </Card>
     )
+  }
+
+  handleChange = (name, cnt) => event => {
+    this.state.resultList[cnt].comment = event.target.value
   }
 
   onPressLogoutButton = () => {
@@ -400,7 +491,7 @@ export default class ThumbnailCarousel extends Component {
     const { entries, activeSlide } = this.state
     return (
       <Pagination
-        dotsLength={this.state.videos.length}
+        dotsLength={this.state.resultList.length}
         activeDotIndex={activeSlide}
         //containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
         dotStyle={{
@@ -466,84 +557,128 @@ export default class ThumbnailCarousel extends Component {
 
         <KeyboardAvoidingView behavior="padding">
           <ScrollView ref={component => (this._scrollview = component)}>
-            <Card style={{ flex: 1 }}>
-              <View style={styles.target_total_coin_view}>
-                <Text style={{ fontSize: 18 }}>2018年7月部会</Text>
-                <Text style={{ fontSize: 12 }}>
-                  発表者に対して評価とコメントをつけて下さい。
-                  {'\n'}
-                  （配布しきれなかったコインは自動で回収されます）
-                </Text>
-                <Text style={{ fontSize: 13 }}>配布コイン数:75000</Text>
-                <Text style={{ fontSize: 13 }}>1点辺りのコイン数:100</Text>
-                <Text style={{ fontSize: 13 }}>投票コイン数:30000</Text>
-              </View>
-            </Card>
-            <Text />
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around'
-              }}
-            >
-              <Divider style={{ flex: 1, backgroundColor: 'white' }} />
-              <Text style={{ flex: 1, fontSize: 13, textAlign: 'center' }}>
-                Presenter
-              </Text>
-              <Divider style={{ flex: 1, backgroundColor: 'white' }} />
-            </View>
-            <CarouselBackgroundView
-              style={{ height: 400 + Math.max(35, this.state.height) }}
-            >
-              <Carousel
-                ref={c => {
-                  this._carousel = c
-                }}
-                data={this.state.videos}
-                renderItem={this._renderItem.bind(this)}
-                // onSnapToItem={this.handleSnapToItem.bind(this)}
-                onSnapToItem={index => this.setState({ activeSlide: index })}
-                sliderWidth={Dimensions.get('window').width}
-                itemWidth={Dimensions.get('window').width}
-                layout={'default'}
-                containerCustomStyle={{ flex: 1 }}
-                slideStyle={{ flex: 1 }}
-                firstItem={0}
-              />
-              <View>{this.pagination}</View>
-            </CarouselBackgroundView>
-            <Button
-              title="save"
-              icon={{ name: 'sign-in', type: 'font-awesome' }}
-              onPress={() => this.openModal()}
-            />
-            <Modal
-              visible={this.state.modalVisible}
-              animationType={'slide'}
-              onRequestClose={() => this.closeModal()}
-              //transparent={true}
-            >
-              <View style={styles.modal_style}>
-                <View style={{ flex: 1 }} />
-                <Card title="確認ダイアログ" style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 18 }}>
-                    本当に登録してよろしいですか。
-                  </Text>
-                </Card>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <View style={{ flex: 1 }}>
-                    <Button onPress={() => this.closeModal()} title="YES" />
+            {(() => {
+              if (
+                this.state.resultList != null &&
+                this.state.resultList.length != 0
+              ) {
+                return (
+                  <View>
+                    <Card style={{ flex: 1 }}>
+                      <View style={styles.target_total_coin_view}>
+                        <Text style={{ fontSize: 18 }}>
+                          {this.state.resultList[0].senkyo_nm}
+                        </Text>
+                        <Text style={{ fontSize: 12 }}>
+                          発表者に対して評価とコメントをつけて下さい。
+                          {'\n'}
+                          （配布しきれなかったコインは自動で回収されます）
+                        </Text>
+                        <Text style={{ fontSize: 13 }}>
+                          配布コイン数:
+                          {this.state.resultList[0].config_coin *
+                            50 *
+                            this.state.resultList.length}
+                        </Text>
+                        <Text style={{ fontSize: 13 }}>
+                          1点辺りのコイン数:
+                          {this.state.resultList[0].config_coin}
+                        </Text>
+                        <Text style={{ fontSize: 13 }}>
+                          投票コイン数:
+                          {this.getCalculateCoin()}
+                        </Text>
+                      </View>
+                    </Card>
+                    <Text />
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-around'
+                      }}
+                    >
+                      <Divider style={{ flex: 1, backgroundColor: 'white' }} />
+                      <Text
+                        style={{ flex: 1, fontSize: 13, textAlign: 'center' }}
+                      >
+                        Presenter
+                      </Text>
+                      <Divider style={{ flex: 1, backgroundColor: 'white' }} />
+                    </View>
+                    <CarouselBackgroundView
+                      style={{ height: 400 + Math.max(35, this.state.height) }}
+                    >
+                      <Carousel
+                        ref={c => {
+                          this._carousel = c
+                        }}
+                        data={this.state.resultList}
+                        renderItem={index => this._renderItem(index)}
+                        // onSnapToItem={this.handleSnapToItem.bind(this)}
+                        onSnapToItem={index =>
+                          this.setState({ activeSlide: index })
+                        }
+                        sliderWidth={Dimensions.get('window').width}
+                        itemWidth={Dimensions.get('window').width}
+                        layout={'default'}
+                        containerCustomStyle={{ flex: 1 }}
+                        slideStyle={{ flex: 1 }}
+                        firstItem={0}
+                      />
+                      <View>{this.pagination}</View>
+                    </CarouselBackgroundView>
+                    <Button
+                      title="save"
+                      icon={{ name: 'sign-in', type: 'font-awesome' }}
+                      onPress={() => this.openModal()}
+                    />
+                    <Modal
+                      visible={this.state.modalVisible}
+                      animationType={'slide'}
+                      onRequestClose={() => this.closeModal()}
+                      //transparent={true}
+                    >
+                      <View style={styles.modal_style}>
+                        <View style={{ flex: 1 }} />
+                        <Card title="確認ダイアログ" style={{ flex: 1 }}>
+                          <Text style={{ fontSize: 18 }}>
+                            入力情報を登録しますか？
+                          </Text>
+                        </Card>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                          <View style={{ flex: 1 }}>
+                            <Button
+                              onPress={() => this.handleSubmit()}
+                              title="YES"
+                            />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Button
+                              onPress={() => this.closeModal()}
+                              title="NO"
+                            />
+                          </View>
+                        </View>
+                        <View style={{ flex: 1 }} />
+                      </View>
+                    </Modal>
+                    <View style={{ height: 80 }} />
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Button onPress={() => this.closeModal()} title="NO" />
-                  </View>
-                </View>
-                <View style={{ flex: 1 }} />
-              </View>
-            </Modal>
-            <View style={{ height: 80 }} />
+                )
+              } else {
+                return (
+                  <Card style={{ flex: 1 }}>
+                    <View style={styles.target_total_coin_view}>
+                      <Text style={{ fontSize: 18 }}>
+                        有効な選挙がありません。
+                      </Text>
+                    </View>
+                  </Card>
+                )
+              }
+            })()}
           </ScrollView>
         </KeyboardAvoidingView>
       </View>
@@ -560,26 +695,6 @@ export default class ThumbnailCarousel extends Component {
   }
 }
 
-const VideoTitleText = styled.Text`
-  color: white;
-  top: 28;
-  justify-content: center;
-`
-const CurrentVideoImage = styled.Image`
-  top: 25;
-  box-shadow: 5px 10px;
-  width: 256;
-  height: 144;
-  border-radius: 10;
-`
-
-const ThumbnailBackgroundView = styled.View`
-  justify-content: center;
-  align-items: center;
-  width: 256;
-`
-
-const CurrentVideoTO = styled.TouchableOpacity``
 const CarouselBackgroundView = styled.View`
   height: 200;
   width: 100%;

@@ -57,7 +57,7 @@ export default class Menu extends Component {
     this.props.navigation.navigate('Menu')
   }
   onPressTohyoButton = () => {
-    this.props.navigation.navigate('CarouselScreen')
+    this.props.navigation.navigate('TohyoToroku')
   }
   onPressTohyoKekkaButton = () => {
     this.props.navigation.navigate('TohyoIchiran')
