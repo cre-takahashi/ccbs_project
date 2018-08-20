@@ -216,8 +216,8 @@ function insertZoyo(
 ) {
   return new Promise((resolve, reject) => {
     var sql =
-      'insert into t_zoyo (zoyo_moto_shain_pk, zoyo_saki_shain_pk, zoyo_comment, transaction_id, delete_flg, insert_user_id, insert_tm) ' +
-      'VALUES (?, ?, ?, ?, ?, ?, current_timestamp) RETURNING t_zoyo_pk'
+      'insert into t_zoyo (zoyo_moto_shain_pk, zoyo_saki_shain_pk, zoyo_comment, transaction_id, delete_flg, insert_user_id, insert_tm, nenji_flg) ' +
+      "VALUES (?, ?, ?, ?, ?, ?, current_timestamp, '0') RETURNING t_zoyo_pk"
     db
       .query(sql, {
         transaction: tx,
