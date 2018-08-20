@@ -20,6 +20,7 @@ const loginRouter = require('./routes/login')
 const tohyoShokaiKobetsuRouter = require('./routes/tohyo_shokai_kobetsu')
 const tohyoIchiranRouter = require('./routes/tohyo_ichiran')
 const tohyo_shokai_shosaiRouter = require('./routes/tohyo_shokai_shosai')
+const tohyo_shokai_nendoRouter = require('./routes/tohyo_shokai_nendo')
 
 const app = express()
 
@@ -47,6 +48,7 @@ app.use('/login', loginRouter)
 app.use('/tohyo_shokai_kobetsu', tohyoShokaiKobetsuRouter)
 app.use('/tohyo_ichiran', tohyoIchiranRouter)
 app.use('/tohyo_shokai_shosai', tohyo_shokai_shosaiRouter)
+app.use('/tohyo_shokai_nendo', tohyo_shokai_nendoRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
