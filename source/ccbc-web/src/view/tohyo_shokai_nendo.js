@@ -2,6 +2,8 @@ import React from 'react'
 import request from 'superagent'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
@@ -31,16 +33,15 @@ import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
-
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepButton from '@material-ui/core/StepButton'
 import Avatar from '@material-ui/core/Avatar'
 import Save from '@material-ui/icons/Save'
 import Menu from '@material-ui/core/Menu'
-
 import Chip from '@material-ui/core/Chip'
 import { Manager, Target, Popper } from 'react-popper'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
 import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
@@ -52,6 +53,11 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import { Redirect } from 'react-router-dom'
 import {
   RadarChart,
   PolarGrid,
@@ -65,6 +71,7 @@ import {
   CartesianGrid,
   Legend
 } from 'recharts'
+import ResponsiveContainer from 'recharts/lib/component/ResponsiveContainer'
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -339,14 +346,18 @@ class TohyoShokaiNendoForm extends React.Component {
     completed: {},
     comment: {},
     haifuCoin: 150,
-    tohyoCoin: 0,
     resultList: [],
+    resultcoin: [],
+    dispheight: 0,
     userid: null,
     password: null,
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    pNendo: null,
+    pNendoStr: null,
+    pNendoEnd: null
   }
 
   constructor(props) {
@@ -355,6 +366,40 @@ class TohyoShokaiNendoForm extends React.Component {
 
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
+    const { tohyo_shokai_nendo } = this.props
+
+    if (tohyo_shokai_nendo.pNendo === null) {
+      var tohyoShosaiNendoParamInfo = JSON.parse(
+        sessionStorage.getItem('tohyoShosaiNendoParamInfo')
+      )[null]
+      this.state.pNendo = tohyoShosaiNendoParamInfo['pNendo']
+      var Nendo = this.state.pNendo
+      var NendoS = Nendo + '/04/01'
+      var NendoE = parseInt(Nendo) + 1
+      NendoE = NendoE + '/03/31'
+      this.state.pNendoStr = NendoS
+      this.state.pNendoEnd = NendoE
+    } else {
+      this.state.pNendo = tohyo_shokai_nendo.pNendo
+      var Nendo = this.state.pNendo
+      var NendoS = Nendo + '/04/01'
+      var NendoE = parseInt(Nendo) + 1
+      NendoE = NendoE + '/03/31'
+      this.state.pNendoStr = NendoS
+      this.state.pNendoEnd = NendoE
+
+      var tohyoShosaiNendoParamInfo = [
+        {
+          pNendo: tohyo_shokai_nendo.pNendo
+        }
+      ]
+
+      sessionStorage.setItem(
+        'tohyoShosaiNendoParamInfo',
+        JSON.stringify(tohyoShosaiNendoParamInfo)
+      )
+    }
+
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
     for (var i in loginInfos) {
       var loginInfo = loginInfos[i]
@@ -366,6 +411,37 @@ class TohyoShokaiNendoForm extends React.Component {
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
     }
+
+    request
+      .post('/tohyo_shokai_nendo/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) {
+          return
+        }
+        var resList = res.body.data
+        var rescoin = res.body.getcoin
+        var resdcnt = res.body.dcnt
+        var head = []
+        if (resList.length === 0) {
+          head.push(false)
+        } else {
+          head.push(true)
+        }
+
+        //画面表示高さ設定
+        var disp_height = 0
+        disp_height = resdcnt * 60
+        if (disp_height < 400) {
+          disp_height = 400
+        }
+
+        // 検索結果表示
+        this.setState({ resultList: resList })
+        this.setState({ resultcoin: rescoin })
+        this.setState({ dispheight: disp_height })
+        this.setState({ headList: head })
+      })
   }
 
   handleChange = (name, cnt) => event => {
@@ -397,10 +473,6 @@ class TohyoShokaiNendoForm extends React.Component {
     }
 
     this.setState({ open2: false })
-  }
-
-  handleClick = event => {
-    alert(event.activePayload)
   }
 
   render() {
@@ -444,21 +516,16 @@ class TohyoShokaiNendoForm extends React.Component {
 
     const MyLink = props => <Link to="/sample" {...props} />
 
-    const data = [
-      { name: '佐藤源生', 発表数: 10, 所持コイン数: 500, amt: 2400 },
-      { name: '川除映梨奈', 発表数: 8, 所持コイン数: 450, amt: 2210 },
-      { name: '中川大輔', 発表数: 7, 所持コイン数: 400, amt: 2290 },
-      { name: '佐藤充', 発表数: 6, 所持コイン数: 350, amt: 2000 },
-      { name: '髙橋卓馬', 発表数: 5, 所持コイン数: 200, amt: 2181 },
-      { name: '小澤佳奈江', 発表数: 4, 所持コイン数: 400, amt: 2500 },
-      { name: '吉田裕一', 発表数: 3, 所持コイン数: 600, amt: 2500 },
-      { name: '渡邉孝徳', 発表数: 2, 所持コイン数: 300, amt: 2500 },
-      { name: '石垣努', 発表数: 1, 所持コイン数: 0, amt: 2500 },
-      { name: '山下祐里枝', 発表数: 5, 所持コイン数: 800, amt: 2500 },
-      { name: '三上徹也', 発表数: 4, 所持コイン数: 1000, amt: 2500 },
-      { name: '角谷貴之', 発表数: 7, 所持コイン数: 600, amt: 2500 },
-      { name: '山城博紀', 発表数: 12, 所持コイン数: 900, amt: 2100 }
-    ]
+    //グラフ表示情報（氏名、発表数、取得コイン数）設定
+    const data = []
+    for (var i in this.state.resultList) {
+      data.push({
+        name: this.state.resultList[i].shimei,
+        presen: Number(this.state.resultList[i].presen_cnt),
+        coin: Number(this.state.resultcoin[i])
+      })
+    }
+
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
@@ -547,30 +614,42 @@ class TohyoShokaiNendoForm extends React.Component {
           >
             <div className={classes.drawerHeader} />
             <div>
-              <BarChart
-                width={1200}
-                height={500}
-                data={data}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                // onClick={data => {
-                //   if (
-                //     data &&
-                //     data.activePayload &&
-                //     data.activePayload.length > 0
-                //   ) {
-                //     alert(data.activePayload[0].name)
-                //   }
-                // }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                <Tooltip2 />
-                <Legend />
-                <Bar yAxisId="left" dataKey="所持コイン数" fill="#8884d8" />
-                <Bar yAxisId="right" dataKey="発表数" fill="#82ca9d" />
-              </BarChart>
+              {(() => {
+                if (this.state.resultList.length != 0) {
+                  return (
+                    <div>
+                      <BarChart
+                        width={1200}
+                        height={this.state.dispheight}
+                        layout="vertical"
+                        data={data}
+                        margin={{ top: 20, right: 20, left: 80, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <YAxis type="category" dataKey="name" />
+                        <XAxis
+                          xAxisId="top"
+                          orientation="top"
+                          type="number"
+                          dataKey="coin"
+                          stroke="#8884d8"
+                        />
+                        <XAxis
+                          xAxisId="bottom"
+                          orientation="bottom"
+                          type="number"
+                          dataKey="presen"
+                          stroke="#82ca9d"
+                        />
+                        <Tooltip2 />
+                        <Legend />
+                        <Bar xAxisId="top" dataKey="coin" fill="#8884d8" />
+                        <Bar xAxisId="bottom" dataKey="presen" fill="#82ca9d" />
+                      </BarChart>
+                    </div>
+                  )
+                }
+              })()}
             </div>
           </main>
           {after}
@@ -585,4 +664,10 @@ TohyoShokaiNendoForm.propTypes = {
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(TohyoShokaiNendoForm)
+const mapState = state => ({
+  tohyo_shokai_nendo: state.tohyo_shokai_nendo
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState)(TohyoShokaiNendoForm)
+)

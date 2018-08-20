@@ -63,6 +63,7 @@ import Input from '@material-ui/core/Input'
 import moment from 'moment'
 import 'moment/locale/ja'
 import * as myActions from '../actions/tohyo_shokai_kobetsu'
+import * as myActions2 from '../actions/tohyo_shokai_nendo'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -322,6 +323,34 @@ const styles = theme => ({
   }
 })
 
+function getNendo(val) {
+  var result = '日付文字列が不正です。' //日付不正時のメッセージ
+  try {
+    var y = Number(val.substr(0, 4))
+    var m = Number(val.substr(4, 2))
+    var d = Number(val.substr(6, 2))
+    var dt = new Date(y, m - 1, d)
+    if (dt.getFullYear() == y && dt.getMonth() == m - 1 && dt.getDate() == d) {
+      if (m < 4) {
+        //4月はじまり
+        result = y - 1
+      } else {
+        result = y
+      }
+    }
+    return result
+  } catch (ex) {
+    return result
+  }
+}
+
+function getArray(array1) {
+  var array2 = array1.filter(function(x, i, self) {
+    return self.indexOf(x) === i
+  })
+  return array2
+}
+
 class TohyoIchiran extends React.Component {
   state = {
     open: false,
@@ -339,7 +368,8 @@ class TohyoIchiran extends React.Component {
     shimei: null,
     kengenCd: null,
     Target_year: '',
-    name: ''
+    name: '',
+    nendoList: []
   }
 
   constructor(props) {
@@ -349,7 +379,8 @@ class TohyoIchiran extends React.Component {
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
     // 現在年の取得。取得した年を初期表示する
-    var yyyy = new Date().getFullYear()
+    var yyyy = getNendo(moment(new Date()).format('YYYYMMDD'))
+    //var yyyy = new Date().getFullYear()
     this.setState({ Target_year: yyyy })
 
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
@@ -369,7 +400,28 @@ class TohyoIchiran extends React.Component {
       .end((err, res) => {
         if (err) return
         // 検索結果表示
+        this.state.resultList = res.body.data
         this.setState({ resultList: res.body.data })
+      })
+
+    request
+      .get('/tohyo_ichiran/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) return
+
+        // 年度リスト生成
+        var nendoList = []
+        for (var i in res.body.data) {
+          var r = res.body.data[i]
+          var d = moment(new Date(r.tohyo_kaishi_dt)).format('YYYYMMDD')
+          var nendo = getNendo(d)
+          nendoList.push(nendo)
+        }
+        // 年度重複削除
+        var nendoList2 = getArray(nendoList)
+        this.state.nendoList = nendoList2
+        this.setState({ nendoList: nendoList2 })
       })
   }
 
@@ -436,6 +488,13 @@ class TohyoIchiran extends React.Component {
     var pNendo = this.state.Target_year
 
     actions.setTohyoShokaiKobetsuData(pSenkyoPk, pSenkyoNm, pNendo)
+  }
+
+  handleGlaphClick = event => {
+    const { actions2 } = this.props
+    var pNendo = this.state.Target_year
+    actions2.setTohyoShokaiNendoData(pNendo)
+    this.props.history.push('/tohyo_shokai_nendo')
   }
 
   render() {
@@ -592,9 +651,9 @@ class TohyoIchiran extends React.Component {
                       id: 'Target_year-simple'
                     }}
                   >
-                    <MenuItem value={2018}>2018年</MenuItem>
-                    <MenuItem value={2019}>2019年</MenuItem>
-                    <MenuItem value={2020}>2020年</MenuItem>
+                    {this.state.nendoList.map(n => {
+                      return <MenuItem value={n}>{n}年</MenuItem>
+                    })}
                   </Select>
                 </FormControl>
               </form>
@@ -685,6 +744,7 @@ class TohyoIchiran extends React.Component {
                 color="default"
                 size="large"
                 className={classes.button}
+                onClick={this.handleGlaphClick}
               >
                 <Assessment
                   className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -710,7 +770,8 @@ const mapState = state => ({
 })
 
 const mapDispatch = dispatch => ({
-  actions: bindActionCreators(myActions, dispatch)
+  actions: bindActionCreators(myActions, dispatch),
+  actions2: bindActionCreators(myActions2, dispatch)
 })
 
 export default withStyles(styles, { withTheme: true })(
