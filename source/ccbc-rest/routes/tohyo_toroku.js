@@ -22,7 +22,8 @@ router.post('/find', (req, res) => {
     ' and exists (select 1 from t_senkyo tsen2 inner join t_shussekisha tshu2 on tsen2.t_senkyo_pk = tshu2.t_senkyo_pk' +
     " where tsen2.delete_flg = '0' and tshu2.delete_flg = '0' and tshu2.t_shain_pk = :mypk)" +
     " and not exists (select 1 from t_tohyo ttoh where ttoh.delete_flg = '0' and ttoh.t_presenter_pk = tpre.t_presenter_pk and ttoh.t_shussekisha_pk = tshu.t_shussekisha_pk and ttoh.transaction_id is not null)" +
-    ' and current_date between tsen.tohyo_kaishi_dt and tsen.tohyo_shuryo_dt and tpre.t_shain_pk <> :mypk'
+    ' and current_date between tsen.tohyo_kaishi_dt and tsen.tohyo_shuryo_dt and tpre.t_shain_pk <> :mypk' +
+    ' order by tsha.shimei_kana'
   db
     .query(sql, {
       replacements: { mypk: req.body.tShainPk },
