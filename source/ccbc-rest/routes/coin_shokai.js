@@ -81,7 +81,7 @@ async function finddata(req, res) {
   var takeCoinSu = 0
   for (var x in getCoinDatasAll) {
     param = {
-      account: getCoinDatasAll[x].transaction_id
+      transaction: getCoinDatasAll[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     getCoinDatasAll[x].coin = bccoin
@@ -90,7 +90,7 @@ async function finddata(req, res) {
 
   for (var x in getCoinDatas) {
     param = {
-      account: getCoinDatas[x].transaction_id
+      transaction: getCoinDatas[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     getCoinDatas[x].coin = bccoin
@@ -99,7 +99,7 @@ async function finddata(req, res) {
 
   for (var x in takeCoinDatasAll) {
     param = {
-      account: takeCoinDatasAll[x].transaction_id
+      transaction: takeCoinDatasAll[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     takeCoinDatasAll[x].coin = bccoin
@@ -108,7 +108,7 @@ async function finddata(req, res) {
 
   for (var x in takeCoinDatas) {
     param = {
-      account: takeCoinDatas[x].transaction_id
+      transaction: takeCoinDatas[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     takeCoinDatas[x].coin = bccoin
@@ -153,7 +153,7 @@ async function finddataChange(req, res) {
   var takeCoinSu = 0
   for (var x in getCoinDatasAll) {
     param = {
-      account: getCoinDatasAll[x].transaction_id
+      transaction: getCoinDatasAll[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     getCoinDatasAll[x].coin = bccoin
@@ -162,7 +162,7 @@ async function finddataChange(req, res) {
 
   for (var x in getCoinDatas) {
     param = {
-      account: getCoinDatas[x].transaction_id
+      transaction: getCoinDatas[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     getCoinDatas[x].coin = bccoin
@@ -171,7 +171,7 @@ async function finddataChange(req, res) {
 
   for (var x in takeCoinDatasAll) {
     param = {
-      account: takeCoinDatasAll[x].transaction_id
+      transaction: takeCoinDatasAll[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     takeCoinDatasAll[x].coin = bccoin
@@ -180,7 +180,7 @@ async function finddataChange(req, res) {
 
   for (var x in takeCoinDatas) {
     param = {
-      account: takeCoinDatas[x].transaction_id
+      transaction: takeCoinDatas[x].transaction_id
     }
     var bccoin = await bccoinget(param)
     takeCoinDatas[x].coin = bccoin

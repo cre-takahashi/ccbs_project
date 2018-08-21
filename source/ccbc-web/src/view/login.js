@@ -98,74 +98,84 @@ class TextFields extends React.Component {
   }
 
   handleClick = event => {
-    // ユーザIDからDBを検索して、社員情報を取得
-    request
-      .post(restdomain + '/login/find')
-      .send(this.state)
-      .end((err, res) => {
-        if (err) {
-          return
-        }
-        if (res.body.status) {
-          window.location.href = '/menu'
-        } else {
-          this.setState({
-            msg: 'ユーザ名またはパスワードを確認してください'
-          })
-          return
-        }
-
-        // 結果が取得できない場合は終了
-        if (typeof res.body.data === 'undefined') {
-          return
-        }
-        var resList = res.body.data[0]
-
-        // alert(resList.user_id)
-        // alert(resList.bc_account)
-        // alert(resList.image_file_nm)
-        // alert(resList.shimei)
-        // alert(resList.kengen_cd)
-
-        // // 取得結果設定
-        this.setState({ userid: resList.user_id })
-        this.setState({ bc_account: resList.bc_account })
-        this.setState({ image_file_nm: resList.image_file_nm })
-        this.setState({ shimei: resList.shimei })
-        this.setState({ kengen_cd: resList.kengen_cd })
-        this.setState({ password: this.state.passwordInput })
-
-        // TODO ここでサーバ（BC）へリクエストを送ってログイン情報を取得し、セッションストレージに格納して持ち回る
-        var loginInfo = [
-          {
-            userid: this.state.id, // ここはログイン画面で入力された値を設定
-            password: this.state.passwordInput, // ここはログイン画面で入力された値を設定
-            bc_account: resList.bc_account, // ここはログイン画面で入力された値を設定
-            tShainPk: resList.t_shain_pk, // ここはDBから読み込んだ値を設定
-            imageFileName: resList.image_file_nm, // ここはDBから読み込んだ値を設定
-            shimei: resList.shimei, // ここはDBから読み込んだ値を設定
-            kengenCd: resList.kengen_cd // ここはDBから読み込んだ値を設定
-          }
-        ]
-        // alert(loginInfo.userid)
-        // alert(loginInfo.password)
-        // alert(loginInfo.tShainPk)
-        // alert(loginInfo.imageFileName)
-        // alert(loginInfo.shimei)
-        // alert(loginInfo.kengenCd)
-
-        sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
-        sessionStorage.setItem('sessionId', true)
-
-        var loginInfo2 = JSON.parse(sessionStorage.getItem('loginInfo'))
-
-        // alert(loginInfo2.userid)
-        // alert(loginInfo2.password)
-        // alert(loginInfo2.tShainPk)
-        // alert(loginInfo2.imageFileName)
-        // alert(loginInfo2.shimei)
-        // alert(loginInfo2.kengenCd)
+    fetch(restdomain + '/login/find', {
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include',
+      headers: {
+        'X-MyRequest': 'this-is-cors-test',
+        'X-MyOption': 'my-option'
+      },
+      body: JSON.stringify(this.state),
+      headers: new Headers({ 'Content-type': 'application/json' })
+    })
+      .then(function(response) {
+        return response.json()
       })
+      .then(
+        function(json) {
+          if (json.status) {
+            // 結果が取得できない場合は終了
+            if (typeof json.data === 'undefined') {
+              return
+            }
+            var resList = json.data[0]
+
+            // alert(resList.user_id)
+            // alert(resList.bc_account)
+            // alert(resList.image_file_nm)
+            // alert(resList.shimei)
+            // alert(resList.kengen_cd)
+
+            // // 取得結果設定
+            this.setState({ userid: resList.user_id })
+            this.setState({ bc_account: resList.bc_account })
+            this.setState({ image_file_nm: resList.image_file_nm })
+            this.setState({ shimei: resList.shimei })
+            this.setState({ kengen_cd: resList.kengen_cd })
+            this.setState({ password: this.state.passwordInput })
+
+            // TODO ここでサーバ（BC）へリクエストを送ってログイン情報を取得し、セッションストレージに格納して持ち回る
+            var loginInfo = [
+              {
+                userid: this.state.id, // ここはログイン画面で入力された値を設定
+                password: this.state.passwordInput, // ここはログイン画面で入力された値を設定
+                bc_account: resList.bc_account, // ここはログイン画面で入力された値を設定
+                tShainPk: resList.t_shain_pk, // ここはDBから読み込んだ値を設定
+                imageFileName: resList.image_file_nm, // ここはDBから読み込んだ値を設定
+                shimei: resList.shimei, // ここはDBから読み込んだ値を設定
+                kengenCd: resList.kengen_cd // ここはDBから読み込んだ値を設定
+              }
+            ]
+            // alert(loginInfo.userid)
+            // alert(loginInfo.password)
+            // alert(loginInfo.tShainPk)
+            // alert(loginInfo.imageFileName)
+            // alert(loginInfo.shimei)
+            // alert(loginInfo.kengenCd)
+
+            sessionStorage.setItem('loginInfo', JSON.stringify(loginInfo))
+            sessionStorage.setItem('sessionId', true)
+
+            var loginInfo2 = JSON.parse(sessionStorage.getItem('loginInfo'))
+
+            // alert(loginInfo2.userid)
+            // alert(loginInfo2.password)
+            // alert(loginInfo2.tShainPk)
+            // alert(loginInfo2.imageFileName)
+            // alert(loginInfo2.shimei)
+            // alert(loginInfo2.kengenCd)
+
+            this.props.history.push('/menu')
+          } else {
+            this.setState({
+              msg: 'ユーザ名またはパスワードを確認してください'
+            })
+            return
+          }
+        }.bind(this)
+      )
+      .catch(error => console.error(error))
   }
 
   render() {

@@ -97,9 +97,9 @@ ReactDOM.render(
             <Route path="/graph" component={GraphForm} />
             <Route path="/db" component={DbForm} />
             <Route path="/image" component={ImageForm} />
+            <Route path="/menu" component={MenuForm} />
             <Auth>
               <Switch>
-                <Route path="/menu" component={MenuForm} />
                 <Route path="/senkyo_kanri" component={SenkyoKanriForm} />
                 <Route path="/senkyo_toroku" component={SenkyoTorokuForm} />
                 <Route path="/tohyo_toroku" component={TohyoTorokuForm} />
