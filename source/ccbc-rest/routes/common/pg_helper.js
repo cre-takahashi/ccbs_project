@@ -7,6 +7,7 @@
 exports.query = function(sql, values, callback) {
   console.log(sql, values)
   const databaseURL = 'postgres://postgres:pgadmin@localhost:5432/postgres'
+  // const databaseURL = 'postgres://vagrant:vagrant@192.168.0.62:5432/mvpsys'
   const pg = require('pg')
   const client = new pg.Client(databaseURL)
   client.connect(err => {
