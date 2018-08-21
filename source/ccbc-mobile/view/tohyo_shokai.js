@@ -1,31 +1,36 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, Image, AsyncStorage } from 'react-native'
-import {
-  Header,
-  Button,
-  Icon,
-  Avatar,
-  Rating,
-  FormInput,
-  Card
-} from 'react-native-elements'
+import { StyleSheet, View, ScrollView, Text, AsyncStorage } from 'react-native'
+import { Header, Icon, Avatar, Card } from 'react-native-elements'
+
+const restdomain = require('./common/constans.js').restdomain
 
 export default class TohyoShokai extends Component {
   constructor(props) {
-    super(props)
-    this.state = {}
+    super()
+    this.state = {
+      resultList: []
+    }
+    this.props = props
   }
 
   /** コンポーネントのマウント時処理 */
   async componentWillMount() {
     var loginInfo = await this.getLoginInfo()
-
     this.setState({ userid: loginInfo['userid'] })
     this.setState({ password: loginInfo['password'] })
     this.setState({ tShainPk: loginInfo['tShainPk'] })
+    this.state.tShainPk = Number(loginInfo['tShainPk'])
     this.setState({ imageFileName: loginInfo['imageFileName'] })
     this.setState({ shimei: loginInfo['shimei'] })
     this.setState({ kengenCd: loginInfo['kengenCd'] })
+
+    var tohyoShokaiInfo = await this.getTohyoShokaiInfo()
+    this.setState({ senkyoNm: tohyoShokaiInfo['senkyoNm'] })
+    this.setState({ tSenkyoPk: tohyoShokaiInfo['tSenkyoPk'] })
+    this.state.tSenkyoPk = Number(tohyoShokaiInfo['tSenkyoPk'])
+
+    // 初期表示情報取得
+    this.findTohyoShokai()
   }
 
   getLoginInfo = async () => {
@@ -42,9 +47,76 @@ export default class TohyoShokai extends Component {
     this.props.navigation.navigate('Menu')
   }
 
+  // 投票照会情報取得（前画面からのパラメータ）
+  getTohyoShokaiInfo = async () => {
+    try {
+      return JSON.parse(await AsyncStorage.getItem('tohyoShokaiInfo'))
+    } catch (error) {
+      return
+    }
+  }
+  // 投票照会情報検索（API呼び出し）
+  findTohyoShokai = async () => {
+    await fetch(restdomain + '/tohyo_shokai_kobetsu/find', {
+      method: 'POST',
+      body: JSON.stringify(this.state),
+      headers: new Headers({ 'Content-type': 'application/json' })
+    })
+      .then(function(response) {
+        return response.json()
+      })
+      .then(
+        function(json) {
+          // 結果が取得できない場合は終了
+          if (typeof json.data === 'undefined') {
+            return
+          }
+          // 検索結果の取得
+          var dataList = json.data
+          this.setState({ resultList: dataList })
+        }.bind(this)
+      )
+      .catch(error => console.error(error))
+  }
+  // 投票照会詳細画面遷移
+  onPressTarget = (
+    e,
+    tPresenterPk,
+    rank,
+    totalcoin,
+    shimei,
+    title,
+    imageFileNm
+  ) => {
+    // パラメータ設定
+    let tohyoShokaiShosaiInfo = {
+      senkyoNm: this.state.senkyoNm,
+      tSenkyoPk: this.state.tSenkyoPk,
+      tPresenterPk: tPresenterPk,
+      tRank: rank,
+      tTotalcoin: totalcoin,
+      tShimei: shimei,
+      tTitle: title,
+      tImageFileNm: imageFileNm
+    }
+    this.setTohyoShokaiShosaiInfo(JSON.stringify(tohyoShokaiShosaiInfo))
+    // 画面遷移
+    this.props.navigation.navigate('TohyoShokaiShosai')
+  }
+  // 投票照会詳細情報設定（次画面へのパラメータ）
+  setTohyoShokaiShosaiInfo = async tohyoShokaiShosaiInfo => {
+    try {
+      await AsyncStorage.removeItem('tohyoShokaiShosaiInfo')
+      await AsyncStorage.setItem('tohyoShokaiShosaiInfo', tohyoShokaiShosaiInfo)
+    } catch (error) {
+      alert(error)
+      return
+    }
+  }
+
   render() {
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         <Header
           leftComponent={
             <Icon
@@ -68,127 +140,110 @@ export default class TohyoShokai extends Component {
           }
           style={styles.header}
         />
-        <Card>
-          <View style={styles.targe_item}>
-            <View style={styles.target_rank_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/medal_g_n.png')}
-                activeOpacity={0.7}
-              />
-              <Text style={{ textAlign: 'center' }}>800 coin</Text>
-            </View>
-            <View style={styles.target_avatar_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/person11.png')}
-                activeOpacity={0.7}
-              />
-            </View>
-            <View style={styles.target_name_view}>
-              <Text style={{ fontSize: 18 }}>札幌　太郎</Text>
-              <Text style={{ fontSize: 12 }}>
-                『新しい価値を創造するために
-                {'\n'}
-                ・・・』
-              </Text>
-            </View>
-          </View>
-        </Card>
-        <Card>
-          <View style={styles.targe_item}>
-            <View style={styles.target_rank_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/medal_s_n.png')}
-                activeOpacity={0.7}
-              />
-              <Text style={{ textAlign: 'center' }}>750 coin</Text>
-            </View>
-            <View style={styles.target_avatar_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/person12.png')}
-                activeOpacity={0.7}
-              />
-            </View>
-            <View style={styles.target_name_view}>
-              <Text style={{ fontSize: 18 }}>中央 二郎</Text>
-              <Text style={{ fontSize: 12 }}>配属後に始めた習慣</Text>
-            </View>
-          </View>
-        </Card>
-        <Card>
-          <View style={styles.targe_item}>
-            <View style={styles.target_rank_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/medal_c_n.png')}
-                activeOpacity={0.7}
-              />
-              <Text style={{ textAlign: 'center' }}>700 coin</Text>
-            </View>
-            <View style={styles.target_avatar_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/person15.png')}
-                activeOpacity={0.7}
-              />
-            </View>
-            <View style={styles.target_name_view}>
-              <Text style={{ fontSize: 18 }}>豊平　花子</Text>
-              <Text style={{ fontSize: 12 }}>概念だけでもわかる！p-進数</Text>
-            </View>
-          </View>
-        </Card>
-        <Card>
-          <View style={styles.targe_item}>
-            <View style={styles.target_rank_view}>
-              <Text style={{ textAlign: 'center', fontSize: 24 }}>{'\n'}4</Text>
-              <Text style={{ textAlign: 'center' }}>500 coin</Text>
-            </View>
-            <View style={styles.target_avatar_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/person13.png')}
-                activeOpacity={0.7}
-              />
-            </View>
-            <View style={styles.target_name_view}>
-              <Text style={{ fontSize: 18 }}>東 十郎</Text>
-              <Text style={{ fontSize: 12 }}>プレゼンノウハウ</Text>
-            </View>
-          </View>
-        </Card>
-        <Card>
-          <View style={styles.targe_item}>
-            <View style={styles.target_rank_view}>
-              <Text style={{ textAlign: 'center', fontSize: 24 }}>{'\n'}5</Text>
-              <Text style={{ textAlign: 'center' }}>450 coin</Text>
-            </View>
-            <View style={styles.target_avatar_view}>
-              <Avatar
-                large
-                rounded
-                source={require('./../images/person1.png')}
-                activeOpacity={0.7}
-              />
-            </View>
-            <View style={styles.target_name_view}>
-              <Text style={{ fontSize: 18 }}>北見 圭吾</Text>
-              <Text style={{ fontSize: 12 }}>
-                甘くて美味しいみかんの見分け方
-              </Text>
-            </View>
-          </View>
-        </Card>
+        <Text style={{ fontSize: 18 }}>
+          {'　'}
+          {this.state.senkyoNm}
+        </Text>
+        <ScrollView>
+          {this.state.resultList.map(n => {
+            return (
+              <Card>
+                <View style={styles.targe_item}>
+                  <View style={styles.target_rank_view}>
+                    {(() => {
+                      if (n.rank === '0') {
+                        return (
+                          <Avatar
+                            large
+                            rounded
+                            source={require('./../images/medal_g_n.png')}
+                            activeOpacity={0.7}
+                          />
+                        )
+                      } else if (n.rank === '1') {
+                        return (
+                          <Avatar
+                            large
+                            rounded
+                            source={require('./../images/medal_s_n.png')}
+                            activeOpacity={0.7}
+                          />
+                        )
+                      } else if (n.rank === '2') {
+                        return (
+                          <Avatar
+                            large
+                            rounded
+                            source={require('./../images/medal_c_n.png')}
+                            activeOpacity={0.7}
+                          />
+                        )
+                      } else {
+                        return (
+                          <Text
+                            style={{
+                              textAlign: 'center',
+                              fontSize: 16
+                            }}
+                          >
+                            {'\n'}
+                            NO.
+                            <Text style={{ fontSize: 24 }}>
+                              {Number(n.rank) + 1}
+                            </Text>
+                          </Text>
+                        )
+                      }
+                    })()}
+                    <Text style={{ textAlign: 'center' }}>
+                      {n.sumCoin} coin
+                    </Text>
+                  </View>
+                  <View style={styles.target_avatar_view}>
+                    <Avatar
+                      large
+                      rounded
+                      source={{
+                        uri: restdomain + `/uploads/${n.image_file_nm}`
+                      }}
+                      activeOpacity={0.7}
+                      onPress={e =>
+                        this.onPressTarget(
+                          e,
+                          `${n.t_presenter_pk}`,
+                          `${Number(n.rank) + 1}`,
+                          `${n.sumCoin}`,
+                          `${n.shimei}`,
+                          `${n.title}`,
+                          `${n.image_file_nm}`
+                        )
+                      }
+                    />
+                  </View>
+                  <View style={styles.target_name_view}>
+                    <Text
+                      style={{ fontSize: 18 }}
+                      onPress={e =>
+                        this.onPressTarget(
+                          e,
+                          `${n.t_presenter_pk}`,
+                          `${Number(n.rank) + 1}`,
+                          `${n.sumCoin}`,
+                          `${n.shimei}`,
+                          `${n.title}`,
+                          `${n.image_file_nm}`
+                        )
+                      }
+                    >
+                      {n.shimei}
+                    </Text>
+                    <Text style={{ fontSize: 12 }}>{n.title}</Text>
+                  </View>
+                </View>
+              </Card>
+            )
+          })}
+        </ScrollView>
       </View>
     )
   }
@@ -206,40 +261,18 @@ const styles = StyleSheet.create({
     marginRight: 30
   },
   target_rank_view: {
-    width: 80
+    flex: 1,
+    justifyContent: 'center'
   },
   target_avatar_view: {
+    flex: 1,
     justifyContent: 'center',
     marginLeft: 10
   },
   target_name_view: {
+    flex: 1.5,
     flexDirection: 'column',
     marginLeft: 10,
     justifyContent: 'center'
-  },
-  target_title_view: {
-    marginTop: 10,
-    marginLeft: 0,
-    marginBottom: 20
-  },
-  target_coin_view: {
-    marginLeft: 0
-  },
-  target_total_coin_view: {
-    marginLeft: 10
-  },
-  rating_item: {
-    flexDirection: 'row'
-  },
-  rating_title_view: {
-    justifyContent: 'center',
-    marginLeft: 0
-  },
-  rating_point_view: {
-    justifyContent: 'center'
-  },
-  rating_value_view: {
-    flexDirection: 'column',
-    marginLeft: 10
   }
 })

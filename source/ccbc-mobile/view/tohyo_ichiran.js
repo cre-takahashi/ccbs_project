@@ -42,6 +42,26 @@ export default class TohyoIchiran extends Component {
     this.props.navigation.navigate('Menu')
   }
 
+  // 投票照会画面遷移
+  onPressTohyoShokaiButton = () => {
+    // TODO : パラメータ設定
+    let tohyoShokaiInfo = {
+      senkyoNm: '2018年8月部会',
+      tSenkyoPk: 8
+    }
+    this.setTohyoShokaiInfo(JSON.stringify(tohyoShokaiInfo))
+    // 画面遷移
+    this.props.navigation.navigate('TohyoShokai')
+  }
+  setTohyoShokaiInfo = async tohyoShokaiInfo => {
+    try {
+      await AsyncStorage.removeItem('tohyoShokaiInfo')
+      await AsyncStorage.setItem('tohyoShokaiInfo', tohyoShokaiInfo)
+    } catch (error) {
+      alert(error)
+      return
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -72,6 +92,10 @@ export default class TohyoIchiran extends Component {
           <View style={styles.targe_item}>
             <View style={styles.target_name_view}>
               <Text style={{ fontSize: 18 }}>ここに実装すること</Text>
+              <Button
+                title="投票照会"
+                onPress={this.onPressTohyoShokaiButton}
+              />
             </View>
           </View>
         </Card>

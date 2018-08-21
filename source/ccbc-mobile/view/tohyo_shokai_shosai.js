@@ -4,10 +4,9 @@ import {
   WebView,
   Dimensions,
   View,
+  ScrollView,
   Text,
   Image,
-  Picker,
-  FlatList,
   AsyncStorage
 } from 'react-native'
 import {
@@ -15,10 +14,11 @@ import {
   Button,
   Icon,
   Avatar,
-  Rating,
-  FormInput,
-  Card
+  Card,
+  Divider
 } from 'react-native-elements'
+
+const restdomain = require('./common/constans.js').restdomain
 
 const { width } = Dimensions.get('window')
 const html = `<html>
@@ -62,16 +62,40 @@ const html = `<html>
 </html>`
 
 export default class TohyoShokaiShosai extends Component {
+  constructor(props) {
+    super()
+    this.state = {
+      resultList: [],
+      tohyo_coin: []
+    }
+    this.props = props
+  }
+
   /** コンポーネントのマウント時処理 */
   async componentWillMount() {
     var loginInfo = await this.getLoginInfo()
-
     this.setState({ userid: loginInfo['userid'] })
     this.setState({ password: loginInfo['password'] })
     this.setState({ tShainPk: loginInfo['tShainPk'] })
+    this.state.tShainPk = Number(loginInfo['tShainPk'])
     this.setState({ imageFileName: loginInfo['imageFileName'] })
     this.setState({ shimei: loginInfo['shimei'] })
     this.setState({ kengenCd: loginInfo['kengenCd'] })
+
+    var tohyoShokaiShosaiInfo = await this.getTohyoShokaiShosaiInfo()
+    this.setState({ senkyoNm: tohyoShokaiShosaiInfo['senkyoNm'] })
+    this.setState({ tSenkyoPk: tohyoShokaiShosaiInfo['tSenkyoPk'] })
+    this.state.tSenkyoPk = Number(tohyoShokaiShosaiInfo['tSenkyoPk'])
+    this.setState({ tPresenterPk: tohyoShokaiShosaiInfo['tPresenterPk'] })
+    this.state.tPresenterPk = Number(tohyoShokaiShosaiInfo['tPresenterPk'])
+    this.setState({ tRank: tohyoShokaiShosaiInfo['tRank'] })
+    this.setState({ tTotalCoin: tohyoShokaiShosaiInfo['tTotalcoin'] })
+    this.setState({ tShimei: tohyoShokaiShosaiInfo['tShimei'] })
+    this.setState({ tTitle: tohyoShokaiShosaiInfo['tTitle'] })
+    this.setState({ tImageFileNm: tohyoShokaiShosaiInfo['tImageFileNm'] })
+
+    // 初期表示情報取得
+    this.findTohyoShokaiShosai()
   }
 
   getLoginInfo = async () => {
@@ -88,9 +112,64 @@ export default class TohyoShokaiShosai extends Component {
     this.props.navigation.navigate('Menu')
   }
 
+  // 投票照会詳細情報取得（前画面からのパラメータ）
+  getTohyoShokaiShosaiInfo = async () => {
+    try {
+      return JSON.parse(await AsyncStorage.getItem('tohyoShokaiShosaiInfo'))
+    } catch (error) {
+      return
+    }
+  }
+  // 投票照会詳細情報検索（API呼び出し）
+  findTohyoShokaiShosai = async () => {
+    await fetch(restdomain + '/tohyo_shokai_shosai/find', {
+      method: 'POST',
+      body: JSON.stringify(this.state),
+      headers: new Headers({ 'Content-type': 'application/json' })
+    })
+      .then(function(response) {
+        return response.json()
+      })
+      .then(
+        function(json) {
+          // 結果が取得できない場合は終了
+          if (typeof json.data === 'undefined') {
+            return
+          }
+          // 検索結果の取得
+          var resList = json.data
+          this.setState({ resultList: resList })
+          var coin = json.tohyo_coin
+          this.setState({ tohyo_coin: coin })
+          if (resList.length != 0) {
+            this.state.senkyo_nm = resList[0].senkyo_nm
+          }
+          // 各評価ポイントの集計
+          var sum1 = 0,
+            sum2 = 0,
+            sum3 = 0,
+            sum4 = 0,
+            sum5 = 0
+          for (var i in this.state.resultList) {
+            sum1 += this.state.resultList[i].document_pt
+            sum2 += this.state.resultList[i].presentation_pt
+            sum3 += this.state.resultList[i].expression_pt
+            sum4 += this.state.resultList[i].influence_pt
+            sum5 += this.state.resultList[i].breakthrough_pt
+          }
+          this.setState({ sum_document: sum1 })
+          this.setState({ sum_presentation: sum2 })
+          this.setState({ sum_expression: sum3 })
+          this.setState({ sum_influence: sum4 })
+          this.setState({ sum_breakthrough: sum5 })
+        }.bind(this)
+      )
+      .catch(error => console.error(error))
+  }
+
   render() {
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         <Header
           leftComponent={
             <Icon
@@ -114,87 +193,91 @@ export default class TohyoShokaiShosai extends Component {
           }
           style={styles.header}
         />
-        <Card>
-          <Text style={{ fontSize: 14 }}>
-            平成３０年度６月部会
-            {'\n'}
-          </Text>
-          <View style={styles.targe_item}>
-            <View style={styles.target_avatar_view}>
-              <Avatar
-                small
-                rounded
-                source={require('./../images/person11.png')}
-                activeOpacity={0.7}
-              />
+        <ScrollView>
+          <Card>
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+              <View style={{ flex: 2 }}>
+                <Text style={{ fontSize: 14 }}>
+                  {this.state.senkyoNm}
+                  {'\n'}
+                </Text>
+                <View style={styles.targe_item}>
+                  <View style={styles.target_avatar_view}>
+                    <Avatar
+                      small
+                      rounded
+                      source={{
+                        uri: restdomain + `/uploads/${this.state.tImageFileNm}`
+                      }}
+                      activeOpacity={0.7}
+                    />
+                  </View>
+                  <View style={styles.target_name_view}>
+                    <Text style={{ fontSize: 18 }}>{this.state.tShimei}</Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: 14 }}>
+                  『{this.state.tTitle}』{'\n'}
+                </Text>
+                <Text style={{ fontSize: 14 }}>
+                  全体順位　：
+                  {this.state.tRank}位{'\n'}
+                  獲得コイン：
+                  {this.state.tTotalCoin} coin
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'flex-end'
+                }}
+              >
+                <Image source={require('./../images/RadarChart.png')} />
+              </View>
             </View>
-            <View style={styles.target_name_view}>
-              <Text style={{ fontSize: 18 }}>札幌　太郎</Text>
-            </View>
-          </View>
-          <Text style={{ fontSize: 14 }}>
-            『新しい価値を創造するために・・・』
-            {'\n'}
-          </Text>
-          <Text style={{ fontSize: 14 }}>
-            全体順位：１位　獲得コイン：800 coin
-          </Text>
-        </Card>
-        <View style={{ marginTop: 10, marginLeft: 30, marginRight: 20 }}>
-          <Image source={require('./../images/RadarChart.png')} />
-        </View>
-        <Card>
-          <View style={styles.targe_com_item}>
-            <View style={styles.target_avatar_com_view}>
-              <Avatar
-                small
-                rounded
-                source={require('./../images/person12.png')}
-                activeOpacity={0.7}
-              />
-              <Text style={{ fontSize: 12 }}>中央 二郎</Text>
-            </View>
-            <View style={styles.target_name_com_view}>
-              <Text style={{ fontSize: 12 }}>
-                投票：500coin
-                {'\n'}
-                資料作成：10点、発表力：10点、表現力：10点、
-                {'\n'}
-                影響力：10点、限界突破：10点
-                {'\n'}
-              </Text>
-              <Text style={{ fontSize: 12 }}>
-                ここが良かったね。
-                {'\n'}
-                ここをこうすると更に良くなるはず。
-              </Text>
-            </View>
-          </View>
-        </Card>
-        <Card>
-          <View style={styles.targe_com_item}>
-            <View style={styles.target_avatar_com_view}>
-              <Avatar
-                small
-                rounded
-                source={require('./../images/person16.png')}
-                activeOpacity={0.7}
-              />
-              <Text style={{ fontSize: 12 }}>厚別　花子</Text>
-            </View>
-            <View style={styles.target_name_com_view}>
-              <Text style={{ fontSize: 12 }}>
-                投票：200coin
-                {'\n'}
-                資料作成： 8点、発表力： 5点、表現力： 3点、
-                {'\n'}
-                影響力： 3点、限界突破： 1点
-                {'\n'}
-              </Text>
-              <Text style={{ fontSize: 12 }}>資料に工夫が見られてGOOD！</Text>
-            </View>
-          </View>
-        </Card>
+          </Card>
+          {this.state.resultList.map((n, i) => {
+            return (
+              <Card>
+                <View style={styles.targe_com_item}>
+                  <View style={styles.target_avatar_com_view}>
+                    <Avatar
+                      small
+                      rounded
+                      source={{
+                        uri: restdomain + `/uploads/${n.tohyo_image}`
+                      }}
+                      activeOpacity={0.7}
+                    />
+                    <Text style={{ fontSize: 12 }}>{n.tohyo_shimei}</Text>
+                  </View>
+                  <View style={styles.target_eval_com_view}>
+                    <Text style={{ fontSize: 12 }}>
+                      投票：
+                      {this.state.tohyo_coin[i]}
+                      coin
+                      {'\n'}
+                      資料作成：
+                      {n.document_pt}
+                      点、発表力：
+                      {n.presentation_pt}
+                      点、表現力：
+                      {n.expression_pt}
+                      点、
+                      {'\n'}
+                      影響力：
+                      {n.influence_pt}
+                      点、限界突破：
+                      {n.breakthrough_pt}点
+                    </Text>
+                    <Divider style={{ backgroundColor: 'gray' }} />
+                    <Text style={{ fontSize: 12 }}>{n.tohyo_comment}</Text>
+                  </View>
+                </View>
+              </Card>
+            )
+          })}
+        </ScrollView>
       </View>
     )
   }
@@ -215,7 +298,7 @@ const styles = StyleSheet.create({
   target_avatar_view: {},
   target_name_view: {
     flexDirection: 'column',
-    marginLeft: 30,
+    marginLeft: 10,
     justifyContent: 'center'
   },
   targe_com_item: {
@@ -224,10 +307,13 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0
   },
-  target_avatar_com_view: {},
-  target_name_com_view: {
+  target_avatar_com_view: {
+    flex: 1
+  },
+  target_eval_com_view: {
+    flex: 4,
     flexDirection: 'column',
-    marginLeft: 20,
+    marginLeft: 10,
     justifyContent: 'center'
   },
   target_title_view: {
