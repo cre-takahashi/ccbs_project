@@ -59,6 +59,8 @@ import Search from '@material-ui/icons/Search'
 import Edit from '@material-ui/icons/Edit'
 import Web from '@material-ui/icons/Web'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,

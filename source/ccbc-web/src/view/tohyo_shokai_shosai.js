@@ -67,6 +67,8 @@ import {
   Tooltip as Tooltip2
 } from 'recharts'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -424,7 +426,7 @@ class TohyoShokaiShosaiForm extends React.Component {
     }
 
     request
-      .post('/tohyo_shokai_shosai/find')
+      .post(restdomain + '/tohyo_shokai_shosai/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {

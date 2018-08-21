@@ -63,6 +63,8 @@ import { bindActionCreators } from 'redux'
 import * as myActions from '../actions/coin_shokai'
 import { connect } from 'react-redux'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -379,7 +381,7 @@ class CoinShokaiForm extends React.Component {
     }
 
     request
-      .post('/coin_shokai/find')
+      .post(restdomain + '/coin_shokai/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {
@@ -421,7 +423,7 @@ class CoinShokaiForm extends React.Component {
       this.state.target_manager = event.target.value
     }
     request
-      .post('/coin_shokai/findChange')
+      .post(restdomain + '/coin_shokai/findChange')
       .send(this.state)
       .end((err, res) => {
         if (err) {

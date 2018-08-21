@@ -60,6 +60,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as myActions from '../actions/tohyo_shokai_shosai'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: 'whitesmoke',
@@ -530,7 +532,7 @@ class TohyoShokaiKobetsuForm extends React.Component {
       }
 
       request
-        .post('/tohyo_shokai_kobetsu/find')
+        .post(restdomain + '/tohyo_shokai_kobetsu/find')
         .send(this.state)
         .end((err, res) => {
           if (err) return

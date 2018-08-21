@@ -58,6 +58,8 @@ import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
 import Portal from '@material-ui/core/Portal'
 
+const restdomain = require('../common/constans.js').restdomain
+
 let counter = 0
 function createData(name, image) {
   counter += 1
@@ -510,7 +512,7 @@ class PersistentDrawer extends React.Component {
     var account = null
 
     request
-      .post('/senkyo_toroku/find')
+      .post(restdomain + '/senkyo_toroku/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {
@@ -894,7 +896,7 @@ class PersistentDrawer extends React.Component {
 
   handleSubmit() {
     request
-      .post('/senkyo_toroku/create')
+      .post(restdomain + '/senkyo_toroku/create')
       .send(this.state)
       .end((err, res) => {
         if (err) {

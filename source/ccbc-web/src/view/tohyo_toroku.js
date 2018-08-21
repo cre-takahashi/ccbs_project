@@ -45,6 +45,8 @@ import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableRow from '@material-ui/core/TableRow'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const drawerWidth = 240
 
 const styles = theme => ({
@@ -344,7 +346,7 @@ class TohyoTorokuForm extends React.Component {
     }
 
     request
-      .post('/tohyo_toroku/find')
+      .post(restdomain + '/tohyo_toroku/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {
@@ -482,7 +484,7 @@ class TohyoTorokuForm extends React.Component {
   handleSubmit() {
     if (window.confirm('入力情報を登録しますか？')) {
       request
-        .post('/tohyo_toroku/create')
+        .post(restdomain + '/tohyo_toroku/create')
         .send(this.state)
         .end((err, res) => {
           if (err) {

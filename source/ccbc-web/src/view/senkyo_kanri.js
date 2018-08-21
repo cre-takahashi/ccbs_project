@@ -50,6 +50,8 @@ import request from 'superagent'
 import moment from 'moment'
 import 'moment/locale/ja'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -261,7 +263,7 @@ class PersistentDrawer extends React.Component {
       }
     }
 
-    request.get('/senkyo_kanri/find').end((err, res) => {
+    request.get(restdomain + '/senkyo_kanri/find').end((err, res) => {
       if (err) return
       // 検索結果表示
       this.setState({ resultList: res.body.data })

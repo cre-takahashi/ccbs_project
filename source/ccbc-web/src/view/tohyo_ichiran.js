@@ -67,6 +67,8 @@ import * as myActions2 from '../actions/tohyo_shokai_nendo'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -395,7 +397,7 @@ class TohyoIchiran extends React.Component {
     this.state.targetYear = yyyy
     request
       //    .get('/tohyo_ichiran/find')
-      .post('/tohyo_ichiran/find')
+      .post(restdomain + '/tohyo_ichiran/find')
       .send(this.state)
       .end((err, res) => {
         if (err) return
@@ -405,7 +407,7 @@ class TohyoIchiran extends React.Component {
       })
 
     request
-      .get('/tohyo_ichiran/find')
+      .get(restdomain + '/tohyo_ichiran/find')
       .send(this.state)
       .end((err, res) => {
         if (err) return
@@ -446,7 +448,7 @@ class TohyoIchiran extends React.Component {
     this.state.targetYear = event.target.value
     request
       //    .get('/tohyo_ichiran/find')
-      .post('/tohyo_ichiran/find')
+      .post(restdomain + '/tohyo_ichiran/find')
       .send(this.state)
       .end((err, res) => {
         if (err) return

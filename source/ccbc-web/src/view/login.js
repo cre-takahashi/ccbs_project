@@ -20,6 +20,8 @@ import request from 'superagent'
 
 import SampleForm from './sample'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -98,7 +100,7 @@ class TextFields extends React.Component {
   handleClick = event => {
     // ユーザIDからDBを検索して、社員情報を取得
     request
-      .post('/login/find')
+      .post(restdomain + '/login/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {

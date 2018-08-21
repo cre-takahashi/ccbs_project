@@ -61,6 +61,8 @@ import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -368,7 +370,7 @@ class CoinZoyoForm extends React.Component {
     }
 
     request
-      .post('/coin_zoyo/find')
+      .post(restdomain + '/coin_zoyo/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {
@@ -443,7 +445,7 @@ class CoinZoyoForm extends React.Component {
   handleSubmit() {
     if (window.confirm('入力情報を登録しますか？')) {
       request
-        .post('/coin_zoyo/create')
+        .post(restdomain + '/coin_zoyo/create')
         .send(this.state)
         .end((err, res) => {
           if (err) {

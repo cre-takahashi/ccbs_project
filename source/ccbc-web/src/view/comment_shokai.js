@@ -89,6 +89,8 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -568,7 +570,7 @@ class CommentShokaiForm extends React.Component {
     this.state.coin = coinShokai.coin
 
     request
-      .post('/comment_shokai/find')
+      .post(restdomain + '/comment_shokai/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {

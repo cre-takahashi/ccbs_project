@@ -36,6 +36,7 @@ import MenuList from '@material-ui/core/MenuList'
 import Collapse from '@material-ui/core/Collapse'
 import Portal from '@material-ui/core/Portal'
 
+const restdomain = require('../common/constans.js').restdomain
 const drawerWidth = 240
 
 const styles = theme => ({

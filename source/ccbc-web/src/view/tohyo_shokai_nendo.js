@@ -73,6 +73,8 @@ import {
 } from 'recharts'
 import ResponsiveContainer from 'recharts/lib/component/ResponsiveContainer'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -413,7 +415,7 @@ class TohyoShokaiNendoForm extends React.Component {
     }
 
     request
-      .post('/tohyo_shokai_nendo/find')
+      .post(restdomain + '/tohyo_shokai_nendo/find')
       .send(this.state)
       .end((err, res) => {
         if (err) {

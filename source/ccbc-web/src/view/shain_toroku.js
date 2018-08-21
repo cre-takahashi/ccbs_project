@@ -60,6 +60,8 @@ import Edit from '@material-ui/icons/Edit'
 import Web from '@material-ui/icons/Web'
 import AddAPhoto from '@material-ui/icons/AddAPhoto'
 
+const restdomain = require('../common/constans.js').restdomain
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,

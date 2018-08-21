@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import request from 'superagent'
 import { Redirect } from 'react-router-dom'
 
+const restdomain = require('../common/constans.js').restdomain
+
 export default class DbForm extends Component {
   constructor(props) {
     super(props)
@@ -18,7 +20,7 @@ export default class DbForm extends Component {
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
     // プルダウン用のマスタ読み込み
-    request.get('/server/find').end((err, res) => {
+    request.get(restdomain + '/server/find').end((err, res) => {
       if (err) return
       // 検索結果表示
       this.setState({ resultList: res.body.data })
