@@ -58,6 +58,36 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
+// ▼▼▼404エラー対応 ここから
+
+// 第一案
+console.log('★★★★★★★★★★：' + root)
+app.use(express.static(path.join(__dirname, 'static')))
+app.use(fallback('index.html', { root: root }))
+
+// 第二案（第一案がだめなら、第一案をコメントアウトして、第二案のコメントを解除）
+// app.use(
+//   fallback({
+//     verbose: true
+//   })
+// )
+// app.use(express.static('.'))
+
+// 第三案（第一、二案がだめなら、第一、二案をコメントアウトして、第三案のコメントを解除）
+// app.use(fallback({
+//   rewrites:[
+//       {from: /^\/api\/.*$/, to: function(context){
+//           return context.parsedUrl.pathname;
+//       }},
+//       {from: /\/.*/, to: '/'}
+//   ]
+// }))
+// app.get('/', function(req, res, next){
+//   res.render('index');
+// })
+
+// ▲▲▲404エラー対応 ここまで
+
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/server', serverRouter)
@@ -73,9 +103,6 @@ app.use('/tohyo_shokai_kobetsu', tohyoShokaiKobetsuRouter)
 app.use('/tohyo_ichiran', tohyoIchiranRouter)
 app.use('/tohyo_shokai_shosai', tohyo_shokai_shosaiRouter)
 app.use('/tohyo_shokai_nendo', tohyo_shokai_nendoRouter)
-
-app.use(express.static(path.join(__dirname, 'static')))
-app.use(fallback('index.html', { root: root }))
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
