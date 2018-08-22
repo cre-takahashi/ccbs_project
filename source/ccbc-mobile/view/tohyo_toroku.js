@@ -91,6 +91,7 @@ export default class TohyoToroku extends Component {
   findTohyoToroku = async () => {
     await fetch(restdomain + '/tohyo_toroku/find', {
       method: 'POST',
+      mode: 'cors',
       body: JSON.stringify(this.state),
       headers: new Headers({ 'Content-type': 'application/json' })
     })
@@ -132,6 +133,7 @@ export default class TohyoToroku extends Component {
     }
     await fetch(restdomain + '/tohyo_toroku/create', {
       method: 'POST',
+      mode: 'cors',
       body: JSON.stringify(this.state),
       headers: new Headers({ 'Content-type': 'application/json' })
     })

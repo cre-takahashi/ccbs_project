@@ -4,8 +4,11 @@ const initialState = {
 
 export function sampleReducer(state = initialState, action) {
   switch (action.type) {
-    case 'UPDATE': {
+    case 'INCREASE': {
       return { ...state, number: state.number + 1 }
+    }
+    case 'DECREASE': {
+      return { ...state, number: state.number - 1 }
     }
     default: {
       return state

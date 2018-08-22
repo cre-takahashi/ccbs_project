@@ -41,7 +41,7 @@ export default class Login extends Component {
     try {
       await AsyncStorage.setItem('loginInfo', loginInfo)
     } catch (error) {
-      alert(error)
+      //alert(error)
       return
     }
   }
@@ -49,6 +49,7 @@ export default class Login extends Component {
   onPressButton = () => {
     fetch(restdomain + '/login/find', {
       method: 'POST',
+      mode: 'cors',
       body: JSON.stringify(this.state),
       headers: new Headers({ 'Content-type': 'application/json' })
     })

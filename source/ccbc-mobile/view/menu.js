@@ -68,6 +68,12 @@ export default class Menu extends Component {
   onPressCoinZoyoButton = () => {
     this.props.navigation.navigate('CoinZoyo')
   }
+  onPressCommentShokaiButton = () => {
+    this.props.navigation.navigate('CommentShokai')
+  }
+  onPressHomeButton = () => {
+    this.props.navigation.navigate('Home')
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -151,6 +157,36 @@ export default class Menu extends Component {
               title="コイン贈与"
               style={styles.menu_button}
               onPress={this.onPressCoinZoyoButton}
+            />
+          </View>
+        </View>
+        <View style={styles.menu_item}>
+          <View style={styles.menu_icon_view}>
+            <Image
+              source={require('./../images/koji.png')}
+              style={styles.menu_icon}
+            />
+          </View>
+          <View style={styles.menu_button_view}>
+            <Button
+              title="コメント照会（テスト用）"
+              style={styles.menu_button}
+              onPress={this.onPressCommentShokaiButton}
+            />
+          </View>
+        </View>
+        <View style={styles.menu_item}>
+          <View style={styles.menu_icon_view}>
+            <Image
+              source={require('./../images/koji.png')}
+              style={styles.menu_icon}
+            />
+          </View>
+          <View style={styles.menu_button_view}>
+            <Button
+              title="Redux（テスト用）"
+              style={styles.menu_button}
+              onPress={this.onPressHomeButton}
             />
           </View>
         </View>

@@ -4,6 +4,7 @@ import { Provider, connect } from 'react-redux' // 5.0.6
 import { createStore, combineReducers } from 'redux' // 3.7.2
 import { createStackNavigator } from 'react-navigation' // 1.0.0-beta.21
 import { sampleReducer } from './reducers/sampleReducer'
+import { coinShokaiReducer } from './reducers/coin_shokai'
 import HomeForm from './view/Home'
 import NextForm from './view/Next'
 import CarouselForm from './view/carousel'
@@ -48,7 +49,8 @@ const HomeNavigator = createStackNavigator(
 
 const store = createStore(
   combineReducers({
-    sample: sampleReducer
+    sample: sampleReducer,
+    coinShokai: coinShokaiReducer
   })
 )
 

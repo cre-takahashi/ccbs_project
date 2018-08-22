@@ -59,6 +59,7 @@ export default class TohyoShokai extends Component {
   findTohyoShokai = async () => {
     await fetch(restdomain + '/tohyo_shokai_kobetsu/find', {
       method: 'POST',
+      mode: 'cors',
       body: JSON.stringify(this.state),
       headers: new Headers({ 'Content-type': 'application/json' })
     })
