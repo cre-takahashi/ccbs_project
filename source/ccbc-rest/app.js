@@ -1,6 +1,8 @@
+const fallback = require('express-history-api-fallback')
 const createError = require('http-errors')
 const express = require('express')
 const resource = require('express-resource')
+const root = __dirname + '/static'
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
@@ -71,6 +73,9 @@ app.use('/tohyo_shokai_kobetsu', tohyoShokaiKobetsuRouter)
 app.use('/tohyo_ichiran', tohyoIchiranRouter)
 app.use('/tohyo_shokai_shosai', tohyo_shokai_shosaiRouter)
 app.use('/tohyo_shokai_nendo', tohyo_shokai_nendoRouter)
+
+app.use(express.static(path.join(__dirname, 'static')))
+app.use(fallback('index.html', { root: root }))
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
