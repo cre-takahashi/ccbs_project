@@ -58,9 +58,11 @@ import FormControl from '@material-ui/core/FormControl'
 import Search from '@material-ui/icons/Search'
 import Edit from '@material-ui/icons/Edit'
 import Web from '@material-ui/icons/Web'
+import * as myActions from '../actions/shain_toroku'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const restdomain = require('../common/constans.js').restdomain
-
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -345,6 +347,7 @@ class ShainKensakuForm extends React.Component {
     comment: {},
     haifuCoin: 150,
     tohyoCoin: 0,
+    kengenData: [],
     resultList: [],
     userid: null,
     password: null,
@@ -358,30 +361,54 @@ class ShainKensakuForm extends React.Component {
   constructor(props) {
     super(props)
   }
-
+  componentDidMount() {}
   /** コンポーネントのマウント時処理 */
   componentWillMount() {
     var loginInfos = JSON.parse(sessionStorage.getItem('loginInfo'))
-    for (var i in loginInfos) {
-      var loginInfo = loginInfos[i]
-      this.setState({ userid: loginInfo['userid'] })
-      this.setState({ password: loginInfo['password'] })
-      this.setState({ tShainPk: loginInfo['tShainPk'] })
-      this.state.tShainPk = Number(loginInfo['tShainPk'])
-      this.setState({ imageFileName: loginInfo['imageFileName'] })
-      this.setState({ shimei: loginInfo['shimei'] })
-      this.setState({ kengenCd: loginInfo['kengenCd'] })
-    }
+    this.setState({ userid: loginInfos[0].userid })
+    this.setState({ password: loginInfos[0].password })
+    this.setState({ tShainPk: loginInfos[0].tShainPk })
+    this.state.tShainPk = Number(loginInfos[0].tShainPk)
+    this.setState({ imageFileName: loginInfos[0].imageFileName })
+    this.setState({ shimei: loginInfos[0].shimei })
+    this.setState({ kengenCd: loginInfos[0].kengenCd })
+
+    // 検索条件クリア
+    this.setState({ election: '' })
+    this.setState({ kengen: '' })
+    //権限リスト生成
+    request
+      .post(restdomain + '/shain_kensaku/makeKenegenList')
+      .end((err, res) => {
+        if (err) return
+
+        this.state.kengenData = res.body.data
+        this.setState({ kengenData: res.body.data })
+      })
   }
 
-  handleChange = (name, cnt) => event => {
-    this.setState({
-      [name[cnt]]: event.target.value
-    })
+  handleChange = event => {
+    this.state.election = event.target.value
+    this.setState({ election: event.target.value })
   }
 
+  // 検索処理
+  handleClick = () => {
+    request
+      .post(restdomain + '/shain_kensaku/find')
+      .send(this.state)
+      .end((err, res) => {
+        if (err) return
+        // 検索結果表示
+        this.state.resultList = res.body.data
+        this.setState({ resultList: res.body.data })
+      })
+  }
+
+  // 権限変更時
   handleChange2 = event => {
     this.setState({ [event.target.name]: event.target.value })
+    this.state.kengen = event.target.value
   }
 
   handleDrawerOpen = () => {
@@ -401,6 +428,14 @@ class ShainKensakuForm extends React.Component {
     this.setState({ open2: !this.state.open2 })
   }
 
+  editClick = event => {
+    const { shainToroku, actions } = this.props
+
+    var pShainPk = event.currentTarget.getAttribute('data-num')
+
+    actions.setShainTorokuData(pShainPk)
+  }
+
   handleToggleClose = event => {
     if (this.target1.contains(event.target)) {
       return
@@ -414,6 +449,7 @@ class ShainKensakuForm extends React.Component {
     const { anchor, open, open2 } = this.state
     const loginLink = props => <Link to="../" {...props} />
     const sampleLink = props => <Link to="/sample" {...props} />
+    const shainTorokuLink = props => <Link to="/shain_toroku" {...props} />
 
     const drawer = (
       <Drawer
@@ -556,7 +592,7 @@ class ShainKensakuForm extends React.Component {
                   placeholder="氏名を入力"
                   className={classes.textField}
                   value={this.state.election}
-                  onChange={this.handleChange('election')}
+                  onChange={this.handleChange}
                   margin="normal"
                 />
                 <FormControl className={classes.formControl}>
@@ -572,9 +608,11 @@ class ShainKensakuForm extends React.Component {
                     <MenuItem value="">
                       <em>指定なし</em>
                     </MenuItem>
-                    <MenuItem value={1}>管理者</MenuItem>
-                    <MenuItem value={2}>一般</MenuItem>
-                    <MenuItem value={3}>新人</MenuItem>
+                    {this.state.kengenData.map(n => {
+                      return (
+                        <MenuItem value={n.kengen_cd}>{n.kengen_nm}</MenuItem>
+                      )
+                    })}
                   </Select>
                 </FormControl>
               </form>
@@ -583,6 +621,7 @@ class ShainKensakuForm extends React.Component {
                 color="default"
                 size="large"
                 className={classes.button2}
+                onClick={this.handleClick}
               >
                 <Search
                   className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -594,6 +633,7 @@ class ShainKensakuForm extends React.Component {
                 color="default"
                 size="large"
                 className={classes.button2}
+                component={shainTorokuLink}
               >
                 <Edit
                   className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -622,94 +662,44 @@ class ShainKensakuForm extends React.Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <CustomTableCell style={{ width: '5%' }}>
-                        <Avatar
-                          alt="Adelle Charles"
-                          src="/images/yamashita.png"
-                          className={classNames(classes.PnlAvatar)}
-                        />
-                      </CustomTableCell>
-                      <CustomTableCell style={{ width: '45%' }}>
-                        札幌　花子
-                      </CustomTableCell>
-                      <CustomTableCell style={{ width: '30%' }}>
-                        管理者
-                      </CustomTableCell>
-                      <CustomTableCell style={{ width: '20%' }}>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button2}
-                          component={sampleLink}
-                        >
-                          <Edit
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          EDIT
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>
-                        <Avatar
-                          alt="Adelle Charles"
-                          src="/images/mikami.png"
-                          className={classNames(classes.PnlAvatar)}
-                        />
-                      </CustomTableCell>
-                      <CustomTableCell>札幌　太郎</CustomTableCell>
-                      <CustomTableCell>一般</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button2}
-                          component={sampleLink}
-                        >
-                          <Edit
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          EDIT
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                    <TableRow>
-                      <CustomTableCell>
-                        <Avatar
-                          alt="Adelle Charles"
-                          src="/images/ishigaki.jpg"
-                          className={classNames(classes.PnlAvatar)}
-                        />
-                      </CustomTableCell>
-                      <CustomTableCell>北海道　三郎</CustomTableCell>
-                      <CustomTableCell>新人</CustomTableCell>
-                      <CustomTableCell>
-                        <Button
-                          variant="raised"
-                          color="default"
-                          size="large"
-                          className={classes.button2}
-                          component={sampleLink}
-                        >
-                          <Edit
-                            className={classNames(
-                              classes.leftIcon,
-                              classes.iconSmall
-                            )}
-                          />
-                          EDIT
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
+                    {this.state.resultList.map(n => {
+                      return (
+                        <TableRow>
+                          <CustomTableCell style={{ width: '5%' }}>
+                            <Avatar
+                              alt="Adelle Charles"
+                              src={n.image_file_nm}
+                              className={classNames(classes.PnlAvatar)}
+                            />
+                          </CustomTableCell>
+                          <CustomTableCell style={{ width: '45%' }}>
+                            {n.shimei}
+                          </CustomTableCell>
+                          <CustomTableCell style={{ width: '30%' }}>
+                            {n.kengen_nm}
+                          </CustomTableCell>
+                          <CustomTableCell style={{ width: '20%' }}>
+                            <Button
+                              variant="raised"
+                              color="default"
+                              size="large"
+                              className={classes.button2}
+                              component={shainTorokuLink}
+                              onClick={this.editClick}
+                              data-num={n.t_shain_pk}
+                            >
+                              <Edit
+                                className={classNames(
+                                  classes.leftIcon,
+                                  classes.iconSmall
+                                )}
+                              />
+                              EDIT
+                            </Button>
+                          </CustomTableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </Paper>
@@ -727,4 +717,14 @@ ShainKensakuForm.propTypes = {
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(ShainKensakuForm)
+const mapState = state => ({
+  shainToroku: state.shainToroku
+})
+
+const mapDispatch = dispatch => ({
+  actions: bindActionCreators(myActions, dispatch)
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState, mapDispatch)(ShainKensakuForm)
+)
