@@ -59,8 +59,13 @@ import Search from '@material-ui/icons/Search'
 import Edit from '@material-ui/icons/Edit'
 import Web from '@material-ui/icons/Web'
 import AddAPhoto from '@material-ui/icons/AddAPhoto'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
 const restdomain = require('../common/constans.js').restdomain
+
+var createObjectURL =
+  (window.URL || window.webkitURL).createObjectURL || window.createObjectURL
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -315,6 +320,12 @@ const styles = theme => ({
 
   shainImgTable: {
     width: 500
+  },
+  InputLabel: {
+    whiteSpace: 'nowrap'
+  },
+  select: {
+    width: 140
   }
 })
 
@@ -345,17 +356,31 @@ class ShainTorokuForm extends React.Component {
     comment: {},
     haifuCoin: 150,
     tohyoCoin: 0,
-    resultList: [],
+    resultKengenList: [],
+    resultShainData: [],
     userid: null,
     password: null,
     tShainPk: 0,
     imageFileName: null,
     shimei: null,
-    kengenCd: null
+    kengenCd: null,
+    inputTShainPk: 0,
+    inputShimeiKana: null,
+    inputShimeiKanji: null,
+    inputUserId: null,
+    inputPassword: null,
+    inputPassword2: null,
+    inputKengenCd: '0',
+    inputImage: null,
+    updateFlg: false,
+    gazo: [],
+    filename: '',
+    pShainPk: 0
   }
 
   constructor(props) {
     super(props)
+    this.props = props
   }
 
   /** コンポーネントのマウント時処理 */
@@ -370,12 +395,45 @@ class ShainTorokuForm extends React.Component {
       this.setState({ imageFileName: loginInfo['imageFileName'] })
       this.setState({ shimei: loginInfo['shimei'] })
       this.setState({ kengenCd: loginInfo['kengenCd'] })
+
+      // 遷移元画面からの引き渡しパラメータ
+      const { shainToroku } = this.props
+
+      this.state.inputTShainPk = Number(shainToroku.pShainPk)
+
+      request
+        .post(restdomain + '/shain_toroku/find')
+        .send(this.state)
+        .end((err, res) => {
+          if (err) return
+          if (res.body.status) {
+            // 検索結果表示
+            this.setState({ resultKengenList: res.body.kengenList })
+            if (res.body.shainData.length !== 0) {
+              this.setState({ inputTShainPk: res.body.shainData[0].t_shain_pk })
+              this.setState({
+                inputShimeiKana: res.body.shainData[0].shimei_kana
+              })
+              this.setState({ inputShimeiKanji: res.body.shainData[0].shimei })
+              this.setState({ inputUserId: res.body.shainData[0].user_id })
+              this.setState({ inputKengenCd: res.body.shainData[0].kengen_cd })
+              this.setState({
+                inputImage:
+                  'http://localhost:3001/uploads/' +
+                  res.body.shainData[0].image_file_nm
+              })
+              this.setState({
+                updateFlg: res.body.shainData[0].updateFlg
+              })
+            }
+          }
+        })
     }
   }
 
-  handleChange = (name, cnt) => event => {
+  handleChange = name => event => {
     this.setState({
-      [name[cnt]]: event.target.value
+      [name]: event.target.value
     })
   }
 
@@ -402,6 +460,165 @@ class ShainTorokuForm extends React.Component {
     }
 
     this.setState({ open2: false })
+  }
+
+  handleClickFile = event => {
+    document.getElementById('file').onchange
+  }
+
+  handleChangeFile = event => {
+    // ①イベントからfileの配列を受け取る
+    var files = event.target.files
+
+    this.setState({ gazo: files[0] })
+    this.setState({ filename: files[0].name })
+
+    // ②createObjectURLで、files[0]を読み込む
+    var image_url = createObjectURL(files[0])
+
+    // ③setStateする！
+    this.setState({ inputImage: image_url })
+  }
+
+  handleClick = event => {
+    // 必須チェック（氏名かな）
+    if (
+      this.state.inputShimeiKana === '' ||
+      this.state.inputShimeiKana === null
+    ) {
+      // checkFlg = true
+      this.setState({
+        msg: '氏名（かな）は必須入力です。'
+      })
+      return
+    }
+    // 必須チェック（氏名漢字）
+    if (
+      this.state.inputShimeiKanji === '' ||
+      this.state.inputShimeiKanji === null
+    ) {
+      // checkFlg = true
+      this.setState({
+        msg: '氏名（漢字）は必須入力です。'
+      })
+      return
+    }
+
+    // 必須チェック（新規登録時のみ）
+    if (!this.state.updateFlg) {
+      // 必須チェック（ユーザID）
+      if (this.state.inputUserId === '' || this.state.inputUserId === null) {
+        // checkFlg = true
+        this.setState({
+          msg: 'ユーザIDは必須入力です。'
+        })
+        return
+      } else {
+        if (!this.state.inputUserId.match(/^([a-zA-Z0-9]{4,20})$/)) {
+          // checkFlg = true
+          this.setState({
+            msg: 'ユーザIDは半角英数字4～20文字で入力してください。'
+          })
+          return
+        }
+      }
+      // 必須チェック（パスワード）
+      if (
+        this.state.inputPassword === '' ||
+        this.state.inputPassword === null
+      ) {
+        // checkFlg = true
+        this.setState({
+          msg: 'パスワードは必須入力です。'
+        })
+        return
+      } else {
+        if (!this.state.inputPassword.match(/^([a-zA-Z0-9]{8,20})$/)) {
+          // checkFlg = true
+          this.setState({
+            msg: 'パスワードは半角英数字8～20文字で入力してください。'
+          })
+          return
+        }
+      }
+      // 必須チェック（パスワード（再入力用））
+      if (
+        this.state.inputPassword2 === '' ||
+        this.state.inputPassword2 === null
+      ) {
+        // checkFlg = true
+        this.setState({
+          msg: 'パスワード（再入力）は必須入力です。'
+        })
+        return
+      } else {
+        if (!this.state.inputPassword2.match(/^([a-zA-Z0-9]{8,20})$/)) {
+          // checkFlg = true
+          this.setState({
+            msg: 'パスワード（再入力）は半角英数字8～20文字で入力してください。'
+          })
+          return
+        }
+      }
+
+      // パスワードとパスワード（再入力用）の一致チェック
+      if (this.state.inputPassword !== this.state.inputPassword2) {
+        // checkFlg = true
+        this.setState({
+          msg: 'パスワードとパスワード（再入力用）が不一致です。'
+        })
+        return
+      }
+    }
+
+    // 必須チェック（権限コード）
+    if (this.state.inputKengenCd === 0) {
+      this.setState({
+        msg: '権限コードは必須入力です。'
+      })
+      return
+    }
+    // 必須チェック（社員画像）
+    if (this.state.inputImage === '' || this.state.inputImage === null) {
+      this.setState({
+        msg: '顔写真は必須入力です。'
+      })
+      return
+    }
+
+    if (window.confirm('入力情報を登録しますか？')) {
+      var form = new FormData()
+      form.append('image', this.state.gazo)
+      form.append('inputTShainPk', this.state.inputTShainPk)
+      form.append('inputUserId', this.state.inputUserId)
+      form.append('inputPassword', this.state.inputPassword)
+      form.append('inputShimeiKanji', this.state.inputShimeiKanji)
+      form.append('inputImage', this.state.inputImage)
+      form.append('inputKengenCd', this.state.inputKengenCd)
+      form.append('userid', this.state.userid)
+      form.append('inputShimeiKana', this.state.inputShimeiKana)
+      form.append('updateFlg', this.state.updateFlg)
+
+      request
+        .post(restdomain + '/shain_toroku/create')
+        .send(form)
+        //.send(form)
+        .end((err, res) => {
+          if (err) {
+            return
+          }
+          if (res.body.status) {
+            this.props.history.push('/shain_kensaku')
+          } else {
+            this.setState({
+              msg: '入力したユーザIDは既に登録済みです。'
+            })
+            return
+          }
+        })
+    } else {
+      return
+    }
   }
 
   render() {
@@ -542,6 +759,14 @@ class ShainTorokuForm extends React.Component {
               />
               <strong>社員情報</strong>
             </h2>
+            <Typography
+              component="p"
+              style={{
+                color: 'red'
+              }}
+            >
+              {this.state.msg}
+            </Typography>
             <Table className={classes.shainImgTable}>
               <TableRow>
                 <CustomTableCell>顔写真</CustomTableCell>
@@ -549,32 +774,37 @@ class ShainTorokuForm extends React.Component {
               <TableRow>
                 <CustomTableCell rowSpan={2}>
                   <div align="center">
-                    <Avatar
-                      alt="Adelle Charles"
-                      src="/images/yamashita.png"
-                      className={classNames(classes.avatar, classes.bigAvatar)}
-                    />
+                    <img src={this.state.inputImage} />
                   </div>
                 </CustomTableCell>
                 <CustomTableCell style={{ border: 'none' }}>
-                  <Button
-                    className={classes.button}
-                    variant="raised"
-                    size="large"
-                    component={MyLink}
-                  >
-                    <AddAPhoto
-                      className={classNames(
-                        classes.leftIcon,
-                        classes.iconSmall
-                      )}
-                    />
-                    select photo
-                  </Button>
+                  <input
+                    id="contained-button-file"
+                    multiple
+                    type="file"
+                    ref="file"
+                    style={{ display: 'none' }}
+                    onChange={this.handleChangeFile}
+                  />
+                  <label htmlFor="contained-button-file">
+                    <Button
+                      className={classes.button}
+                      variant="raised"
+                      size="large"
+                      component="span"
+                    >
+                      <AddAPhoto
+                        className={classNames(
+                          classes.leftIcon,
+                          classes.iconSmall
+                        )}
+                      />
+                      select photo
+                    </Button>
+                  </label>
                 </CustomTableCell>
               </TableRow>
             </Table>
-
             <Paper className={classes.root}>
               <Table className={classes.table}>
                 <TableRow>
@@ -584,12 +814,15 @@ class ShainTorokuForm extends React.Component {
                   <CustomTableCell>
                     <form className={classes.root} autoComplete="off">
                       <TextField
-                        id="shimeiKana"
+                        id="inputShimeiKana"
                         label="氏名（かな）"
+                        InputLabelProps={{
+                          shrink: true
+                        }}
                         placeholder="氏名（かな）を入力"
                         className={classes.textField}
-                        value={this.state.election}
-                        onChange={this.handleChange('election')}
+                        value={this.state.inputShimeiKana}
+                        onChange={this.handleChange('inputShimeiKana')}
                         margin="normal"
                       />
                     </form>
@@ -602,12 +835,15 @@ class ShainTorokuForm extends React.Component {
                   <CustomTableCell>
                     <form className={classes.root} autoComplete="off">
                       <TextField
-                        id="shimeiKanji"
+                        id="inputShimeiKanji"
                         label="氏名（漢字）"
+                        InputLabelProps={{
+                          shrink: true
+                        }}
                         placeholder="氏名（漢字）を入力"
                         className={classes.textField}
-                        value={this.state.election}
-                        onChange={this.handleChange('election')}
+                        value={this.state.inputShimeiKanji}
+                        onChange={this.handleChange('inputShimeiKanji')}
                         margin="normal"
                       />
                     </form>
@@ -618,13 +854,17 @@ class ShainTorokuForm extends React.Component {
                   <CustomTableCell>
                     <form className={classes.root} autoComplete="off">
                       <TextField
-                        id="userId"
+                        id="inputUserId"
                         label="ユーザID"
+                        InputLabelProps={{
+                          shrink: true
+                        }}
                         placeholder="ユーザIDを入力"
                         className={classes.textField}
-                        value={this.state.election}
-                        onChange={this.handleChange('election')}
+                        value={this.state.inputUserId}
+                        onChange={this.handleChange('inputUserId')}
                         margin="normal"
+                        disabled={this.state.updateFlg}
                       />
                     </form>
                   </CustomTableCell>
@@ -634,29 +874,39 @@ class ShainTorokuForm extends React.Component {
                   <CustomTableCell>
                     <form className={classes.root} autoComplete="off">
                       <TextField
-                        id="password"
+                        id="inputPassword"
+                        type="password"
                         label="パスワード"
+                        InputLabelProps={{
+                          shrink: true
+                        }}
                         placeholder="パスワードを入力"
                         className={classes.textField}
-                        value={this.state.election}
-                        onChange={this.handleChange('election')}
+                        value={this.state.inputPassword}
+                        onChange={this.handleChange('inputPassword')}
                         margin="normal"
+                        disabled={this.state.updateFlg}
                       />
                     </form>
                   </CustomTableCell>
                 </TableRow>
                 <TableRow>
-                  <CustomTableCell>パスワード（再入力用）</CustomTableCell>
+                  <CustomTableCell>パスワード（再入力）</CustomTableCell>
                   <CustomTableCell>
                     <form className={classes.root} autoComplete="off">
                       <TextField
-                        id="password"
-                        label="パスワード（再入力用）"
-                        placeholder="パスワード（再入力用）を入力"
+                        id="inputPassword2"
+                        type="password"
+                        label="パスワード（再入力）"
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        placeholder="パスワード（再入力）を入力"
                         className={classes.textField}
-                        value={this.state.election}
-                        onChange={this.handleChange('election')}
+                        value={this.state.inputPassword2}
+                        onChange={this.handleChange('inputPassword2')}
                         margin="normal"
+                        disabled={this.state.updateFlg}
                       />
                     </form>
                   </CustomTableCell>
@@ -664,21 +914,37 @@ class ShainTorokuForm extends React.Component {
                 <TableRow>
                   <CustomTableCell>権限</CustomTableCell>
                   <CustomTableCell>
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="kengen-simple">権限</InputLabel>
-                      <Select
-                        value={this.state.kengen}
-                        onChange={this.handleChange2}
-                        inputProps={{
-                          name: 'kengen',
-                          id: 'kengen-simple'
-                        }}
-                      >
-                        <MenuItem value={1}>管理者</MenuItem>
-                        <MenuItem value={2}>一般</MenuItem>
-                        <MenuItem value={3}>新人</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <form className={classes.root} autoComplete="off">
+                      <FormControl className={classes.formControl}>
+                        <InputLabel
+                          htmlFor="kengen-simple"
+                          className={classes.InputLabel}
+                        >
+                          権限
+                        </InputLabel>
+                        <Select
+                          id="inputKengenCd"
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          value={this.state.inputKengenCd}
+                          onChange={this.handleChange('inputKengenCd')}
+                          inputProps={{
+                            name: 'kengen',
+                            id: 'inputKengenCd'
+                          }}
+                          className={classes.select}
+                        >
+                          {this.state.resultKengenList.map(n => {
+                            return (
+                              <MenuItem value={n.kengen_cd}>
+                                {n.kengen_nm}
+                              </MenuItem>
+                            )
+                          })}
+                        </Select>
+                      </FormControl>
+                    </form>
                   </CustomTableCell>
                 </TableRow>
               </Table>
@@ -687,7 +953,7 @@ class ShainTorokuForm extends React.Component {
               className={classes.button}
               variant="raised"
               size="large"
-              component={MyLink}
+              onClick={this.handleClick.bind(this)}
             >
               <Save
                 className={classNames(classes.leftIcon, classes.iconSmall)}
@@ -707,4 +973,10 @@ ShainTorokuForm.propTypes = {
   theme: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(ShainTorokuForm)
+const mapState = state => ({
+  shainToroku: state.shainToroku
+})
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapState)(ShainTorokuForm)
+)

@@ -21,6 +21,7 @@ import { coinShokaiReducer } from './reducers/coin_shokai'
 import { tohyo_shokai_shosaiReducer } from './reducers/tohyo_shokai_shosai'
 import { tohyoShokaiKobetsuReducer } from './reducers/tohyo_shokai_kobetsu'
 import { tohyo_shokai_nendoReducer } from './reducers/tohyo_shokai_nendo'
+import { shainTorokuReducer } from './reducers/shain_toroku'
 import ScrollToTop from './view/scroll_to_top'
 
 import HeaderForm from './view/header'
@@ -62,6 +63,7 @@ const store = createStore(
     tohyo_shokai_shosai: tohyo_shokai_shosaiReducer,
     tohyoShokaiKobetsu: tohyoShokaiKobetsuReducer,
     tohyo_shokai_nendo: tohyo_shokai_nendoReducer,
+    shainToroku: shainTorokuReducer,
     routing: routerReducer
   }),
   applyMiddleware(middleware)
