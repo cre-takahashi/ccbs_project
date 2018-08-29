@@ -64,6 +64,7 @@ const store = createStore(
     tohyoShokaiKobetsu: tohyoShokaiKobetsuReducer,
     tohyo_shokai_nendo: tohyo_shokai_nendoReducer,
     shainToroku: shainTorokuReducer,
+    shain_toroku: shainTorokuReducer,
     routing: routerReducer
   }),
   applyMiddleware(middleware)

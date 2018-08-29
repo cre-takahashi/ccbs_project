@@ -8,7 +8,8 @@ import ReactNative, {
   Dimensions,
   KeyboardAvoidingView,
   Modal,
-  Keyboard
+  Keyboard,
+  TextInput
 } from 'react-native'
 import styled from 'styled-components/native' // Version can be specified in package.json
 import Carousel, { Pagination } from 'react-native-snap-carousel' // Version can be specified in package.json
@@ -21,7 +22,7 @@ import {
   Divider
 } from 'react-native-elements'
 import StarRating from 'react-native-star-rating'
-import TextInput from './common/TextInput'
+// import TextInput from './common/TextInput'
 
 const restdomain = require('./common/constans.js').restdomain
 
@@ -39,7 +40,8 @@ export default class TohyoToroku extends Component {
       modalVisible2: false,
       value: '',
       text: '',
-      height: 0,
+      height: [],
+      headList: [],
       resultList: [],
       tohyoCoin: 0,
       activeStep1: {},
@@ -105,6 +107,12 @@ export default class TohyoToroku extends Component {
             return
           }
           var dataList = json.data
+          var head = []
+          if (json.data.length === 0) {
+            head.push(false)
+          } else {
+            head.push(true)
+          }
           for (var i in dataList) {
             var data = dataList[i]
             data.starCount1 = 5
@@ -112,9 +120,10 @@ export default class TohyoToroku extends Component {
             data.starCount3 = 5
             data.starCount4 = 1
             data.starCount5 = 1
-            data.comment = ''
+            //data.comment = ''
           }
           this.setState({ resultList: dataList })
+          this.setState({ headList: head })
           this.calculateCoin()
         }.bind(this)
       )
@@ -228,7 +237,12 @@ export default class TohyoToroku extends Component {
 
   _renderItem = ({ index }) => {
     return (
-      <Card style={{ flex: 1, height: 400 + Math.max(35, this.state.height) }}>
+      <Card
+        style={{
+          flex: 1,
+          height: 400 + Math.max(35, this.state.height[index])
+        }}
+      >
         <View style={styles.targe_item}>
           <View style={styles.target_avatar_view}>
             <Avatar
@@ -256,14 +270,16 @@ export default class TohyoToroku extends Component {
         </View>
         <View style={styles.target_coin_view}>
           <Text style={{ fontSize: 14 }}>
-            {this.calculatePointLine(index)}
-            点、
-            {this.calculateCoinLine(index)}
-            coin
+            {this.calculatePointLine(index)}点 　{this.calculateCoinLine(index)}
+            コイン
           </Text>
         </View>
-        <View style={styles.target_coin_view}>
-          <Icon name="live-help" onPress={() => this.openModal2()} />
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <Icon
+            name="live-help"
+            onPress={() => this.openModal2()}
+            style={{ flex: 1 }}
+          />
           <Modal
             visible={this.state.modalVisible2}
             animationType={'slide'}
@@ -273,6 +289,10 @@ export default class TohyoToroku extends Component {
             <View style={styles.modal_style}>
               <ScrollView>
                 <Card title="評価ヘルプ" style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18 }}>投票について</Text>
+                  <Text style={{ fontSize: 12 }}>
+                    　発表者に対して評価とコメントをつけて下さい。（配布しきれなかったコインは自動で回収されます）
+                  </Text>
                   <Text style={{ fontSize: 18 }}>資料作成</Text>
                   <Text style={{ fontSize: 12 }}>
                     　①資料全体を通して統一感があった。
@@ -349,6 +369,7 @@ export default class TohyoToroku extends Component {
               </ScrollView>
             </View>
           </Modal>
+          <View style={{ flex: 3 }} />
         </View>
         <View style={styles.rating_item}>
           <View style={styles.rating_title_view}>
@@ -459,15 +480,21 @@ export default class TohyoToroku extends Component {
         <TextInput
           {...this.props}
           multiline={true}
-          onChangeText={text => {
+          onTextInput={text => {
             this.state.resultList[index].comment = text
           }}
           onContentSizeChange={event => {
-            this.setState({ height: event.nativeEvent.contentSize.height })
+            const height_copy = this.state.height.slice()
+            height_copy[index] = event.nativeEvent.contentSize.height
+            this.setState({ height: height_copy })
           }}
-          style={[styles.default, { height: Math.max(35, this.state.height) }]}
+          style={[
+            styles.default,
+            { height: Math.max(35, this.state.height[index]) }
+          ]}
           value={this.state.resultList[index].comment}
           ref={component => (this._textinput = component)}
+          underlineColorAndroid="transparent"
         />
       </Card>
     )
@@ -526,6 +553,100 @@ export default class TohyoToroku extends Component {
   }
 
   render = () => {
+    var dataList = this.state.headList.map((data, i) => {
+      if (!data) {
+        return (
+          <Card style={{ flex: 1 }}>
+            <View style={styles.target_total_coin_view}>
+              <Text style={{ fontSize: 18 }}>有効な選挙がありません。</Text>
+            </View>
+          </Card>
+        )
+      } else {
+        return (
+          <View>
+            <Card style={{ flex: 1 }}>
+              <View style={styles.target_total_coin_view}>
+                <Text style={{ fontSize: 18 }}>
+                  {this.state.resultList[0].senkyo_nm}
+                </Text>
+                <Text style={{ fontSize: 13 }}>
+                  投票コイン数:
+                  {this.getCalculateCoin()}
+                  コイン（
+                  {this.state.resultList[0].config_coin}
+                  コイン/1点）
+                </Text>
+              </View>
+            </Card>
+            <Text />
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around'
+              }}
+            >
+              <Divider style={{ flex: 1, backgroundColor: 'white' }} />
+              <Text style={{ flex: 1, fontSize: 13, textAlign: 'center' }}>
+                Presenter
+              </Text>
+              <Divider style={{ flex: 1, backgroundColor: 'white' }} />
+            </View>
+            <CarouselBackgroundView
+              style={{ height: 400 + Math.max(35, this.state.height) }}
+            >
+              <Carousel
+                ref={c => {
+                  this._carousel = c
+                }}
+                data={this.state.resultList}
+                renderItem={index => this._renderItem(index)}
+                // onSnapToItem={this.handleSnapToItem.bind(this)}
+                onSnapToItem={index => this.setState({ activeSlide: index })}
+                sliderWidth={Dimensions.get('window').width}
+                itemWidth={Dimensions.get('window').width}
+                layout={'default'}
+                containerCustomStyle={{ flex: 1 }}
+                slideStyle={{ flex: 1 }}
+                firstItem={0}
+              />
+              <View>{this.pagination}</View>
+            </CarouselBackgroundView>
+            <Button
+              title="save"
+              icon={{ name: 'sign-in', type: 'font-awesome' }}
+              onPress={() => this.openModal()}
+            />
+            <Modal
+              visible={this.state.modalVisible}
+              animationType={'slide'}
+              onRequestClose={() => this.closeModal()}
+              //transparent={true}
+            >
+              <View style={styles.modal_style}>
+                <View style={{ flex: 1 }} />
+                <Card title="確認ダイアログ" style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 18 }}>入力情報を登録しますか？</Text>
+                </Card>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <View style={{ flex: 1 }}>
+                    <Button onPress={() => this.handleSubmit()} title="YES" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Button onPress={() => this.closeModal()} title="NO" />
+                  </View>
+                </View>
+                <View style={{ flex: 1 }} />
+              </View>
+            </Modal>
+            <View style={{ height: 80 }} />
+          </View>
+        )
+      }
+    })
+
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -554,128 +675,7 @@ export default class TohyoToroku extends Component {
 
         <KeyboardAvoidingView behavior="padding">
           <ScrollView ref={component => (this._scrollview = component)}>
-            {(() => {
-              if (
-                this.state.resultList != null &&
-                this.state.resultList.length != 0
-              ) {
-                return (
-                  <View>
-                    <Card style={{ flex: 1 }}>
-                      <View style={styles.target_total_coin_view}>
-                        <Text style={{ fontSize: 18 }}>
-                          {this.state.resultList[0].senkyo_nm}
-                        </Text>
-                        <Text style={{ fontSize: 12 }}>
-                          発表者に対して評価とコメントをつけて下さい。
-                          {'\n'}
-                          （配布しきれなかったコインは自動で回収されます）
-                        </Text>
-                        <Text style={{ fontSize: 13 }}>
-                          配布コイン数:
-                          {this.state.resultList[0].config_coin *
-                            50 *
-                            this.state.resultList.length}
-                        </Text>
-                        <Text style={{ fontSize: 13 }}>
-                          1点辺りのコイン数:
-                          {this.state.resultList[0].config_coin}
-                        </Text>
-                        <Text style={{ fontSize: 13 }}>
-                          投票コイン数:
-                          {this.getCalculateCoin()}
-                        </Text>
-                      </View>
-                    </Card>
-                    <Text />
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-around'
-                      }}
-                    >
-                      <Divider style={{ flex: 1, backgroundColor: 'white' }} />
-                      <Text
-                        style={{ flex: 1, fontSize: 13, textAlign: 'center' }}
-                      >
-                        Presenter
-                      </Text>
-                      <Divider style={{ flex: 1, backgroundColor: 'white' }} />
-                    </View>
-                    <CarouselBackgroundView
-                      style={{ height: 400 + Math.max(35, this.state.height) }}
-                    >
-                      <Carousel
-                        ref={c => {
-                          this._carousel = c
-                        }}
-                        data={this.state.resultList}
-                        renderItem={index => this._renderItem(index)}
-                        // onSnapToItem={this.handleSnapToItem.bind(this)}
-                        onSnapToItem={index =>
-                          this.setState({ activeSlide: index })
-                        }
-                        sliderWidth={Dimensions.get('window').width}
-                        itemWidth={Dimensions.get('window').width}
-                        layout={'default'}
-                        containerCustomStyle={{ flex: 1 }}
-                        slideStyle={{ flex: 1 }}
-                        firstItem={0}
-                      />
-                      <View>{this.pagination}</View>
-                    </CarouselBackgroundView>
-                    <Button
-                      title="save"
-                      icon={{ name: 'sign-in', type: 'font-awesome' }}
-                      onPress={() => this.openModal()}
-                    />
-                    <Modal
-                      visible={this.state.modalVisible}
-                      animationType={'slide'}
-                      onRequestClose={() => this.closeModal()}
-                      //transparent={true}
-                    >
-                      <View style={styles.modal_style}>
-                        <View style={{ flex: 1 }} />
-                        <Card title="確認ダイアログ" style={{ flex: 1 }}>
-                          <Text style={{ fontSize: 18 }}>
-                            入力情報を登録しますか？
-                          </Text>
-                        </Card>
-                        <View style={{ flex: 1, flexDirection: 'row' }}>
-                          <View style={{ flex: 1 }}>
-                            <Button
-                              onPress={() => this.handleSubmit()}
-                              title="YES"
-                            />
-                          </View>
-                          <View style={{ flex: 1 }}>
-                            <Button
-                              onPress={() => this.closeModal()}
-                              title="NO"
-                            />
-                          </View>
-                        </View>
-                        <View style={{ flex: 1 }} />
-                      </View>
-                    </Modal>
-                    <View style={{ height: 80 }} />
-                  </View>
-                )
-              } else {
-                return (
-                  <Card style={{ flex: 1 }}>
-                    <View style={styles.target_total_coin_view}>
-                      <Text style={{ fontSize: 18 }}>
-                        有効な選挙がありません。
-                      </Text>
-                    </View>
-                  </Card>
-                )
-              }
-            })()}
+            {dataList}
           </ScrollView>
         </KeyboardAvoidingView>
       </View>
@@ -721,6 +721,9 @@ const styles = StyleSheet.create({
   },
   target_coin_view: {
     marginLeft: 0
+  },
+  target_coin_view2: {
+    flex: 1
   },
   target_total_coin_view: {
     marginLeft: 10
